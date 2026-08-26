@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://parisima-clinic.ir/sitemap.xml
