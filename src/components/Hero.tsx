@@ -98,6 +98,8 @@ export const Hero: React.FC<HeroProps> = ({ onOpenBooking }) => {
       </div>
     </section>
   );
+
+  
 };
 
 export default Hero;
