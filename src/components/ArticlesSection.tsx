@@ -77,6 +77,10 @@ export const ArticlesSection: React.FC = () => {
                     alt={article.title}
                     className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
                     loading="lazy"
+                    onError={(e) => {
+                      // فال‌بک تصویر در صورت بروز خطای لود
+                      (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&auto=format&fit=crop&q=60';
+                    }}
                   />
                   <span className="absolute top-3 right-3 bg-[#0284C7] text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow-sm z-10">
                     {article.category}
