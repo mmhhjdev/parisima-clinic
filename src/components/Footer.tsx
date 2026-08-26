@@ -1,6 +1,6 @@
 import React from 'react';
 import { Phone, MapPin, Calendar, Clock } from 'lucide-react';
-import { CLINIC_INFO, DOCTORS } from '../data/clinicData';
+import { CLINIC_INFO } from '../data/clinicData';
 import { Logo } from './Logo';
 
 interface FooterProps {
@@ -21,7 +21,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenBooking }) => {
             <Logo size="md" textColor="light" />
 
             <p className="font-sans text-xs text-slate-400 leading-relaxed font-light mt-3">
-              کلینیک زیبایی و درماتولوژی پری سیما با بهره‌مندی از تجارب تخصصی دکتر سید علی هجرتی (کد نظام پزشکی: ۵۴۱۸۰) و دکتر محمدجواد نخعی (کد نظام پزشکی: ۴۸۷۲۰)، محیطی علمی، ایمن و پیشرفته برای درمان‌های پوستی و زیبایی فراهم آورده است.
+              کلینیک زیبایی و درماتولوژی پری سیما با بهره‌مندی از تجارب تخصصی دکتر سید علی هجرتی (کد نظام پزشکی: 42171) و دکتر محمدجواد نخعی (کد نظام پزشکی: 83525)، محیطی علمی، ایمن و پیشرفته برای درمان‌های پوستی و زیبایی فراهم آورده است.
             </p>
           </div>
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { MapPin, Phone, MessageSquare, Clock, ExternalLink, Calendar } from 'lucide-react';
 import { CLINIC_INFO } from '../data/clinicData';
 
@@ -14,6 +14,58 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ onOpenBooking })
   
   // لینک واتساپ فقط برای شماره همراه ۱ (09101646504)
   const whatsappUrl1 = `https://wa.me/989101646504?text=${encodeURIComponent("باسلام، جهت دریافت مشاوره و نوبت‌دهی در کلینیک پری سیما پیام می‌دهم.")}`;
+
+  // تزریق پویای اسکیمای محلی مطب پزشکی (MedicalClinic Schema) برای سئوی لوکال
+  useEffect(() => {
+    // ایجاد URL داینامیک و امن برای پشتیبانی از گیت‌هاب پیج
+    const dynamicBaseUrl = `${window.location.origin}${import.meta.env.BASE_URL}`;
+
+    const clinicSchema = {
+      "@context": "https://schema.org",
+      "@type": "MedicalClinic",
+      "name": CLINIC_INFO.name,
+      "image": `${dynamicBaseUrl}logo.png`, // آدرس داینامیک لوگو برای سئو
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": CLINIC_INFO.address,
+        "addressLocality": "تهران",
+        "addressCountry": "IR"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": lat,
+        "longitude": lng
+      },
+      "telephone": CLINIC_INFO.phone1,
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": [
+          "Saturday",
+          "Sunday",
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday"
+        ],
+        "opens": "09:00",
+        "closes": "20:00"
+      },
+      "url": dynamicBaseUrl
+    };
+
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.id = 'clinic-local-schema';
+    script.text = JSON.stringify(clinicSchema);
+    document.head.appendChild(script);
+
+    return () => {
+      const existingScript = document.getElementById('clinic-local-schema');
+      if (existingScript) {
+        existingScript.remove();
+      }
+    };
+  }, [lat, lng]);
 
   return (
     <section id="contact" className="py-16 sm:py-20 bg-white border-b border-slate-200">
@@ -91,7 +143,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ onOpenBooking })
                     href={whatsappUrl1}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-2.5 py-1 bg-[#25D366] hover:bg-[#20ba5a] text-white text-[11px] font-bold rounded-lg transition-colors flex items-center gap-1"
+                    className="px-2.5 py-1 bg-[#25D366] hover:bg-[#20ba5a] text-white text-[11px] font-bold rounded-lg transition-colors flex items-center gap-1 cursor-pointer"
                   >
                     <span>چت واتساپ</span>
                   </a>
@@ -105,7 +157,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ onOpenBooking })
                   </a>
                   <a 
                     href={`tel:${CLINIC_INFO.mobile2}`}
-                    className="px-2.5 py-1 bg-[#1E3A8A] hover:bg-[#0F172A] text-white text-[11px] font-bold rounded-lg transition-colors flex items-center gap-1"
+                    className="px-2.5 py-1 bg-[#1E3A8A] hover:bg-[#0F172A] text-white text-[11px] font-bold rounded-lg transition-colors flex items-center gap-1 cursor-pointer"
                   >
                     <Phone className="w-3 h-3" />
                     <span>تماس تلفنی</span>
@@ -140,7 +192,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ onOpenBooking })
                 href={googleMapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-[#F8FAFC] border border-slate-200 hover:border-[#0284C7] hover:bg-[#F0F9FF] rounded-xl text-slate-700 font-header font-bold text-xs transition-all shadow-xs"
+                className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-[#F8FAFC] border border-slate-200 hover:border-[#0284C7] hover:bg-[#F0F9FF] rounded-xl text-slate-700 font-header font-bold text-xs transition-all shadow-xs cursor-pointer"
               >
                 <MapPin className="w-4 h-4 text-[#0284C7]" />
                 <span>مسیریابی با گوگل مپ (Google Maps)</span>
@@ -170,6 +222,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ onOpenBooking })
             <p className="font-sans text-xs text-slate-300 mt-1">با تکمیل فرم ساده، منشی مطب جهت هماهنگی با شما تماس خواهد گرفت.</p>
           </div>
           <button
+            type="button"
             onClick={onOpenBooking}
             className="font-header px-6 py-3 rounded-xl bg-[#0284C7] hover:bg-[#0369A1] text-white text-xs font-bold transition-all flex items-center gap-2 shrink-0 cursor-pointer"
           >

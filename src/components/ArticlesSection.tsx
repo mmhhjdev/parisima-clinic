@@ -1,9 +1,47 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BookOpen, Calendar, Clock, User, ArrowRight, X } from 'lucide-react';
 import { ARTICLES, Article } from '../data/articlesData';
 
 export const ArticlesSection: React.FC = () => {
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
+
+  // تزریق پویای اسکیما (Structured Data) برای سئوی پیشرفته مقالات پزشکی
+  useEffect(() => {
+    if (!selectedArticle) return;
+
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.id = 'dynamic-article-schema';
+    script.text = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": selectedArticle.title,
+      "description": selectedArticle.excerpt,
+      "image": selectedArticle.image,
+      "author": {
+        "@type": "Physician",
+        "name": selectedArticle.author
+      },
+      "publisher": {
+        "@type": "MedicalBusiness",
+        "name": "کلینیک زیبایی و درماتولوژی پری سیما",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://parisima-clinic.ir/logo.png"
+        }
+      },
+      "datePublished": selectedArticle.date
+    });
+
+    document.head.appendChild(script);
+
+    return () => {
+      const existingScript = document.getElementById('dynamic-article-schema');
+      if (existingScript) {
+        existingScript.remove();
+      }
+    };
+  }, [selectedArticle]);
 
   return (
     <section id="articles" className="py-16 sm:py-20 bg-white border-b border-slate-200">
@@ -26,13 +64,13 @@ export const ArticlesSection: React.FC = () => {
         {/* Articles Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {ARTICLES.map((article) => (
-            <div
+            <article
               key={article.id}
               className="bg-[#F8FAFC] rounded-2xl overflow-hidden border border-slate-200 hover:border-[#0284C7] hover:shadow-lg transition-all flex flex-col justify-between group cursor-pointer"
               onClick={() => setSelectedArticle(article)}
             >
               <div>
-                {/* اصلاح بخش تصویر کارت */}
+                {/* بخش تصویر کارت */}
                 <div className="relative h-52 w-full overflow-hidden bg-slate-900/5 flex items-center justify-center">
                   <img
                     src={article.image}
@@ -76,7 +114,7 @@ export const ArticlesSection: React.FC = () => {
                   مطالعه مقاله <ArrowRight className="w-3.5 h-3.5 rotate-180" />
                 </span>
               </div>
-            </div>
+            </article>
           ))}
         </div>
 
@@ -89,7 +127,7 @@ export const ArticlesSection: React.FC = () => {
             
             <button
               onClick={() => setSelectedArticle(null)}
-              className="absolute top-6 left-6 p-2 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 transition-colors"
+              className="absolute top-6 left-6 p-2 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 transition-colors cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
@@ -98,9 +136,10 @@ export const ArticlesSection: React.FC = () => {
               {selectedArticle.category}
             </span>
 
-            <h2 className="font-header text-xl sm:text-2xl font-black text-[#0F172A] leading-snug">
+            {/* اصلاح تگ هدینگ به h1 برای سئوی محتوای داخلی مقاله */}
+            <h1 className="font-header text-xl sm:text-2xl font-black text-[#0F172A] leading-snug">
               {selectedArticle.title}
-            </h2>
+            </h1>
 
             <div className="flex items-center gap-4 text-xs text-slate-500 my-4 font-sans border-y border-slate-100 py-3">
               <span className="flex items-center gap-1 font-semibold text-slate-700">
@@ -124,7 +163,7 @@ export const ArticlesSection: React.FC = () => {
             <div className="mt-8 pt-6 border-t border-slate-100 flex justify-end">
               <button
                 onClick={() => setSelectedArticle(null)}
-                className="font-header bg-[#0284C7] text-white text-xs font-bold px-6 py-2.5 rounded-xl hover:bg-[#0284C7]/90 transition-colors"
+                className="font-header bg-[#0284C7] text-white text-xs font-bold px-6 py-2.5 rounded-xl hover:bg-[#0284C7]/90 transition-colors cursor-pointer"
               >
                 بستن مقاله
               </button>

@@ -5,6 +5,7 @@ import { defineConfig } from 'vite';
 
 export default defineConfig(() => {
   return {
+    base: '/parisima-clinic/', // این خط را اضافه کنید
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles, Percent, ArrowLeft, ShieldCheck, Tag, MessageSquare } from 'lucide-react';
+import { Sparkles, ArrowLeft, Tag, MessageSquare, Image as ImageIcon, Calendar } from 'lucide-react';
 
 interface DoctorsSectionProps {
   onOpenBooking: () => void;
@@ -24,51 +24,10 @@ export const DoctorsSection: React.FC<DoctorsSectionProps> = ({ onOpenBooking })
           </p>
         </div>
 
-        {/* Promotion Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* Promotion Cards Grid (Single Offer + Future Gallery Slot) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
           
-          {/* Card 1: Special Discount Banner */}
-          <div className="group bg-white rounded-3xl overflow-hidden border border-slate-200 hover:border-[#0284C7] shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
-            <div className="relative h-56 overflow-hidden">
-              <img
-                src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&q=80&w=800"
-                alt="جشنواره جوانسازی و پاکسازی"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A]/80 via-[#0F172A]/20 to-transparent" />
-              <div className="absolute top-4 right-4 bg-rose-500 text-white font-header text-xs font-extrabold px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-md">
-                <Percent className="w-3.5 h-3.5" />
-                <span>تخفیف ویژه جشنواره</span>
-              </div>
-            </div>
-
-            <div className="p-6 flex-1 flex flex-col justify-between">
-              <div>
-                <h3 className="font-header text-lg font-black text-[#0F172A] mb-2">
-                  پکیج جامع جوانسازی و فیشیال تخصصی
-                </h3>
-                <p className="font-sans text-xs text-slate-600 leading-relaxed mb-4">
-                  شامل هایفوتراپی صورت، پاکسازی مدیکال و آبرسانی عمیق پوست با تخفیف محدود. مناسب جهت بهبود بافت، لیفت غیرتهاجمی و بازیابی شفافیت طبیعی چهره.
-                </p>
-              </div>
-
-              <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
-                <div className="flex items-center gap-1.5 text-emerald-600 text-xs font-bold font-header">
-                  <ShieldCheck className="w-4 h-4" />
-                  <span>تضمین کیفیت و مواد استاندارد</span>
-                </div>
-                <button
-                  onClick={onOpenBooking}
-                  className="font-header text-xs font-bold text-white bg-[#1E3A8A] hover:bg-[#0284C7] px-4 py-2.5 rounded-xl transition-colors flex items-center gap-1.5 cursor-pointer shadow-sm"
-                >
-                  <span>رزرو با تخفیف</span>
-                  <ArrowLeft className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Card 2: Featured Service Banner */}
+          {/* Card 1: Featured Service Banner (کاشت مو) */}
           <div className="group bg-white rounded-3xl overflow-hidden border border-slate-200 hover:border-[#0284C7] shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
             <div className="relative h-56 overflow-hidden">
               <img
@@ -106,6 +65,23 @@ export const DoctorsSection: React.FC<DoctorsSectionProps> = ({ onOpenBooking })
                   <ArrowLeft className="w-3.5 h-3.5" />
                 </button>
               </div>
+            </div>
+          </div>
+
+          {/* Card 2: Placeholder for Future Before & After Gallery */}
+          <div className="bg-white rounded-3xl overflow-hidden border-2 border-dashed border-slate-300 shadow-sm flex flex-col items-center justify-center p-8 text-center group hover:border-[#0284C7] transition-all duration-300">
+            <div className="w-14 h-14 rounded-2xl bg-[#F0F9FF] text-[#0284C7] flex items-center justify-center mb-4 shadow-xs group-hover:scale-110 transition-transform">
+              <ImageIcon className="w-7 h-7" />
+            </div>
+            <h3 className="font-header text-lg font-black text-[#0F172A] mb-2">
+              گالری تصاویر قبل و بعد
+            </h3>
+            <p className="font-sans text-xs text-slate-500 max-w-sm leading-relaxed mb-6">
+              به زودی می‌توانید نتایج واقعی و نمونه کارهای تخصصی کاشت مو و خدمات زیبایی کلینیک پری سیما را در این بخش مشاهده کنید.
+            </p>
+            <div className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-400 bg-slate-100 px-4 py-2 rounded-xl font-header">
+              <Calendar className="w-3.5 h-3.5" />
+              <span>به زودی...</span>
             </div>
           </div>
 

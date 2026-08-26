@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Layers, Calendar, Check, Star } from 'lucide-react';
 import { SERVICES } from '../data/clinicData';
 import { Service } from '../types';
@@ -10,6 +10,35 @@ interface ServicesSectionProps {
 export const ServicesSection: React.FC<ServicesSectionProps> = ({
   onSelectServiceForBooking,
 }) => {
+  // تزریق پویای اسکیمای خدمات پزشکی (Medical Procedures Schema) برای سئوی محلی و تخصصی
+  useEffect(() => {
+    const servicesSchema = {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "itemListElement": SERVICES.map((service, index) => ({
+        "@type": "MedicalProcedure",
+        "position": index + 1,
+        "name": service.title,
+        "description": service.shortDescription,
+        "procedureType": service.categoryLabel,
+        "url": `https://parisima-clinic.ir/#services`
+      }))
+    };
+
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.id = 'clinic-services-schema';
+    script.text = JSON.stringify(servicesSchema);
+    document.head.appendChild(script);
+
+    return () => {
+      const existingScript = document.getElementById('clinic-services-schema');
+      if (existingScript) {
+        existingScript.remove();
+      }
+    };
+  }, []);
+
   return (
     <section id="services" className="py-16 sm:py-20 bg-[#F8FAFC] border-b border-slate-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -31,8 +60,15 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({
         {/* Services Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {SERVICES.map((service) => {
+            // اصلاح مسیر عکس برای پشتیبانی از Base URL در گیت‌هاب پیج
+            const fixedImageSrc = service.image
+              ? service.image.startsWith('http') 
+                ? service.image 
+                : `${import.meta.env.BASE_URL}${service.image.replace(/^\//, '')}`
+              : '';
+
             return (
-              <div
+              <article
                 key={service.id}
                 className="bg-white rounded-2xl overflow-hidden border border-slate-200 hover:border-[#0284C7] hover:shadow-lg transition-all flex flex-col justify-between"
               >
@@ -41,7 +77,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({
                   {service.image && (
                     <div className="relative h-52 w-full overflow-hidden bg-slate-900/5 border-b border-slate-100 flex items-center justify-center">
                       <img
-                        src={service.image}
+                        src={fixedImageSrc}
                         alt={service.imageAlt || service.title}
                         className="w-full h-full object-cover object-center transition-transform duration-500 hover:scale-105"
                         loading="lazy"
@@ -111,7 +147,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({
                     <span>ثبت درخواست نوبت این خدمت</span>
                   </button>
                 </div>
-              </div>
+              </article>
             );
           })}
         </div>

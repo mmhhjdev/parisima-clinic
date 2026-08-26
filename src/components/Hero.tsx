@@ -40,7 +40,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenBooking }) => {
           
           <div className="flex justify-center mb-2">
             <div className="p-2 bg-white rounded-2xl border border-slate-200 shadow-sm">
-              <Logo size="lg" showText={false} />
+              <Logo size="lg" showSubtitle={false} />
             </div>
           </div>
 
@@ -58,7 +58,6 @@ export const Hero: React.FC<HeroProps> = ({ onOpenBooking }) => {
               onClick={() => onOpenBooking()}
               className="w-full sm:w-auto px-8 py-3.5 rounded-xl text-sm font-bold text-white bg-[#1E3A8A] hover:bg-[#0284C7] active:scale-95 transition-all shadow-md shadow-blue-950/20 flex items-center justify-center gap-2.5 cursor-pointer group"
             >
-              {/* اصلاح رنگ آیکون به آبی ملایم و هماهنگ */}
               <Calendar className="w-4 h-4 text-sky-300 group-hover:text-white transition-colors" />
               <span>ثبت درخواست نوبت ویزیت</span>
             </button>
@@ -98,8 +97,6 @@ export const Hero: React.FC<HeroProps> = ({ onOpenBooking }) => {
       </div>
     </section>
   );
-
-  
 };
 
 export default Hero;

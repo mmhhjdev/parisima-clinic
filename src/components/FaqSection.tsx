@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { HelpCircle, ChevronDown, Sparkles } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { HelpCircle, ChevronDown } from 'lucide-react';
 import { FAQ_ITEMS } from '../data/clinicData';
 
 export const FaqSection: React.FC = () => {
@@ -8,6 +8,35 @@ export const FaqSection: React.FC = () => {
   const toggleItem = (idx: number) => {
     setOpenIndex(openIndex === idx ? null : idx);
   };
+
+  // تزریق پویای اسکیمای سوالات متداول (FAQ Schema) برای گوگل
+  useEffect(() => {
+    const faqSchema = {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": FAQ_ITEMS.map((item) => ({
+        "@type": "Question",
+        "name": item.question,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": item.answer
+        }
+      }))
+    };
+
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.id = 'clinic-faq-schema';
+    script.text = JSON.stringify(faqSchema);
+    document.head.appendChild(script);
+
+    return () => {
+      const existingScript = document.getElementById('clinic-faq-schema');
+      if (existingScript) {
+        existingScript.remove();
+      }
+    };
+  }, []);
 
   return (
     <section id="faq" className="py-16 sm:py-20 bg-[#F8FAFC] border-b border-slate-200">
@@ -37,8 +66,9 @@ export const FaqSection: React.FC = () => {
                 className="bg-white rounded-2xl border border-slate-200 overflow-hidden transition-all text-right shadow-2xs"
               >
                 <button
+                  type="button"
                   onClick={() => toggleItem(idx)}
-                  className="w-full p-4 sm:p-5 flex items-center justify-between gap-4 text-right hover:bg-slate-50 transition-colors"
+                  className="w-full p-4 sm:p-5 flex items-center justify-between gap-4 text-right hover:bg-slate-50 transition-colors cursor-pointer"
                 >
                   <span className="font-header text-xs sm:text-sm font-bold text-[#0F172A]">
                     {item.question}
@@ -64,3 +94,5 @@ export const FaqSection: React.FC = () => {
     </section>
   );
 };
+
+export default FaqSection;

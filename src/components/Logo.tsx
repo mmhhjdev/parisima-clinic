@@ -31,10 +31,13 @@ export const Logo: React.FC<LogoProps> = ({
     lg: 'text-xs',
   };
 
+  // اصلاح مسیر لوگو برای سازگاری با گیت‌هاب پیج
+  const logoSrc = `${import.meta.env.BASE_URL}logo.png`;
+
   return (
     <div className="flex items-center gap-2.5 select-none">
       <img 
-        src="/logo.png" 
+        src={logoSrc} 
         alt="لوگو کلینیک پری سیما" 
         className={`${iconSizes[size]} object-contain flex-shrink-0`}
       />
