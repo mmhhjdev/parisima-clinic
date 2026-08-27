@@ -5,9 +5,8 @@ import { defineConfig } from 'vite';
 
 export default defineConfig(() => {
   return {
-    // اگر سایت مستقیماً روی دامنه اصلی بالا می آید، '/' درست است.
-    // اما اگر روی گیت‌هاب پیجز به صورت ساب‌پوشه ارور داد، آن را روی '/parisima-clinic/' قرار دهید.
-    base: '/parisima-clinic/', 
+    // چون دامنه شما مستقیم روی ریشه (Root) است، base حتماً باید روی '/' باشد
+    base: '/', 
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {
