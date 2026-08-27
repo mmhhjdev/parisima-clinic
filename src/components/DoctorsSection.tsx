@@ -5,6 +5,17 @@ interface DoctorsSectionProps {
   onOpenBooking: () => void;
 }
 
+// تابع هوشمند برای مدیریت مسیر تصاویر در لوکال و گیت‌هاب پیج
+const getAssetPath = (imgPath: string) => {
+  const cleanBase = import.meta.env.BASE_URL.endsWith('/') 
+    ? import.meta.env.BASE_URL 
+    : `${import.meta.env.BASE_URL}/`;
+    
+  const cleanPath = imgPath.startsWith('/') ? imgPath.slice(1) : imgPath;
+  
+  return `${cleanBase}${cleanPath}`;
+};
+
 export const DoctorsSection: React.FC<DoctorsSectionProps> = ({ onOpenBooking }) => {
   return (
     <section id="promotions" className="py-16 bg-slate-50 border-b border-slate-200">
@@ -24,19 +35,20 @@ export const DoctorsSection: React.FC<DoctorsSectionProps> = ({ onOpenBooking })
           </p>
         </div>
 
-        {/* Promotion Cards Grid (Single Offer + Future Gallery Slot) */}
+        {/* Promotion Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
           
-          {/* Card 1: Featured Service Banner (کاشت مو) */}
+          {/* Card 1: Featured Service Banner */}
           <div className="group bg-white rounded-3xl overflow-hidden border border-slate-200 hover:border-[#0284C7] shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
-            <div className="relative h-56 overflow-hidden">
+            
+            {/* استفاده از aspect-video برای نمایش کامل و بدون نقص عکس‌های عریض در همه نمایشگرها */}
+            <div className="relative w-full aspect-video overflow-hidden bg-slate-900 flex items-center justify-center">
               <img
-                src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&q=80&w=800"
+                src={getAssetPath('images/special-offer-hair.webp')}
                 alt="کاشت و تقویت تخصصی مو"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                className="w-full h-full object-contain object-center group-hover:scale-105 transition-transform duration-500"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A]/80 via-[#0F172A]/20 to-transparent" />
-              <div className="absolute top-4 right-4 bg-[#0284C7] text-white font-header text-xs font-extrabold px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-md">
+              <div className="absolute top-4 right-4 bg-[#0284C7] text-white font-header text-xs font-extrabold px-3.5 py-1.5 rounded-full flex items-center gap-1.5 shadow-md z-10">
                 <Tag className="w-3.5 h-3.5" />
                 <span>خدمت ویژه</span>
               </div>
@@ -47,7 +59,7 @@ export const DoctorsSection: React.FC<DoctorsSectionProps> = ({ onOpenBooking })
                 <h3 className="font-header text-lg font-black text-[#0F172A] mb-2">
                   کلینیک تخصصی پیوند و تقویت موی طبیعی
                 </h3>
-                <p className="font-sans text-xs text-slate-600 leading-relaxed mb-4">
+                <p className="font-sans text-xs sm:text-sm text-slate-600 leading-relaxed mb-4">
                   ارائه خدمات تخصصی کاشت مو با متد Micro-FIT، مزوتراپی ریشه‌ای و کنترل ریزش با بهره‌گیری از بروزترین تجهیزات و آنالیز دقیق تراکم فولیکول‌ها.
                 </p>
               </div>
@@ -76,7 +88,7 @@ export const DoctorsSection: React.FC<DoctorsSectionProps> = ({ onOpenBooking })
             <h3 className="font-header text-lg font-black text-[#0F172A] mb-2">
               گالری تصاویر قبل و بعد
             </h3>
-            <p className="font-sans text-xs text-slate-500 max-w-sm leading-relaxed mb-6">
+            <p className="font-sans text-xs sm:text-sm text-slate-500 max-w-sm leading-relaxed mb-6">
               به زودی می‌توانید نتایج واقعی و نمونه کارهای تخصصی کاشت مو و خدمات زیبایی کلینیک پری سیما را در این بخش مشاهده کنید.
             </p>
             <div className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-400 bg-slate-100 px-4 py-2 rounded-xl font-header">

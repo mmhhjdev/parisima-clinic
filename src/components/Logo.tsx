@@ -49,7 +49,7 @@ export const Logo: React.FC<LogoProps> = ({
           }`}
         >
           کلینیک زیبایی{' '}
-          <span className="font-brand font-normal text-[#0284C7]">
+          <span className="font-header font-black text-[#0284C7]">
             پری سیما
           </span>
         </span>

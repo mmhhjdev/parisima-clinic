@@ -1,7 +1,6 @@
 import React from 'react';
 import { Calendar, Phone, MessageSquare, MapPin, ShieldCheck, Award } from 'lucide-react';
 import { CLINIC_INFO } from '../data/clinicData';
-import { Logo } from './Logo';
 
 interface HeroProps {
   onOpenBooking: () => void;
@@ -38,14 +37,9 @@ export const Hero: React.FC<HeroProps> = ({ onOpenBooking }) => {
         {/* Hero Title & Subtitle */}
         <div className="text-center max-w-3xl mx-auto space-y-5">
           
-          <div className="flex justify-center mb-2">
-            <div className="p-2 bg-white rounded-2xl border border-slate-200 shadow-sm">
-              <Logo size="lg" showSubtitle={false} />
-            </div>
-          </div>
-
+          {/* عنوان اصلی صفحه با فونت کاملاً یکپارچه و هماهنگ (Almarai) */}
           <h1 className="font-header text-3xl sm:text-4xl lg:text-5xl font-black text-[#0F172A] tracking-tight leading-tight">
-            کلینیک زیبایی <span className="font-brand font-normal text-[#0284C7]">پری سیما</span>
+            کلینیک زیبایی <span className="font-header font-black text-[#0284C7]">پری سیما</span>
           </h1>
 
           <p className="font-sans text-base sm:text-lg text-slate-600 font-normal leading-relaxed max-w-2xl mx-auto">

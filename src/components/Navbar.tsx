@@ -70,8 +70,8 @@ export const Navbar: React.FC<NavbarProps> = ({
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           
-          {/* Logo / Brand */}
-          <a href="#home" className="flex items-center gap-3 shrink-0">
+          {/* Logo / Brand - سئو شده با تگ معنایی */}
+          <a href="#home" className="flex items-center gap-3 shrink-0 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded-lg">
             <Logo size="md" textColor="dark" />
           </a>
 

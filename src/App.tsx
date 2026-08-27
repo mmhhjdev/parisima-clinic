@@ -54,7 +54,7 @@ export function App() {
 
   // ۲. کلیک مخفی ۳ باره رو فوتر برای ورود به پنل
   const handleSecretTripleClick = (e: React.MouseEvent) => {
-    if (e.detail === 3) {
+    if (e.detail === 4) {
       setIsAdminOpen(true);
     }
   };
