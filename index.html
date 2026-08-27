@@ -4,49 +4,47 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
-    <!-- Google Analytics (GA4) - کد آمارگیر و ردیابی فرم‌ها -->
-    <!-- TODO: شناسه G-XXXXXXXXXX را با Tracking ID واقعی خود در گوگل آنالیتیکس جایگزین کنید -->
+    <!-- Google Analytics (GA4) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
       gtag('config', 'G-XXXXXXXXXX');
     </script>
 
-    <!-- Favicon / App Icons -->
-    <link rel="icon" type="image/png" href="/parisima-clinic/logo.png" />
-    <link rel="apple-touch-icon" href="/parisima-clinic/apple-touch-icon.png" />
+    <!-- Favicon / App Icons (مسیر نسبی برای جلوگیری از خطای 404 روی هاست) -->
+    <link rel="icon" type="image/png" href="./logo.png" />
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
 
-    <!-- Title & Basic SEO Meta Tags -->
-    <title>کلینیک زیبایی و درماتولوژی پری سیما | کاشت مو، بوتاکس، فیلر و درمان پوست</title>
-    <meta name="description" content="کلینیک تخصصی زیبایی و درماتولوژی پری سیما در زعفرانیه تهران. ارائه خدمات تخصصی کاشت مو، تزریق بوتاکس و فیلر، هایفوتراپی، درمان آکنه، اسکار و بیماری‌های پوستی." />
-    <meta name="keywords" content="کلینیک زیبایی زعفرانیه, کاشت مو تهران, تزریق بوتاکس, تزریق فیلر, درمان آکنه, کلینیک پری سیما, دکتر علی هجرتی, دکتر محمدجواد نخعی" />
-    <meta name="robots" content="index, follow" />
-    <link rel="canonical" href="https://parisima-clinic.ir" />
+    <!-- Title & Basic SEO Meta Tags (بهینه‌شده با کلمات کلیدی پرسرچ) -->
+    <title>کلینیک زیبایی و درماتولوژی پری سیما | زعفرانیه تهران</title>
+    <meta name="description" content="کلینیک تخصصی پوست، مو و زیبایی پری سیما در زعفرانیه تهران. ارائه خدمات حرفه‌ای کاشت مو، بوتاکس، فیلر لب، هایفوتراپی و درمان تخصصی بیماری‌های پوستی." />
+    <meta name="keywords" content="کلینیک زیبایی زعفرانیه, کاشت مو تهران, تزریق بوتاکس, تزریق فیلر, هایفوتراپی, کلینیک پری سیما, دکتر سید علی هجرتی, دکتر محمدجواد نخعی" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <link rel="canonical" href="https://parisima-clinic.ir/" />
 
-    <!-- Open Graph / Facebook / WhatsApp -->
+    <!-- Open Graph / Social Networks (برای پیش‌نمایش عالی در تلگرام، واتساپ و اینستاگرام) -->
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="fa_IR" />
     <meta property="og:site_name" content="کلینیک زیبایی و درماتولوژی پری سیما" />
-    <meta property="og:title" content="کلینیک زیبایی و درماتولوژی پری سیما | خدمات تخصصی پوست و مو" />
-    <meta property="og:description" content="مرکز تخصصی کاشت مو، جوانسازی و درمان بیماری‌های پوستی تحت نظارت پزشکان متخصص در زعفرانیه تهران." />
-    <meta property="og:url" content="https://parisima-clinic.ir" />
+    <meta property="og:title" content="کلینیک زیبایی و درماتولوژی پری سیما | زعفرانیه تهران" />
+    <meta property="og:description" content="مرکز تخصصی کاشت مو، جوانسازی و خدمات درماتولوژی زیر نظر پزشکان متخصص در زعفرانیه." />
+    <meta property="og:url" content="https://parisima-clinic.ir/" />
     <meta property="og:image" content="https://parisima-clinic.ir/logo.png" />
 
     <!-- Twitter Cards -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="کلینیک زیبایی و درماتولوژی پری سیما" />
-    <meta name="twitter:description" content="خدمات تخصصی کاشت مو، جوانسازی صورت و درماتولوژی در زعفرانیه تهران." />
+    <meta name="twitter:description" content="خدمات تخصصی کاشت مو و جوانسازی پوست در زعفرانیه تهران." />
     <meta name="twitter:image" content="https://parisima-clinic.ir/logo.png" />
 
-    <!-- Fonts preconnect -->
+    <!-- Fonts preconnect (بارگذاری سریع‌تر فونت‌ها برای بهبود امتیاز سرعت سئو) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&family=Noto+Nastaliq+Urdu:wght@400;700&family=Vazirmatn:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
 
-    <!-- Structured Data (JSON-LD) for MedicalBusiness & Physicians -->
+    <!-- Structured Data (Schema.org) با قدرت سئو محلی فوق‌العاده بالا برای گوگل -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -55,7 +53,7 @@
           "@type": "MedicalBusiness",
           "@id": "https://parisima-clinic.ir/#clinic",
           "name": "کلینیک زیبایی و درماتولوژی پری سیما",
-          "alternateName": "کلینیک پری سیما",
+          "alternateName": "کلینیک پری سیما زعفرانیه",
           "url": "https://parisima-clinic.ir",
           "logo": "https://parisima-clinic.ir/logo.png",
           "image": "https://parisima-clinic.ir/logo.png",
@@ -78,15 +76,14 @@
           "openingHoursSpecification": [
             {
               "@type": "OpeningHoursSpecification",
-              "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Saturday", "Sunday"],
-              "opens": "07:00",
+              "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Saturday", "Sunday"],
+              "opens": "09:00",
               "closes": "20:00"
             }
           ],
           "medicalSpecialty": [
             "Dermatology",
-            "PlasticSurgery",
-            "CosmeticSurgeon"
+            "PlasticSurgery"
           ]
         },
         {
@@ -98,7 +95,7 @@
           "worksFor": {
             "@id": "https://parisima-clinic.ir/#clinic"
           },
-          "medicalSpecialty": "CosmeticSurgeon"
+          "medicalSpecialty": "PlasticSurgery"
         },
         {
           "@type": "Physician",
@@ -114,10 +111,11 @@
       ]
     }
     </script>
-    <script type="module" crossorigin src="/parisima-clinic/assets/index-9UwQ4FQW.js"></script>
-    <link rel="stylesheet" crossorigin href="/parisima-clinic/assets/index-BlxV8j24.css">
+    <script type="module" crossorigin src="/assets/index-C4wkC8oS.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BlxV8j24.css">
   </head>
   <body class="font-sans antialiased bg-[#FAF9F6] text-slate-800 selection:bg-[#0284C7] selection:text-white">
     <div id="root"></div>
+    <!-- اصلاح مسیر اسکریپت اصلی برای جلوگیری از ارور 404 -->
   </body>
 </html>
