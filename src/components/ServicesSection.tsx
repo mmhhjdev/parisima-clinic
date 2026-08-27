@@ -114,7 +114,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({
 
                     {/* Key Benefits */}
                     <div className="mt-4 pt-3 border-t border-slate-100 space-y-1.5">
-                      {service.benefits.slice(0, 3).map((benefit, idx) => (
+                      {service.benefits?.slice(0, 3).map((benefit, idx) => (
                         <div key={idx} className="flex items-start gap-1.5 text-xs text-slate-600 font-sans">
                           <Check className="w-3.5 h-3.5 text-[#0284C7] flex-shrink-0 mt-0.5" />
                           <span className="line-clamp-1">{benefit}</span>
