@@ -5,7 +5,7 @@ import { defineConfig } from 'vite';
 
 export default defineConfig(() => {
   return {
-    base: '/parisima-clinic/', // این خط را اضافه کنید
+    base: '/', // اصلاح شد تا روی دامنه اختصاصی بدون خطا لود شود
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {
