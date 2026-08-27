@@ -5,7 +5,9 @@ import { defineConfig } from 'vite';
 
 export default defineConfig(() => {
   return {
-    base: '/', // اصلاح شد تا روی دامنه اختصاصی بدون خطا لود شود
+    // اگر سایت مستقیماً روی دامنه اصلی بالا می آید، '/' درست است.
+    // اما اگر روی گیت‌هاب پیجز به صورت ساب‌پوشه ارور داد، آن را روی '/parisima-clinic/' قرار دهید.
+    base: '/parisima-clinic/', 
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {
