@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Calendar, User, Phone, Sparkles, CheckCircle2, MessageSquare } from 'lucide-react';
 import { SERVICES } from '../data/clinicData';
-import { saveLocalConsultation } from '../lib/supabase';
+import { supabase } from '../lib/supabase';
 
 // برای شناسایی تابع gtag در تایپ‌اسکریپت
 declare global {
@@ -66,14 +66,23 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
     setLoading(true);
 
     try {
-      // ذخیره‌سازی (اگر تابع saveLocalConsultation از نوع پرامیس یا همگام باشد)
-      await saveLocalConsultation({
-        fullName: fullName.trim(),
-        phone: phone.trim(),
-        serviceId: selectedService || 'تعیین نشده',
-        createdAt: new Date().toISOString(),
-        status: 'pending',
-      });
+      // ثبت مستقیم در جدول consultations در دیتابیس Supabase
+      const { error: insertError } = await supabase
+        .from('consultations')
+        .insert([
+          {
+            patient_name: fullName.trim(),
+            phone: phone.trim(),
+            service_type: selectedService || 'تعیین نشده',
+            status: 'pending',
+            doctor_name: 'تعیین نشده',
+            notes: '',
+          }
+        ]);
+
+      if (insertError) {
+        throw insertError;
+      }
 
       // ارسال رویداد ثبت لید به Google Analytics برای سئو
       if (typeof window !== 'undefined' && window.gtag) {
@@ -88,8 +97,8 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
         onConsultationSubmitted();
       }
     } catch (err: any) {
-      console.error(err);
-      setError('خطایی در ثبت درخواست رخ داد. لطفاً دوباره تلاش کنید.');
+      console.error('Supabase Error:', err);
+      setError('خطایی در ثبت درخواست در دیتابیس رخ داد. لطفاً دوباره تلاش کنید.');
     } finally {
       setLoading(false);
     }
