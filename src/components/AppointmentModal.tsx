@@ -66,21 +66,26 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
     setLoading(true);
 
     try {
-      // ثبت مستقیم در جدول consultations در دیتابیس Supabase
+      // تولید یک شناسه یکتا هماهنگ با ساختار TEXT ستون id در جدول
+      const uniqueId = `PRS-${Math.floor(10000 + Math.random() * 90000)}`;
+
+      // ثبت درخواست با تطابق کامل با ستون‌های جدول SQL شما
       const { error: insertError } = await supabase
         .from('consultations')
         .insert([
           {
+            id: uniqueId,
             patient_name: fullName.trim(),
             phone: phone.trim(),
+            doctor_name: 'تعیین نشده',
             service_type: selectedService || 'تعیین نشده',
             status: 'pending',
-            doctor_name: 'تعیین نشده',
             notes: '',
           }
         ]);
 
       if (insertError) {
+        console.error('Supabase Error Details:', insertError);
         throw insertError;
       }
 
@@ -97,7 +102,7 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
         onConsultationSubmitted();
       }
     } catch (err: any) {
-      console.error('Supabase Error:', err);
+      console.error('Error saving consultation:', err);
       setError('خطایی در ثبت درخواست در دیتابیس رخ داد. لطفاً دوباره تلاش کنید.');
     } finally {
       setLoading(false);
