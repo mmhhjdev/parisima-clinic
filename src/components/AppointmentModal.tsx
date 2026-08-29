@@ -28,6 +28,7 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
   const [selectedService, setSelectedService] = useState(initialServiceId || '');
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const whatsappNumber = "989101646504";
   const whatsappDisplay = "0910-1646504";
@@ -39,13 +40,15 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
       setSelectedService(initialServiceId || '');
       setIsSubmitted(false);
       setError('');
+      setLoading(false);
     }
   }, [isOpen, initialServiceId]);
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
     
     // ولیدیشن خالی نبودن
     if (!fullName.trim() || !phone.trim()) {
@@ -60,8 +63,11 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
       return;
     }
 
+    setLoading(true);
+
     try {
-      saveLocalConsultation({
+      // ذخیره‌سازی (اگر تابع saveLocalConsultation از نوع پرامیس یا همگام باشد)
+      await saveLocalConsultation({
         fullName: fullName.trim(),
         phone: phone.trim(),
         serviceId: selectedService || 'تعیین نشده',
@@ -81,9 +87,11 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
       if (onConsultationSubmitted) {
         onConsultationSubmitted();
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      setError('خطایی در ثبت درخواست رخ داد.');
+      setError('خطایی در ثبت درخواست رخ داد. لطفاً دوباره تلاش کنید.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -92,6 +100,7 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
     setPhone('');
     setIsSubmitted(false);
     setError('');
+    setLoading(false);
     onClose();
   };
 
@@ -224,9 +233,10 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
 
                 <button
                   type="submit"
-                  className="w-full py-3 mt-2 rounded-xl bg-[#1E3A8A] hover:bg-[#0F172A] text-white text-xs font-bold font-header transition-all shadow-md shadow-blue-900/20 active:scale-95 cursor-pointer"
+                  disabled={loading}
+                  className="w-full py-3 mt-2 rounded-xl bg-[#1E3A8A] hover:bg-[#0F172A] text-white text-xs font-bold font-header transition-all shadow-md shadow-blue-900/20 active:scale-95 cursor-pointer disabled:opacity-50"
                 >
-                  ثبت و ارسال درخواست
+                  {loading ? 'در حال ثبت...' : 'ثبت و ارسال درخواست'}
                 </button>
               </form>
             </div>

@@ -70,9 +70,11 @@ export const Navbar: React.FC<NavbarProps> = ({
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           
-          {/* Logo / Brand - سئو شده با تگ معنایی */}
-          <a href="#home" className="flex items-center gap-3 shrink-0 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded-lg">
-            <Logo size="md" textColor="dark" />
+          {/* Logo / Brand - با قابلیت تنظیم سایز متناسب در موبایل */}
+          <a href="#home" className="flex items-center gap-2.5 shrink-0 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded-lg">
+            <div className="scale-90 sm:scale-100 origin-right">
+              <Logo size="sm" textColor="dark" />
+            </div>
           </a>
 
           {/* Navigation Links (Desktop) */}
