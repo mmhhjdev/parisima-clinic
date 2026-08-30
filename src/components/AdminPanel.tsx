@@ -39,7 +39,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   const [editingNoteText, setEditingNoteText] = useState('');
 
   // رمز عبور ورود به پنل
-  const ADMIN_PASSWORD = '123456'; 
+  const ADMIN_PASSWORD = 'admin.772-pass'; 
 
   const loadData = async () => {
     setLoading(true);

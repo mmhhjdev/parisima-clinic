@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { X, Calendar, User, Phone, Sparkles, CheckCircle2, MessageSquare } from 'lucide-react';
 import { SERVICES } from '../data/clinicData';
-import { supabase } from '../lib/supabase';
+import { submitConsultation } from '../lib/supabase'; // استفاده از تابع امن دیتابیس
 
-// برای شناسایی تابع gtag در تایپ‌اسکریپت
 declare global {
   interface Window {
     gtag?: (...args: any[]) => void;
@@ -50,13 +49,11 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
     e.preventDefault();
     setError('');
     
-    // ولیدیشن خالی نبودن
     if (!fullName.trim() || !phone.trim()) {
       setError('لطفاً نام و شماره تماس خود را وارد کنید.');
       return;
     }
 
-    // ولیدیشن دقیق شماره موبایل ایران (۱۱ رقم با شروع ۰۹)
     const iranPhoneRegex = /^09\d{9}$/;
     if (!iranPhoneRegex.test(phone.trim())) {
       setError('لطفاً یک شماره موبایل معتبر (مثال: 09123456789) وارد کنید.');
@@ -66,30 +63,23 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
     setLoading(true);
 
     try {
-      // تولید یک شناسه یکتا هماهنگ با ساختار TEXT ستون id در جدول
-      const uniqueId = `PRS-${Math.floor(10000 + Math.random() * 90000)}`;
+      const serviceTitle = selectedService 
+        ? (SERVICES.find(s => s.id === selectedService)?.title || selectedService) 
+        : 'مشاوره عمومی';
 
-      // ثبت درخواست با تطابق کامل با ستون‌های جدول SQL شما
-      const { error: insertError } = await supabase
-        .from('consultations')
-        .insert([
-          {
-            id: uniqueId,
-            patient_name: fullName.trim(),
-            phone: phone.trim(),
-            doctor_name: 'تعیین نشده',
-            service_type: selectedService || 'تعیین نشده',
-            status: 'pending',
-            notes: '',
-          }
-        ]);
+      // استفاده از متد استاندارد و ایمن برای ذخیره اطلاعات (چه ساب‌پیس وصل باشد چه نباشد)
+      const result = await submitConsultation({
+        patient_name: fullName.trim(),
+        phone: phone.trim(),
+        doctor_name: 'تعیین نشده',
+        service_type: serviceTitle,
+        notes: 'ثبت شده از طریق فرم وب‌سایت',
+      });
 
-      if (insertError) {
-        console.error('Supabase Error Details:', insertError);
-        throw insertError;
+      if (!result.success) {
+        throw new Error(result.error || 'خطا در ثبت اطلاعات');
       }
 
-      // ارسال رویداد ثبت لید به Google Analytics برای سئو
       if (typeof window !== 'undefined' && window.gtag) {
         window.gtag('event', 'generate_lead', {
           service_id: selectedService || 'general',
@@ -103,7 +93,7 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
       }
     } catch (err: any) {
       console.error('Error saving consultation:', err);
-      setError('خطایی در ثبت درخواست در دیتابیس رخ داد. لطفاً دوباره تلاش کنید.');
+      setError(err.message ? `خطا: ${err.message}` : 'خطایی در ثبت درخواست رخ داد. لطفاً دوباره تلاش کنید.');
     } finally {
       setLoading(false);
     }
@@ -191,7 +181,7 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 {error && (
-                  <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-600 text-xs font-bold">
+                  <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-600 text-xs font-bold break-words">
                     {error}
                   </div>
                 )}
