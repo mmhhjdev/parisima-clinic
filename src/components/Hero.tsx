@@ -68,7 +68,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenBooking }) => {
           {/* Clinic Address Direct Line */}
           <div className="pt-2 flex items-center justify-center gap-2 text-xs text-slate-500 font-sans">
             <MapPin className="w-3.5 h-3.5 text-[#0284C7]" />
-            <span>تهران، سه راه زعفرانیه، ساختمان پزشکان زعفرانیه، طبقه ۲، واحد ۸</span>
+            <span>تهران، سه راه زعفرانیه، ساختمان پزشکان زعفرانیه، طبقه 2 ، واحد 7</span>
           </div>
         </div>
 

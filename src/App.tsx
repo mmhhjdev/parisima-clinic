@@ -11,7 +11,7 @@ import { FloatingActions } from './components/FloatingActions';
 import { AppointmentModal } from './components/AppointmentModal';
 import { AdminPanel } from './components/AdminPanel';
 import { Service } from './types';
-import { getLocalConsultations } from './lib/supabase';
+import { fetchConsultations } from './lib/supabase';
 
 export function App() {
   const [isBookingOpen, setIsBookingOpen] = useState(false);
@@ -20,16 +20,18 @@ export function App() {
   const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [pendingCount, setPendingCount] = useState(0);
 
-  // محاسبه تعداد درخواست‌های در انتظار
-  const refreshPendingCount = useCallback(() => {
+  // محاسبه تعداد درخواست‌های در انتظار مستقیماً از Supabase
+  const refreshPendingCount = useCallback(async () => {
     try {
-      const list = getLocalConsultations() || [];
-      const count = Array.isArray(list) 
-        ? list.filter(item => item && item.status === 'pending').length 
-        : 0;
-      setPendingCount(count);
+      const result = await fetchConsultations();
+      if (result && result.isLiveSupabase && Array.isArray(result.data)) {
+        const count = result.data.filter((item: any) => item && item.status === 'pending').length;
+        setPendingCount(count);
+      } else {
+        setPendingCount(0);
+      }
     } catch (error) {
-      console.error('Error fetching consultations:', error);
+      console.error('Error fetching consultations from Supabase:', error);
       setPendingCount(0);
     }
   }, []);
@@ -52,7 +54,7 @@ export function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // ۲. کلیک مخفی ۳ باره رو فوتر برای ورود به پنل
+  // ۲. کلیک مخفی روی فوتر برای ورود به پنل (چهار بار کلیک)
   const handleSecretTripleClick = (e: React.MouseEvent) => {
     if (e.detail === 4) {
       setIsAdminOpen(true);

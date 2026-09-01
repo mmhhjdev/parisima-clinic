@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Calendar, User, Phone, Sparkles, CheckCircle2, MessageSquare } from 'lucide-react';
 import { SERVICES } from '../data/clinicData';
-import { submitConsultation } from '../lib/supabase'; // استفاده از تابع امن دیتابیس
+import { submitConsultation } from '../lib/supabase';
 
 declare global {
   interface Window {
@@ -31,7 +31,7 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
 
   const whatsappNumber = "989101646504";
   const whatsappDisplay = "0910-1646504";
-  const defaultMessage = encodeURIComponent("باسلام، جهت دریافت مشاوره و نوبت‌دهی در کلینیک پری سیما پیام می‌دهم.");
+  const defaultMessage = encodeURIComponent("با سلام، جهت دریافت مشاوره و نوبت‌دهی در کلینیک پری‌سیما پیام می‌دهم.");
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${defaultMessage}`;
 
   useEffect(() => {
@@ -67,7 +67,6 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
         ? (SERVICES.find(s => s.id === selectedService)?.title || selectedService) 
         : 'مشاوره عمومی';
 
-      // استفاده از متد استاندارد و ایمن برای ذخیره اطلاعات (چه ساب‌پیس وصل باشد چه نباشد)
       const result = await submitConsultation({
         patient_name: fullName.trim(),
         phone: phone.trim(),
@@ -110,7 +109,7 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in">
-      <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-100 font-sans">
+      <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-100 font-sans text-right">
         
         {/* Header */}
         <div className="bg-[#0F172A] text-white p-6 flex items-center justify-between">
@@ -120,12 +119,13 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
             </div>
             <div>
               <h3 className="font-header text-lg font-black">ثبت درخواست نوبت و مشاوره</h3>
-              <p className="text-xs text-slate-400 mt-0.5">کلینیک تخصصی پوست، مو و زیبایی پری سیما</p>
+              <p className="text-xs text-slate-400 mt-0.5">کلینیک تخصصی پوست، مو و زیبایی پری‌سیما</p>
             </div>
           </div>
           <button
             onClick={handleClose}
             className="p-2 rounded-full hover:bg-slate-800 text-slate-400 hover:text-white transition-colors cursor-pointer"
+            title="بستن"
           >
             <X className="w-5 h-5" />
           </button>
@@ -153,7 +153,7 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
             <div className="space-y-4">
               
               {/* WhatsApp Quick Section */}
-              <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-between gap-3 text-right">
+              <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2.5">
                   <div className="w-9 h-9 rounded-xl bg-[#25D366] text-white flex items-center justify-center shrink-0 shadow-xs">
                     <MessageSquare className="w-5 h-5" />
