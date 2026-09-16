@@ -29,7 +29,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
   const [consultations, setConsultations] = useState<Consultation[]>([]);
   const [loading, setLoading] = useState(false);
-  const [isLiveSupabase, setIsLiveSupabase] = useState(true);
+  const [isLiveSupabase, setIsLiveSupabase] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'called' | 'completed'>('all');
   const [doctorFilter, setDoctorFilter] = useState<string>('all');
@@ -46,8 +46,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     try {
       const res = await fetchConsultations();
       setConsultations(res.data);
-      // بررسی اینکه آیا ارطی با دیتابیس برقرار بوده یا خیر
-      setIsLiveSupabase(!res.error);
+      setIsLiveSupabase(res.isLiveSupabase);
       if (onRefreshStats) onRefreshStats();
     } finally {
       setLoading(false);
@@ -79,28 +78,22 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   };
 
   const handleStatusChange = async (id: string, newStatus: 'pending' | 'called' | 'completed') => {
-    const success = await updateConsultationStatus(id, newStatus);
-    if (success) {
-      setConsultations(prev => prev.map(c => c.id === id ? { ...c, status: newStatus } : c));
-      if (onRefreshStats) onRefreshStats();
-    }
+    await updateConsultationStatus(id, newStatus);
+    setConsultations(prev => prev.map(c => c.id === id ? { ...c, status: newStatus } : c));
+    if (onRefreshStats) onRefreshStats();
   };
 
   const handleSaveNotes = async (id: string) => {
-    const success = await updateConsultationNotes(id, editingNoteText);
-    if (success) {
-      setConsultations(prev => prev.map(c => c.id === id ? { ...c, notes: editingNoteText } : c));
-      setEditingNoteId(null);
-    }
+    await updateConsultationNotes(id, editingNoteText);
+    setConsultations(prev => prev.map(c => c.id === id ? { ...c, notes: editingNoteText } : c));
+    setEditingNoteId(null);
   };
 
   const handleDelete = async (id: string) => {
     if (window.confirm('آیا از حذف این درخواست نوبت اطمینان دارید؟')) {
-      const success = await deleteConsultation(id);
-      if (success) {
-        setConsultations(prev => prev.filter(c => c.id !== id));
-        if (onRefreshStats) onRefreshStats();
-      }
+      await deleteConsultation(id);
+      setConsultations(prev => prev.filter(c => c.id !== id));
+      if (onRefreshStats) onRefreshStats();
     }
   };
 
@@ -110,10 +103,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     if (doctorFilter !== 'all' && item.doctor_name !== doctorFilter) return false;
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
-      const matchName = item.patient_name?.toLowerCase().includes(q) || false;
-      const matchPhone = item.phone?.includes(q) || false;
-      const matchId = item.id?.toLowerCase().includes(q) || false;
-      const matchService = item.service_type?.toLowerCase().includes(q) || false;
+      const matchName = item.patient_name.toLowerCase().includes(q);
+      const matchPhone = item.phone.includes(q);
+      const matchId = item.id.toLowerCase().includes(q);
+      const matchService = item.service_type.toLowerCase().includes(q);
       return matchName || matchPhone || matchId || matchService;
     }
     return true;
@@ -140,9 +133,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   <span className={`text-[10px] px-2 py-0.5 rounded-full font-mono font-bold ${
                     isLiveSupabase
                       ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-                      : 'bg-red-500/20 text-red-300 border border-red-500/30'
+                      : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
                   }`}>
-                    {isLiveSupabase ? 'Supabase Connected' : 'Connection Error'}
+                    {isLiveSupabase ? 'Supabase Live Connected' : 'Local Data / Offline Mode'}
                   </span>
                 )}
               </div>
@@ -294,17 +287,17 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               {filteredList.length === 0 ? (
                 <div className="p-12 text-center text-slate-400 space-y-2">
                   <Database className="w-8 h-8 mx-auto text-slate-300" />
-                  <p className="font-sans text-xs">هیچ درخواست نوبتی یافت نشد یا ارتباط با پایگاه داده برقرار نیست.</p>
+                  <p className="font-sans text-xs">هیچ درخواست نوبتی یافت نشد.</p>
                 </div>
               ) : (
                 filteredList.map((item) => {
                   const isEditing = editingNoteId === item.id;
-                  const dateDisplay = item.created_at ? new Date(item.created_at).toLocaleDateString('fa-IR', {
+                  const dateDisplay = new Date(item.created_at).toLocaleDateString('fa-IR', {
                     month: 'short',
                     day: 'numeric',
                     hour: '2-digit',
                     minute: '2-digit',
-                  }) : '';
+                  });
 
                   return (
                     <div
@@ -351,7 +344,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                           </a>
 
                           <a
-                            href={`https://wa.me/98${item.phone?.replace(/^0/, '') || ''}`}
+                            href={`https://wa.me/98${item.phone.replace(/^0/, '')}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="font-header px-3 py-1.5 rounded-lg bg-[#25D366] hover:bg-[#20ba5a] text-white font-semibold flex items-center gap-1.5 transition-colors shadow-2xs"

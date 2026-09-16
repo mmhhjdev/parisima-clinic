@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { X, Calendar, User, Phone, Sparkles, CheckCircle2, MessageSquare } from 'lucide-react';
 import { SERVICES } from '../data/clinicData';
-import { submitConsultation } from '../lib/supabase';
+import { saveLocalConsultation } from '../lib/supabase';
 
+// برای شناسایی تابع gtag در تایپ‌اسکریپت
 declare global {
   interface Window {
     gtag?: (...args: any[]) => void;
@@ -27,11 +28,10 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
   const [selectedService, setSelectedService] = useState(initialServiceId || '');
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
 
   const whatsappNumber = "989101646504";
   const whatsappDisplay = "0910-1646504";
-  const defaultMessage = encodeURIComponent("با سلام، جهت دریافت مشاوره و نوبت‌دهی در کلینیک پری‌سیما پیام می‌دهم.");
+  const defaultMessage = encodeURIComponent("باسلام، جهت دریافت مشاوره و نوبت‌دهی در کلینیک پری سیما پیام می‌دهم.");
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${defaultMessage}`;
 
   useEffect(() => {
@@ -39,46 +39,37 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
       setSelectedService(initialServiceId || '');
       setIsSubmitted(false);
       setError('');
-      setLoading(false);
     }
   }, [isOpen, initialServiceId]);
 
   if (!isOpen) return null;
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
     
+    // ولیدیشن خالی نبودن
     if (!fullName.trim() || !phone.trim()) {
       setError('لطفاً نام و شماره تماس خود را وارد کنید.');
       return;
     }
 
+    // ولیدیشن دقیق شماره موبایل ایران (۱۱ رقم با شروع ۰۹)
     const iranPhoneRegex = /^09\d{9}$/;
     if (!iranPhoneRegex.test(phone.trim())) {
       setError('لطفاً یک شماره موبایل معتبر (مثال: 09123456789) وارد کنید.');
       return;
     }
 
-    setLoading(true);
-
     try {
-      const serviceTitle = selectedService 
-        ? (SERVICES.find(s => s.id === selectedService)?.title || selectedService) 
-        : 'مشاوره عمومی';
-
-      const result = await submitConsultation({
-        patient_name: fullName.trim(),
+      saveLocalConsultation({
+        fullName: fullName.trim(),
         phone: phone.trim(),
-        doctor_name: 'تعیین نشده',
-        service_type: serviceTitle,
-        notes: 'ثبت شده از طریق فرم وب‌سایت',
+        serviceId: selectedService || 'تعیین نشده',
+        createdAt: new Date().toISOString(),
+        status: 'pending',
       });
 
-      if (!result.success) {
-        throw new Error(result.error || 'خطا در ثبت اطلاعات');
-      }
-
+      // ارسال رویداد ثبت لید به Google Analytics برای سئو
       if (typeof window !== 'undefined' && window.gtag) {
         window.gtag('event', 'generate_lead', {
           service_id: selectedService || 'general',
@@ -90,11 +81,9 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
       if (onConsultationSubmitted) {
         onConsultationSubmitted();
       }
-    } catch (err: any) {
-      console.error('Error saving consultation:', err);
-      setError(err.message ? `خطا: ${err.message}` : 'خطایی در ثبت درخواست رخ داد. لطفاً دوباره تلاش کنید.');
-    } finally {
-      setLoading(false);
+    } catch (err) {
+      console.error(err);
+      setError('خطایی در ثبت درخواست رخ داد.');
     }
   };
 
@@ -103,13 +92,12 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
     setPhone('');
     setIsSubmitted(false);
     setError('');
-    setLoading(false);
     onClose();
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in">
-      <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-100 font-sans text-right">
+      <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-100 font-sans">
         
         {/* Header */}
         <div className="bg-[#0F172A] text-white p-6 flex items-center justify-between">
@@ -119,13 +107,12 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
             </div>
             <div>
               <h3 className="font-header text-lg font-black">ثبت درخواست نوبت و مشاوره</h3>
-              <p className="text-xs text-slate-400 mt-0.5">کلینیک تخصصی پوست، مو و زیبایی پری‌سیما</p>
+              <p className="text-xs text-slate-400 mt-0.5">کلینیک تخصصی پوست، مو و زیبایی پری سیما</p>
             </div>
           </div>
           <button
             onClick={handleClose}
             className="p-2 rounded-full hover:bg-slate-800 text-slate-400 hover:text-white transition-colors cursor-pointer"
-            title="بستن"
           >
             <X className="w-5 h-5" />
           </button>
@@ -153,7 +140,7 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
             <div className="space-y-4">
               
               {/* WhatsApp Quick Section */}
-              <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-between gap-3">
+              <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-between gap-3 text-right">
                 <div className="flex items-center gap-2.5">
                   <div className="w-9 h-9 rounded-xl bg-[#25D366] text-white flex items-center justify-center shrink-0 shadow-xs">
                     <MessageSquare className="w-5 h-5" />
@@ -181,7 +168,7 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 {error && (
-                  <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-600 text-xs font-bold break-words">
+                  <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-600 text-xs font-bold">
                     {error}
                   </div>
                 )}
@@ -237,10 +224,9 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
 
                 <button
                   type="submit"
-                  disabled={loading}
-                  className="w-full py-3 mt-2 rounded-xl bg-[#1E3A8A] hover:bg-[#0F172A] text-white text-xs font-bold font-header transition-all shadow-md shadow-blue-900/20 active:scale-95 cursor-pointer disabled:opacity-50"
+                  className="w-full py-3 mt-2 rounded-xl bg-[#1E3A8A] hover:bg-[#0F172A] text-white text-xs font-bold font-header transition-all shadow-md shadow-blue-900/20 active:scale-95 cursor-pointer"
                 >
-                  {loading ? 'در حال ثبت...' : 'ثبت و ارسال درخواست'}
+                  ثبت و ارسال درخواست
                 </button>
               </form>
             </div>
