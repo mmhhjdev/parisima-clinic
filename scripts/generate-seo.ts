@@ -4,6 +4,9 @@
 import fs from 'fs';
 import path from 'path';
 import {
+  CLINIC_GEO,
+  CLINIC_HOURS,
+  CLINIC_POSTAL,
   LANGS,
   LANG_META,
   DEFAULT_LANG,
@@ -49,6 +52,26 @@ function stripHead(html: string) {
     .replace(/<meta\s+(name|property)="(description|keywords|robots|og:[^"]+|twitter:[^"]+)"[^>]*>\s*/gi, '')
     .replace(/<link\s+rel="canonical"[^>]*>\s*/gi, '')
     .replace(/<link\s+rel="alternate"[^>]*>\s*/gi, '');
+}
+
+// محتوای قابل خزش صفحه اصلی: نام، آدرس، تلفن، ساعت کاری و لینک مستقیم به مقالات.
+function homeBody(lang: Lang, home: string): string {
+  const c = CONTENT[lang].clinic;
+  const tel = `+98${c.phone1.replace(/^0/, '')}`;
+  const articles = CONTENT[lang].articles
+    .map((a) => `<li><a href="${articlePath(lang, a.slug)}">${esc(a.title)}</a></li>`)
+    .join('');
+  return `<main class="flex-1"><section class="max-w-3xl mx-auto px-4 py-10 font-sans text-sm leading-loose text-slate-700">
+<h1 class="font-header text-2xl font-black text-[#0F172A] mb-4">${esc(c.name)}</h1>
+<p>${esc(t(lang, 'seo.description'))}</p>
+<address class="not-italic mt-4">
+<div>${esc(c.address)}</div>
+<div><a href="tel:${tel}">${esc(c.phone1Display)}</a> · <a href="tel:+98${c.mobile1.replace(/^0/, '')}">${esc(c.mobile1Display)}</a></div>
+<div>${esc(c.workingHours)}</div>
+</address>
+<h2 class="font-header text-lg font-black text-[#0F172A] mt-8 mb-2">${esc(t(lang, 'article.allArticles'))}</h2>
+<ul class="list-disc pr-5">${articles}</ul>
+</section></main>`;
 }
 
 interface PageMeta {
@@ -138,14 +161,37 @@ function main() {
         {
           '@context': 'https://schema.org',
           '@type': 'MedicalClinic',
+          '@id': `${absoluteUrl(home)}#clinic`,
           name: content.clinic.name,
+          alternateName: content.clinic.shortName,
           url: absoluteUrl(home),
+          logo: absoluteUrl('/logo.png'),
+          image: absoluteUrl('/logo.png'),
           description: homeDesc,
           inLanguage: meta.htmlLang,
-          address: content.clinic.address,
+          medicalSpecialty: ['Dermatology', 'HairRestoration'],
+          telephone: CLINIC_POSTAL.telephone,
+          address: {
+            '@type': 'PostalAddress',
+            streetAddress: CLINIC_POSTAL.streetAddress,
+            addressLocality: CLINIC_POSTAL.addressLocality,
+            addressRegion: CLINIC_POSTAL.addressRegion,
+            addressCountry: CLINIC_POSTAL.addressCountry,
+          },
+          ...(CLINIC_GEO
+            ? { geo: { '@type': 'GeoCoordinates', latitude: CLINIC_GEO.latitude, longitude: CLINIC_GEO.longitude } }
+            : {}),
+          areaServed: { '@type': 'City', name: 'Tehran' },
+          openingHoursSpecification: CLINIC_HOURS.map((h) => ({
+            '@type': 'OpeningHoursSpecification',
+            dayOfWeek: h.days,
+            opens: h.opens,
+            closes: h.closes,
+          })),
+          employee: content.doctors.map((d) => ({ '@type': 'Physician', name: d.name, jobTitle: d.title })),
         },
       ],
-      bodyHtml: '',
+      bodyHtml: homeBody(lang, home),
     });
     written.push(writeFileSafe(home, homeHtml));
     sitemapEntries.push({ loc: absoluteUrl(home), alts: homeAlts });

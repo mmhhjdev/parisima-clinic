@@ -4,7 +4,7 @@ import type { Lang } from './config';
 export const STRINGS: Record<Lang, Record<string, string>> = {
   fa: {
     'seo.title': 'کلینیک زیبایی و درماتولوژی پری سیما | زعفرانیه تهران',
-    'seo.description': 'کلینیک تخصصی پوست، مو و زیبایی پری سیما در زعفرانیه تهران. ارائه خدمات حرفه‌ای کاشت مو، بوتاکس، فیلر لب، هایفوتراپی و درمان تخصصی بیماری‌های پوستی.',
+    'seo.description': 'کلینیک پری سیما در زعفرانیه تهران؛ خیابان ولیعصر، بالای پارک وی، سه‌راه زعفرانیه، ساختمان پزشکان زعفرانیه، طبقه ۲، واحد ۸. کلینیک تخصصی پوست، مو و زیبایی. ارائه خدمات حرفه‌ای کاشت مو، بوتاکس، فیلر لب، هایفوتراپی و درمان تخصصی بیماری‌های پوستی.',
     'seo.keywords': 'کلینیک زیبایی زعفرانیه, کاشت مو تهران, تزریق بوتاکس, تزریق فیلر, هایفوتراپی, کلینیک پری سیما, دکتر سید علی هجرتی, دکتر محمدجواد نخعی',
     'nav.promotions': 'فرصت‌های ویژه کلینیک', 'nav.services': 'خدمات تخصصی', 'nav.articles': 'مقالات تخصصی',
     'nav.contact': 'اطلاعات تماس و آدرس', 'nav.book': 'ثبت درخواست نوبت', 'nav.bookShort': 'نوبت‌دهی',
@@ -64,7 +64,7 @@ export const STRINGS: Record<Lang, Record<string, string>> = {
   },
   ar: {
     'seo.title': 'عيادة بري سيما للتجميل والأمراض الجلدية | زعفرانية طهران',
-    'seo.description': 'عيادة بري سيما المتخصصة في الجلد والشعر والتجميل بزعفرانية طهران. زراعة الشعر، البوتوكس، فيلر الشفاه، الهايفو والعلاج التخصصي للأمراض الجلدية على يد أطباء متخصصين.',
+    'seo.description': 'عيادة بري سيما بزعفرانية طهران: شارع ولي عصر، فوق حديقة وي، مفترق زعفرانية، مبنى أطباء زعفرانية، الطابق 2، الوحدة 8. عيادة متخصصة في الجلد والشعر والتجميل. زراعة الشعر، البوتوكس، فيلر الشفاه، الهايفو والعلاج التخصصي للأمراض الجلدية على يد أطباء متخصصين.',
     'seo.keywords': 'عيادة تجميل طهران, زراعة الشعر طهران, حقن البوتوكس, فيلر, هايفو, عيادة بري سيما, طبيب جلدية طهران, زعفرانية',
     'nav.promotions': 'عروض العيادة الخاصة', 'nav.services': 'خدماتنا المتخصصة', 'nav.articles': 'المقالات الطبية',
     'nav.contact': 'التواصل والعنوان', 'nav.book': 'طلب حجز موعد', 'nav.bookShort': 'حجز موعد',
@@ -123,7 +123,7 @@ export const STRINGS: Record<Lang, Record<string, string>> = {
   },
   en: {
     'seo.title': 'Pari Sima Cosmetic & Dermatology Clinic | Zafaraniyeh, Tehran',
-    'seo.description': 'Pari Sima is a specialized skin, hair and aesthetic clinic in Zafaraniyeh, Tehran. Hair transplant, Botox, lip fillers, HIFU and dermatology treatments by experienced doctors.',
+    'seo.description': 'Pari Sima Clinic, Zafaraniyeh, Tehran: Valiasr Street, above Vey Park, Zafaraniyeh Crossroad, Zafaraniyeh Physicians Building, 2nd Floor, Unit 8. A specialized skin, hair and aesthetic clinic. Hair transplant, Botox, lip fillers, HIFU and dermatology treatments by experienced doctors.',
     'seo.keywords': 'Tehran cosmetic clinic, hair transplant Tehran, Botox Tehran, dermal filler Tehran, HIFU Tehran, Pari Sima clinic, dermatologist Tehran, Zafaraniyeh clinic',
     'nav.promotions': 'Special Offers', 'nav.services': 'Our Services', 'nav.articles': 'Health Articles',
     'nav.contact': 'Contact & Location', 'nav.book': 'Book an Appointment', 'nav.bookShort': 'Book',

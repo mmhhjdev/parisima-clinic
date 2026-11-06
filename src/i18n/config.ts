@@ -15,6 +15,23 @@ export const homePath = (lang: Lang) => `${LANG_META[lang].prefix}/`;
 export const articlePath = (lang: Lang, slug: string) => `${LANG_META[lang].prefix}/articles/${slug}/`;
 export const absoluteUrl = (path: string) => `${SITE_URL}${path}`;
 
+// آدرس ساختاریافته کلینیک برای داده‌های ساختاریافته (JSON-LD) و سئوی محلی.
+export const CLINIC_POSTAL = {
+  streetAddress: 'Valiasr Street, above Vey Park, Zafaraniyeh Crossroad, Zafaraniyeh Physicians Building, 2nd Floor, Unit 8',
+  addressLocality: 'Zafaraniyeh',
+  addressRegion: 'Tehran',
+  addressCountry: 'IR',
+  telephone: '+982122753592',
+};
+
+// مختصات دقیق کلینیک (عرض و طول جغرافیایی) را از Google Maps بگیرید و اینجا قرار دهید.
+// تا وقتی مقدار داده نشده، فیلد geo در JSON-LD اضافه نمی‌شود.
+export const CLINIC_GEO: { latitude: number; longitude: number } | null = null;
+
+export const CLINIC_HOURS = [
+  { days: ['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday'], opens: '07:00', closes: '20:00' },
+];
+
 export interface Route {
   lang: Lang;
   articleSlug?: string;
