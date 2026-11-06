@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#E6F4FF"/>
+      <stop offset="0.5" stop-color="#F7FBFF"/>
+      <stop offset="1" stop-color="#D9F0FF"/>
+    </linearGradient>
+    <radialGradient id="orbA" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#7DD3FC" stop-opacity="0.75"/>
+      <stop offset="1" stop-color="#7DD3FC" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="orbB" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#0284C7" stop-opacity="0.32"/>
+      <stop offset="1" stop-color="#0284C7" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="center" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.95"/>
+      <stop offset="0.6" stop-color="#FFFFFF" stop-opacity="0.7"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="dots" width="44" height="44" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.8" fill="#0284C7" fill-opacity="0.22"/>
+    </pattern>
+    <linearGradient id="wave" x1="0" x2="1">
+      <stop offset="0" stop-color="#0284C7" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#0284C7" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#0284C7" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="soft" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="40"/>
+    </filter>
+  </defs>
+
+  <rect width="1920" height="1080" fill="url(#bg)"/>
+  <circle cx="180" cy="160" r="420" fill="url(#orbA)"/>
+  <circle cx="1780" cy="940" r="520" fill="url(#orbB)"/>
+  <circle cx="1520" cy="120" r="300" fill="url(#orbA)" opacity="0.7"/>
+  <rect width="1920" height="1080" fill="url(#dots)" opacity="0.9"/>
+
+  <!-- امواج نرم -->
+  <g fill="none" stroke="url(#wave)" stroke-width="2.5">
+    <path d="M0 720 C 320 640, 620 800, 960 720 S 1600 640, 1920 720"/>
+    <path d="M0 780 C 340 700, 660 860, 980 780 S 1620 700, 1920 780"/>
+    <path d="M0 840 C 360 760, 700 920, 1000 840 S 1640 760, 1920 840"/>
+    <path d="M0 300 C 300 240, 640 380, 960 300 S 1600 220, 1920 300"/>
+  </g>
+
+  <!-- نقش ساختار سلولی و شبکه‌ی ملایم در سمت راست -->
+  <g transform="translate(1560 540)" fill="none" stroke="#0284C7" stroke-opacity="0.16" stroke-width="2">
+    <circle r="150"/><circle r="250"/><circle r="350"/>
+    <ellipse rx="380" ry="120" transform="rotate(25)"/>
+    <ellipse rx="380" ry="120" transform="rotate(-25)"/>
+  </g>
+  <g fill="#0284C7" fill-opacity="0.35">
+    <circle cx="1560" cy="290" r="7"/><circle cx="1790" cy="470" r="5"/>
+    <circle cx="1330" cy="690" r="6"/><circle cx="1690" cy="790" r="9"/>
+    <circle cx="1460" cy="420" r="4"/><circle cx="1880" cy="620" r="4"/>
+  </g>
+  <g stroke="#0284C7" stroke-opacity="0.18" stroke-width="1.5">
+    <line x1="1560" y1="290" x2="1790" y2="470"/><line x1="1790" y1="470" x2="1690" y2="790"/>
+    <line x1="1330" y1="690" x2="1460" y2="420"/><line x1="1460" y1="420" x2="1560" y2="290"/>
+    <line x1="1690" y1="790" x2="1880" y2="620"/>
+  </g>
+
+  <!-- درخشش مرکزی برای خوانایی متن -->
+  <ellipse cx="960" cy="520" rx="900" ry="520" fill="url(#center)"/>
+</svg>

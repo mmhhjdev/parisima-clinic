@@ -13,9 +13,10 @@ import { AdminPanel } from './components/AdminPanel';
 import { Service } from './types';
 import { getLocalConsultations } from './lib/supabase';
 import { useI18n } from './i18n/LanguageProvider';
+import { ArticlePage } from './components/ArticlePage';
 
 export function App() {
-  const { dir, lang } = useI18n();
+  const { dir, lang, article } = useI18n();
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [selectedServiceId, setSelectedServiceId] = useState<string | undefined>(undefined);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
@@ -74,14 +75,18 @@ export function App() {
     <div className="min-h-screen bg-[#FAF9F6] text-[#0F172A] flex flex-col font-sans selection:bg-[#0284C7] selection:text-white" dir={dir} lang={lang}>
       <Navbar onOpenBooking={() => handleOpenBooking()} onOpenAdmin={() => setIsAdminOpen(true)} pendingCount={pendingCount} />
 
-      <main className="flex-1">
-        <Hero onOpenBooking={() => handleOpenBooking()} />
-        <PromotionsSection onOpenBooking={() => handleOpenBooking()} />
-        <ServicesSection onSelectServiceForBooking={handleSelectServiceForBooking} />
-        <ArticlesSection />
-        <ContactSection onOpenBooking={() => handleOpenBooking()} />
-        <FaqSection />
-      </main>
+      {article ? (
+        <ArticlePage article={article} onOpenBooking={() => handleOpenBooking()} />
+      ) : (
+        <main className="flex-1">
+          <Hero onOpenBooking={() => handleOpenBooking()} />
+          <PromotionsSection onOpenBooking={() => handleOpenBooking()} />
+          <ServicesSection onSelectServiceForBooking={handleSelectServiceForBooking} />
+          <ArticlesSection />
+          <ContactSection onOpenBooking={() => handleOpenBooking()} />
+          <FaqSection />
+        </main>
+      )}
 
       <div onClick={handleSecretTripleClick} className="cursor-default select-none">
         <Footer onOpenBooking={() => handleOpenBooking()} onOpenAdmin={() => setIsAdminOpen(true)} />

@@ -2,6 +2,7 @@ import React from 'react';
 import { Phone, MapPin, Calendar, Clock } from 'lucide-react';
 import Logo from './Logo';
 import { useI18n } from '../i18n/LanguageProvider';
+import { homePath } from '../i18n/config';
 
 interface FooterProps {
   onOpenBooking: () => void;
@@ -9,7 +10,8 @@ interface FooterProps {
 }
 
 export const Footer: React.FC<FooterProps> = ({ onOpenBooking }) => {
-  const { t, content } = useI18n();
+  const { t, content, lang } = useI18n();
+  const homeHref = homePath(lang);
   const clinic = content.clinic;
 
   return (
@@ -24,11 +26,11 @@ export const Footer: React.FC<FooterProps> = ({ onOpenBooking }) => {
           <div className="lg:col-span-3 space-y-3">
             <h4 className="font-header text-sm font-bold text-white border-b border-[#0284C7] pb-2 inline-block">{t('footer.quick')}</h4>
             <ul className="font-sans space-y-2 text-xs text-slate-400 font-light">
-              <li><a href="#home" className="hover:text-[#38BDF8] transition-colors">{t('footer.home')}</a></li>
-              <li><a href="#promotions" className="hover:text-[#38BDF8] transition-colors">{t('footer.doctors')}</a></li>
-              <li><a href="#services" className="hover:text-[#38BDF8] transition-colors">{t('footer.services')}</a></li>
-              <li><a href="#faq" className="hover:text-[#38BDF8] transition-colors">{t('footer.faq')}</a></li>
-              <li><a href="#contact" className="hover:text-[#38BDF8] transition-colors">{t('footer.contact')}</a></li>
+              <li><a href={`${homeHref}#home`} className="hover:text-[#38BDF8] transition-colors">{t('footer.home')}</a></li>
+              <li><a href={`${homeHref}#promotions`} className="hover:text-[#38BDF8] transition-colors">{t('footer.doctors')}</a></li>
+              <li><a href={`${homeHref}#services`} className="hover:text-[#38BDF8] transition-colors">{t('footer.services')}</a></li>
+              <li><a href={`${homeHref}#faq`} className="hover:text-[#38BDF8] transition-colors">{t('footer.faq')}</a></li>
+              <li><a href={`${homeHref}#contact`} className="hover:text-[#38BDF8] transition-colors">{t('footer.contact')}</a></li>
             </ul>
           </div>
 

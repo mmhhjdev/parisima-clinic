@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Phone, Calendar, Menu, X, Flame, MapPin, BookOpen } from 'lucide-react';
 import Logo from './Logo';
 import { useI18n } from '../i18n/LanguageProvider';
-import { LANGS, LANG_META } from '../i18n/config';
+import { LANGS, LANG_META, homePath } from '../i18n/config';
 
 interface NavbarProps {
   onOpenBooking: () => void;
@@ -12,6 +12,7 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking, onOpenAdmin }) => {
   const { t, lang, content, hrefFor } = useI18n();
+  const homeHref = homePath(lang);
   const clinic = content.clinic;
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -88,21 +89,21 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking, onOpenAdmin }) =>
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-          <a href="#home" className="flex items-center gap-3 shrink-0 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded-lg">
+          <a href={`${homeHref}#home`} className="flex items-center gap-3 shrink-0 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded-lg">
             <Logo size="md" textColor="dark" />
           </a>
 
           <div className="hidden lg:flex items-center gap-6 xl:gap-8 text-sm font-bold text-slate-800 font-header">
-            <a href="#promotions" className="hover:text-[#0284C7] transition-colors py-1 flex items-center gap-1.5 text-rose-600">
+            <a href={`${homeHref}#promotions`} className="hover:text-[#0284C7] transition-colors py-1 flex items-center gap-1.5 text-rose-600">
               <Flame className="w-4 h-4 text-rose-500 animate-pulse" />
               <span>{t('nav.promotions')}</span>
             </a>
-            <a href="#services" className={navLinkClass}>{t('nav.services')}</a>
-            <a href="#articles" className="hover:text-[#0284C7] transition-colors py-1 flex items-center gap-1.5">
+            <a href={`${homeHref}#services`} className={navLinkClass}>{t('nav.services')}</a>
+            <a href={`${homeHref}#articles`} className="hover:text-[#0284C7] transition-colors py-1 flex items-center gap-1.5">
               <BookOpen className="w-4 h-4 text-[#0284C7]" />
               <span>{t('nav.articles')}</span>
             </a>
-            <a href="#contact" className={navLinkClass}>{t('nav.contact')}</a>
+            <a href={`${homeHref}#contact`} className={navLinkClass}>{t('nav.contact')}</a>
           </div>
 
           <div className="hidden sm:flex items-center gap-3 font-header shrink-0">
@@ -138,16 +139,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking, onOpenAdmin }) =>
 
         {mobileMenuOpen && (
           <div className="sm:hidden bg-white border-b border-slate-200 px-4 pt-3 pb-6 space-y-3 mt-3 font-header">
-            <a href="#promotions" onClick={() => setMobileMenuOpen(false)} className="py-2 text-sm font-bold text-rose-600 border-b border-slate-100 flex items-center gap-2">
+            <a href={`${homeHref}#promotions`} onClick={() => setMobileMenuOpen(false)} className="py-2 text-sm font-bold text-rose-600 border-b border-slate-100 flex items-center gap-2">
               <Flame className="w-4 h-4 text-rose-500" />
               <span>{t('nav.promotions')}</span>
             </a>
-            <a href="#services" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-sm font-bold text-slate-800 border-b border-slate-100">{t('nav.services')}</a>
-            <a href="#articles" onClick={() => setMobileMenuOpen(false)} className="py-2 text-sm font-bold text-slate-800 border-b border-slate-100 flex items-center gap-2">
+            <a href={`${homeHref}#services`} onClick={() => setMobileMenuOpen(false)} className="block py-2 text-sm font-bold text-slate-800 border-b border-slate-100">{t('nav.services')}</a>
+            <a href={`${homeHref}#articles`} onClick={() => setMobileMenuOpen(false)} className="py-2 text-sm font-bold text-slate-800 border-b border-slate-100 flex items-center gap-2">
               <BookOpen className="w-4 h-4 text-[#0284C7]" />
               <span>{t('nav.articles')}</span>
             </a>
-            <a href="#contact" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-sm font-bold text-slate-800 border-b border-slate-100">{t('nav.contact')}</a>
+            <a href={`${homeHref}#contact`} onClick={() => setMobileMenuOpen(false)} className="block py-2 text-sm font-bold text-slate-800 border-b border-slate-100">{t('nav.contact')}</a>
             <div className="py-2 border-b border-slate-100">{langSwitch}</div>
             <div className="pt-2">
               <button

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Calendar, Phone, MessageSquare, MapPin, ShieldCheck, Award } from 'lucide-react';
 import { useI18n } from '../i18n/LanguageProvider';
+import { assetUrl } from '../lib/assets';
 
 interface HeroProps {
   onOpenBooking: () => void;
@@ -13,11 +14,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenBooking }) => {
   return (
     <section id="home" className="relative pt-16 pb-24 lg:pt-20 lg:pb-32 overflow-hidden">
       <div className="absolute inset-0 z-0">
-        <img
-          src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&q=80&w=1600"
-          alt={t('hero.imgAlt')}
-          className="w-full h-full object-cover object-center scale-105"
-        />
+        <div role="img" aria-label={t('hero.imgAlt')} className="w-full h-full bg-cover bg-center scale-105" style={{ backgroundImage: `url(${assetUrl('images/hero-bg.svg')})` }} />
         <div className="absolute inset-0 bg-gradient-to-b from-[#F0F9FF]/95 via-[#FFFFFF]/90 to-[#FFFFFF]/95" />
       </div>
       <div className="absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-slate-50 via-slate-50/80 to-transparent z-10 pointer-events-none" />

@@ -1,15 +1,12 @@
-import React, { useState } from 'react';
-import { BookOpen, Calendar, Clock, User, ArrowRight, X, ExternalLink } from 'lucide-react';
+import React from 'react';
+import { BookOpen, Calendar, Clock, User, ArrowRight } from 'lucide-react';
 import { useI18n } from '../i18n/LanguageProvider';
 import { assetUrl } from '../lib/assets';
 import { articlePath } from '../i18n/config';
-import { ArticleBody } from './ArticleBody';
-import type { Article } from '../types';
 
+// هر مقاله یک لینک واقعی به صفحه‌ی اختصاصی خودش است (برای کاربر و خزنده‌ها)
 export const ArticlesSection: React.FC = () => {
-  const { t, content, lang, article: routeArticle } = useI18n();
-  // اگر آدرس مستقیم یک مقاله باز شده باشد، همان مقاله در پنجره نمایش داده می‌شود
-  const [selected, setSelected] = useState<Article | null>(routeArticle ?? null);
+  const { t, content, lang } = useI18n();
 
   return (
     <section id="articles" className="py-16 sm:py-20 bg-white border-b border-slate-200">
@@ -25,10 +22,10 @@ export const ArticlesSection: React.FC = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {content.articles.map((article) => (
-            <div
+            <a
               key={article.id}
-              className="bg-[#F8FAFC] rounded-2xl overflow-hidden border border-slate-200 hover:border-[#0284C7] hover:shadow-lg transition-all flex flex-col justify-between group cursor-pointer"
-              onClick={() => setSelected(article)}
+              href={articlePath(lang, article.slug)}
+              className="bg-[#F8FAFC] rounded-2xl overflow-hidden border border-slate-200 hover:border-[#0284C7] hover:shadow-lg transition-all flex flex-col justify-between group"
             >
               <div>
                 <div className="relative h-48 w-full overflow-hidden bg-slate-100">
@@ -53,49 +50,10 @@ export const ArticlesSection: React.FC = () => {
                   {t('articles.read')} <ArrowRight className="w-3.5 h-3.5 rtl:rotate-180" />
                 </span>
               </div>
-            </div>
+            </a>
           ))}
         </div>
       </div>
-
-      {selected && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={() => setSelected(null)}>
-          <div
-            className="bg-white rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-100 p-6 sm:p-8 relative"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              onClick={() => setSelected(null)}
-              aria-label={t('articles.close')}
-              className="absolute top-6 end-6 p-2 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 transition-colors"
-            >
-              <X className="w-5 h-5" />
-            </button>
-            <span className="inline-block bg-[#F0F9FF] text-[#0284C7] text-xs font-bold px-3 py-1 rounded-md border border-[#BAE6FD] mb-3 font-header">{selected.category}</span>
-            <h2 className="font-header text-xl sm:text-2xl font-black text-[#0F172A] leading-snug pe-10">{selected.title}</h2>
-            <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500 my-4 font-sans border-y border-slate-100 py-3">
-              <span className="flex items-center gap-1 font-semibold text-slate-700"><User className="w-4 h-4 text-[#0284C7]" />{selected.author}</span>
-              <span>•</span>
-              <span>{selected.date}</span>
-              <span>•</span>
-              <span>{t('articles.readTime', { time: selected.readTime })}</span>
-            </div>
-            <div className="relative h-64 w-full rounded-2xl overflow-hidden mb-6">
-              <img src={assetUrl(selected.image)} alt={selected.title} className="w-full h-full object-cover" />
-            </div>
-            <ArticleBody content={selected.content} />
-            <div className="mt-8 pt-6 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3">
-              <a href={articlePath(lang, selected.slug)} className="font-header inline-flex items-center gap-1.5 text-xs font-bold text-[#0284C7] hover:underline">
-                <ExternalLink className="w-3.5 h-3.5" />
-                {t('articles.openPage')}
-              </a>
-              <button onClick={() => setSelected(null)} className="font-header bg-[#0284C7] text-white text-xs font-bold px-6 py-2.5 rounded-xl hover:bg-[#0284C7]/90 transition-colors">
-                {t('articles.close')}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </section>
   );
 };
