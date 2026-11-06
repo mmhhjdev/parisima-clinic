@@ -75,6 +75,76 @@ const articlesOv: Record<string, Partial<Article>> = {
   '8': { title: 'Who Is a Good Candidate for a Hair Transplant? A Patient Selection Guide', excerpt: 'Not everyone with hair loss is a candidate for transplantation. Learn the criteria and when medication should come first.', content: `Before deciding on a hair transplant, a specialist must carry out a careful assessment, because hair loss has many causes and not all types respond to transplantation in the same way.\n\n### Who is a good candidate?\n* People with hereditary hair loss in a male or female pattern that has progressed beyond what medication alone can manage.\n* People with healthy follicles and sufficient density in the donor area (the back and sides of the scalp).\n* People with realistic expectations who understand how permanent the result is.\n\n### Who should try other treatment first?\n* Hair loss caused by active scalp conditions such as alopecia areata or infections.\n* Hair loss linked to anemia, vitamin deficiency or thyroid disorders, which should be treated first.\n* Temporary shedding after childbirth or severe stress.\n\nIn these cases, mesotherapy and complementary treatments can help control shedding. Pari Sima Clinic will recommend the most suitable path after a specialist examination.`, category: 'Hair Transplant', author: 'Dr. Seyed Ali Hejrati', date: '6 Nov 2026', readTime: '5 min' },
   '9': { title: 'Fractional Laser for Skin: Uses, Benefits and Recovery', excerpt: 'Fractional laser stimulates collagen through controlled micro-columns and helps improve acne scars, marks and surface pigmentation.', content: `Fractional laser is one of the most modern dermatology techniques. Instead of destroying the entire skin surface, it creates many small, controlled columns of treatment among healthy tissue. As these columns heal, the body produces new collagen.\n\n### Main uses\n* Improving acne scars and sunken scars\n* Reducing the appearance of enlarged pores and rough texture\n* Lightening surface spots and pigmentation\n\n### Recovery\nSkin usually stays red and sensitive for 3 to 5 days. Use repairing creams, avoid sun exposure and follow your doctor’s instructions.\n\nThe number of sessions and laser intensity depend on your skin type and goals. Dr. Nakhaei will examine your skin before treatment and recommend the right plan.`, category: 'Dermatology', author: 'Dr. Mohammad Javad Nakhaei', date: '31 Oct 2026', readTime: '4 min' },
   '10': { title: 'Adult Acne: Hidden Causes and Evidence-Based Treatment', excerpt: 'Adult acne often has different causes than teenage acne. Identifying the cause is the key to effective treatment and preventing scars.', content: `Acne after the age of 25, known as adult acne, is often linked to hormonal changes, stress, diet and the use of unsuitable skincare products. That is why treatment should address the cause, not just suppress the breakouts.\n\n### Common causes\n* Hormonal fluctuations, especially in women before their period\n* Excess sebum and clogged pores\n* Unsuitable products and insufficient cleansing\n* Stress and lack of sleep\n\n### Specialized treatment\nTreatment may include topical creams and, when needed, oral medication. Controlled cleansing, mesotherapy and specialized protocols help reduce inflammation and prevent scarring.\n\nAvoid squeezing pimples, as this increases the risk of infection and lasting scars. Early treatment is the best way to protect your skin.`, category: 'Skin Conditions', author: 'Dr. Mohammad Javad Nakhaei', date: '25 Oct 2026', readTime: '4 min' },
+  '11': {
+    title: 'GLP-1 Weight-Loss Injections and Anesthesia Risk: Why You Must Tell Your Doctor',
+    excerpt: 'Weekly GLP-1 injections such as Ozempic, Wegovy and Mounjaro can slow stomach emptying and raise the risk of aspiration during anesthesia. Disclosing their use before surgery is essential.',
+    keywords: 'GLP-1, Ozempic, Wegovy, Mounjaro, anesthesia risk, aspiration, gastric emptying, pre-surgery fasting, patient safety',
+    content: `
+      Recently, a case was brought before the forensic medicine authority in which an anesthesiologist was found guilty. A patient was scheduled for a surgical procedure requiring general anesthesia. Before surgery, the patient was stable, all laboratory tests were normal, and both the internist and the anesthesiologist had confirmed that the patient was medically fit for the operation.
+
+      ### The question that came too late
+      Before the procedure began, the anesthesiologist asked the patient how many hours they had fasted. The patient replied that they had followed the instructions fully and had fasted for a full 10 hours. Once anesthesia was started, the patient developed aspiration (stomach contents entering the lungs) and a severe drop in blood oxygen. Resuscitation efforts were unsuccessful and the patient died.
+
+      That is when the situation became critical, because the patient's condition before surgery had been stable and the operation itself was not considered high-risk. A closer review of the patient's circumstances revealed what had happened.
+
+      ### The weight-loss drug the patient did not consider a medication
+      The patient was using a weekly injectable weight-loss medication from the GLP-1 receptor agonist group, such as Ozempic, Wegovy or Mounjaro. The patient had not mentioned it to the doctor, believing it was simply a slimming product rather than a medication for a chronic condition. The doctor, for their part, had not recorded its use in the medication history and had not asked about it.
+
+      The patient was still in the dose-escalation phase and was experiencing delayed gastric emptying, a side effect that is common in the early stages of these drugs. The medication had not been stopped before surgery. When anesthesia began and the stomach had not fully emptied, its contents moved upward, were aspirated into the lungs, and led to falling oxygen levels, acute respiratory failure and, ultimately, death.
+
+      ### What should have been done before surgery
+      Since this medication was used for weight loss rather than diabetes, stopping it one to two weeks before surgery should have been recommended. The patient should also have been advised to avoid eating for 24 hours before the procedure, while clear fluids could be permitted up to at least 6 hours before the usual fasting period.
+
+      Most importantly, a gastric ultrasound should have been performed to assess stomach contents and emptying. If residual food was present, the surgery should have been postponed, unless it was an emergency. In that case, the anesthesiologist must take the special precautions required for such situations.
+
+      ### An important message for patients and clinicians
+      These medications are now widely prescribed, and patients sometimes start them on their own. For this reason, anesthesia providers should ask every patient, whether male or female, about the use of these drugs, even if the patient has not mentioned them.
+
+      If you use GLP-1 medications, tell your doctor and anesthesia team before any procedure or anesthesia. Decisions about stopping or continuing the medication should only be made on your doctor's instructions, and you should never stop it on your own. As use of these drugs continues to grow, this case is unlikely to be the last.
+    `,
+    category: 'Anesthesia & Patient Safety',
+    author: 'Dr. Seyed Ali Hejrati',
+  },
+  '12': {
+    title: 'Can Warts Spread at the Gym? A Guide to Preventing Plantar Warts',
+    excerpt: 'Yes, plantar warts can spread in locker rooms, showers and around pools, and through shared items. Wearing sandals, using personal equipment and caring for your skin can greatly reduce the risk.',
+    keywords: 'plantar warts, gym warts, wart transmission, HPV, wart prevention, locker room, swimming pool, Zafaraniyeh dermatology',
+    content: `
+      Warts are caused by the human papillomavirus (HPV). Yes, warts can spread in gyms, especially plantar warts on the soles of the feet. However, transmission requires specific conditions, and good hygiene can significantly reduce the risk.
+
+      ### The virus and warm, damp environments
+      The HPV types that cause plantar warts are not highly contagious, but the virus can survive for some time in warm, damp environments such as locker rooms, showers and the areas around pools.
+
+      ### Main transmission routes at the gym
+      Transmission usually happens through direct skin contact with a contaminated surface. In a gym, the following surfaces can carry the virus:
+      * Locker room and shower floors
+      * Shared exercise mats, such as yoga mats
+      * Gym equipment
+
+      If your skin, especially on the soles of your feet, has a scratch or cut, the virus can enter the body through it and cause a wart.
+
+      ### Risk factors
+      * **Walking barefoot:** the most common route of plantar wart transmission, particularly in locker rooms, showers and around pools.
+      * **Sharing personal items:** towels, sandals or exercise mats used without proper protection.
+      * **Damaged skin:** cuts, scratches or cracks in the skin provide an entry point for the virus.
+
+      ### How to prevent warts
+      1. Always wear sandals. Never walk barefoot in locker rooms, showers or around pools.
+      2. Use your own items. Bring your own exercise mat, towel and sandals to the gym.
+      3. Clean surfaces. Before and after using shared equipment and mats, wipe them down with a damp cloth or a disinfectant spray.
+      4. Protect your skin. If you have a cut or scratch, cover it with a waterproof plaster before exercising.
+      5. Keep your feet dry. After exercising, dry your feet thoroughly and wear clean socks.
+      6. Avoid contact with other people's warts. Never touch a wart on someone else's skin.
+
+      ### About HPV types
+      Common skin warts, including plantar warts, are caused by low-risk HPV types. These are different from high-risk HPV types, which are spread sexually and can cause cancer, and the two should not be confused.
+
+      ### In summary
+      Wart transmission at the gym is possible, but by practicing good personal hygiene, wearing sandals and using your own equipment, you can greatly reduce your risk. If a wart is spreading or does not improve with home care, see a dermatologist for assessment and treatment.
+    `,
+    category: 'Dermatology',
+    author: 'Dr. Mohammad Javad Nakhaei',
+  },
 };
 
 export const EN: LocaleContent = {

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="glp1-title">
+  <title id="glp1-title">Weekly GLP-1 injection pen and stomach illustration</title>
+  <defs>
+    <linearGradient id="bg1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F0F9FF"/>
+      <stop offset="1" stop-color="#BAE6FD"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#bg1)"/>
+  <rect x="150" y="240" width="130" height="130" rx="22" fill="#0F172A"/>
+  <rect x="270" y="262" width="480" height="86" rx="40" fill="#0284C7"/>
+  <rect x="330" y="284" width="60" height="42" rx="8" fill="#0369A1"/>
+  <rect x="420" y="274" width="90" height="62" rx="10" fill="#FFFFFF"/>
+  <line x1="750" y1="305" x2="850" y2="305" stroke="#0F172A" stroke-width="8" stroke-linecap="round"/>
+  <path d="M 880 420 C 980 380 1080 430 1060 520 C 1040 610 930 630 890 570 C 855 520 800 470 880 420 Z" fill="#FECDD3" stroke="#E11D48" stroke-width="10"/>
+  <circle cx="930" cy="480" r="16" fill="#F97316"/>
+  <circle cx="975" cy="530" r="12" fill="#FACC15"/>
+  <circle cx="920" cy="545" r="10" fill="#22C55E"/>
+  <circle cx="1000" cy="170" r="70" fill="#FFFFFF" stroke="#0284C7" stroke-width="12"/>
+  <line x1="1000" y1="170" x2="1000" y2="125" stroke="#0F172A" stroke-width="10" stroke-linecap="round"/>
+  <line x1="1000" y1="170" x2="1035" y2="185" stroke="#0F172A" stroke-width="10" stroke-linecap="round"/>
+</svg>

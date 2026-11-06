@@ -47,6 +47,8 @@ export interface Article {
   date: string;
   readTime: string;
   image: string;
+  keywords?: string;
+  publishedAt?: string;
 }
 
 export interface ClinicInfo {
