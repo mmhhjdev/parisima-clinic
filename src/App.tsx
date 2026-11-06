@@ -12,22 +12,19 @@ import { AppointmentModal } from './components/AppointmentModal';
 import { AdminPanel } from './components/AdminPanel';
 import { Service } from './types';
 import { getLocalConsultations } from './lib/supabase';
+import { useI18n } from './i18n/LanguageProvider';
 
 export function App() {
+  const { dir, lang } = useI18n();
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [selectedServiceId, setSelectedServiceId] = useState<string | undefined>(undefined);
-  
   const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [pendingCount, setPendingCount] = useState(0);
 
-  // محاسبه تعداد درخواست‌های در انتظار
   const refreshPendingCount = useCallback(() => {
     try {
       const list = getLocalConsultations() || [];
-      const count = Array.isArray(list) 
-        ? list.filter(item => item && item.status === 'pending').length 
-        : 0;
-      setPendingCount(count);
+      setPendingCount(Array.isArray(list) ? list.filter((item) => item && item.status === 'pending').length : 0);
     } catch (error) {
       console.error('Error fetching consultations:', error);
       setPendingCount(0);
@@ -38,7 +35,7 @@ export function App() {
     refreshPendingCount();
   }, [refreshPendingCount]);
 
-  // ۱. میانبر کیبورد: Ctrl + Shift + A
+  // میانبر کیبورد پنل مدیریت: Ctrl + Shift + A
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const isAKey = e.key.toLowerCase() === 'a' || e.key === 'ش' || e.code === 'KeyA';
@@ -47,21 +44,17 @@ export function App() {
         setIsAdminOpen((prev) => !prev);
       }
     };
-
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // ۲. کلیک مخفی ۳ باره رو فوتر برای ورود به پنل
+  // کلیک مخفی ۴ باره روی فوتر برای ورود به پنل
   const handleSecretTripleClick = (e: React.MouseEvent) => {
-    if (e.detail === 4) {
-      setIsAdminOpen(true);
-    }
+    if (e.detail === 4) setIsAdminOpen(true);
   };
 
   const handleOpenBooking = (serviceId?: string) => {
-    const srvId = typeof serviceId === 'string' ? serviceId : undefined;
-    setSelectedServiceId(srvId);
+    setSelectedServiceId(typeof serviceId === 'string' ? serviceId : undefined);
     setIsBookingOpen(true);
   };
 
@@ -77,21 +70,10 @@ export function App() {
     }
   };
 
-  const handleConsultationSubmitted = () => {
-    refreshPendingCount();
-  };
-
   return (
-    <div className="min-h-screen bg-[#FAF9F6] text-[#0F172A] flex flex-col font-sans selection:bg-[#0284C7] selection:text-white" dir="rtl">
-      
-      {/* Navbar Header */}
-      <Navbar
-        onOpenBooking={() => handleOpenBooking()}
-        onOpenAdmin={() => setIsAdminOpen(true)}
-        pendingCount={pendingCount}
-      />
+    <div className="min-h-screen bg-[#FAF9F6] text-[#0F172A] flex flex-col font-sans selection:bg-[#0284C7] selection:text-white" dir={dir} lang={lang}>
+      <Navbar onOpenBooking={() => handleOpenBooking()} onOpenAdmin={() => setIsAdminOpen(true)} pendingCount={pendingCount} />
 
-      {/* Main Content */}
       <main className="flex-1">
         <Hero onOpenBooking={() => handleOpenBooking()} />
         <PromotionsSection onOpenBooking={() => handleOpenBooking()} />
@@ -101,30 +83,20 @@ export function App() {
         <FaqSection />
       </main>
 
-      {/* Footer */}
       <div onClick={handleSecretTripleClick} className="cursor-default select-none">
-        <Footer
-          onOpenBooking={() => handleOpenBooking()}
-          onOpenAdmin={() => setIsAdminOpen(true)}
-        />
+        <Footer onOpenBooking={() => handleOpenBooking()} onOpenAdmin={() => setIsAdminOpen(true)} />
       </div>
 
-      {/* Floating Action Buttons */}
       <FloatingActions onOpenBooking={() => handleOpenBooking()} />
 
-      {/* Modals */}
       <AppointmentModal
         isOpen={isBookingOpen}
         onClose={handleCloseBooking}
         initialServiceId={selectedServiceId}
-        onConsultationSubmitted={handleConsultationSubmitted}
+        onConsultationSubmitted={refreshPendingCount}
       />
 
-      <AdminPanel
-        isOpen={isAdminOpen}
-        onClose={() => setIsAdminOpen(false)}
-        onRefreshStats={refreshPendingCount}
-      />
+      <AdminPanel isOpen={isAdminOpen} onClose={() => setIsAdminOpen(false)} onRefreshStats={refreshPendingCount} />
     </div>
   );
 }

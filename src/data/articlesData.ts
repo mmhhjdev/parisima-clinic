@@ -1,26 +1,5 @@
-export interface Article {
-  id: string;
-  title: string;
-  slug: string;
-  excerpt: string;
-  content: string;
-  category: string;
-  author: string;
-  date: string;
-  readTime: string;
-  image: string;
-}
-
-// تابع استاندارد برای ساخت مسیر دقیق عکس‌ها در لوکال و گیت‌هاب پیج (سازگار با Base URL)
-const getAssetPath = (imgPath: string) => {
-  const cleanBase = import.meta.env.BASE_URL.endsWith('/') 
-    ? import.meta.env.BASE_URL 
-    : `${import.meta.env.BASE_URL}/`;
-    
-  const cleanPath = imgPath.startsWith('/') ? imgPath.slice(1) : imgPath;
-  
-  return `${cleanBase}${cleanPath}`;
-};
+import type { Article } from '../types';
+export type { Article };
 
 export const ARTICLES: Article[] = [
   {
@@ -42,7 +21,7 @@ export const ARTICLES: Article[] = [
     author: 'دکتر سید علی هجرتی',
     date: '۳ شهریور ۱۴۰۵',
     readTime: '۴ دقیقه',
-    image: getAssetPath('images/hair-transplant-aftercare.webp')
+    image: '/images/hair-transplant-aftercare.webp'
   },
   {
     id: '2',
@@ -64,7 +43,7 @@ export const ARTICLES: Article[] = [
     author: 'دکتر سید علی هجرتی',
     date: '۲۸ مرداد ۱۴۰۵',
     readTime: '۵ دقیقه',
-    image: getAssetPath('images/botox-vs-filler.webp')
+    image: '/images/botox-vs-filler.webp'
   },
   {
     id: '3',
@@ -85,7 +64,7 @@ export const ARTICLES: Article[] = [
     author: 'دکتر سید علی هجرتی',
     date: '۱۵ مرداد ۱۴۰۵',
     readTime: '۳ دقیقه',
-    image: getAssetPath('images/open-pores-treatment.webp')
+    image: '/images/open-pores-treatment.webp'
   },
   {
     id: '4',
@@ -102,7 +81,7 @@ export const ARTICLES: Article[] = [
     author: 'دکتر سید علی هجرتی',
     date: '۱۰ مرداد ۱۴۰۵',
     readTime: '۴ دقیقه',
-    image: getAssetPath('images/mesotherapy-usefull-article.webp')
+    image: '/images/mesotherapy-usefull-article.webp'
   },
   {
     id: '5',
@@ -121,7 +100,7 @@ export const ARTICLES: Article[] = [
     author: 'دکتر سید علی هجرتی',
     date: '۲ مرداد ۱۴۰۵',
     readTime: '۴ دقیقه',
-    image: getAssetPath('images/hifu-without-heart-article.webp')
+    image: '/images/hifu-without-heart-article.webp'
   },
   {
     id: '7',
@@ -140,6 +119,83 @@ export const ARTICLES: Article[] = [
     author: 'دکتر سید علی هجرتی',
     date: '۱۸ تیر ۱۴۰۵',
     readTime: '۴ دقیقه',
-    image: getAssetPath('images/filler-and-lip-article.webp')
+    image: '/images/filler-and-lip-article.webp'
+  },
+
+  {
+    id: '8',
+    title: 'چه کسانی برای کاشت مو مناسب هستند؟ راهنمای انتخاب بیمار مناسب',
+    slug: 'who-is-a-candidate-for-hair-transplant',
+    excerpt: 'نه هر فردی با ریزش مو کاندیدای کاشت است. در این مقاله شرایط مناسب بودن برای کاشت مو و مواردی که ابتدا نیاز به درمان دارویی دارند را بررسی می‌کنیم.',
+    content: `
+      پیش از هر تصمیمی برای کاشت مو، ارزیابی دقیق توسط پزشک متخصص ضروری است. ریزش مو علل متفاوتی دارد و همه انواع آن پاسخ یکسانی به کاشت نمی‌دهند.
+
+      ### چه کسانی کاندیدای مناسب کاشت مو هستند؟
+      * افرادی که ریزش ارثی الگوی مردانه یا زنانه دارند و ریزش‌شان به مرحله‌ای رسیده که درمان دارویی به تنهایی کافی نیست.
+      * کسانی که در ناحیه دهنده (پشت و کناره‌های سر) ریشه‌های سالم و تراکم کافی دارند.
+      * افرادی که انتظارات واقع‌بینانه دارند و از ماندگاری نتیجه پس از عمل آگاه هستند.
+
+      ### چه کسانی ابتدا باید درمان دیگری را امتحان کنند؟
+      * ریزش ناشی از بیماری‌های فعال پوست سر مانند آلوپسی آره‌آتا یا عفونت‌ها که باید ابتدا درمان شوند.
+      * ریزش ناشی از کم‌خونی، کمبود ویتامین یا اختلالات تیروئید.
+      * ریزش موقت پس از زایمان یا استرس شدید.
+
+      در این موارد مزوتراپی مو و درمان‌های تکمیلی می‌توانند به کنترل ریزش کمک کنند. کلینیک پری سیما با معاینه تخصصی، مناسب‌ترین مسیر درمانی را برای شما مشخص می‌کند.
+    `,
+    category: 'کاشت مو',
+    author: 'دکتر سید علی هجرتی',
+    date: '۱۵ آبان ۱۴۰۵',
+    readTime: '۵ دقیقه',
+    image: '/images/services/hair-transplant.webp'
+  },
+  {
+    id: '9',
+    title: 'لیزر فرکشنال پوست؛ کاربردها، مزایا و دوره بهبودی',
+    slug: 'fractional-laser-skin-guide',
+    excerpt: 'لیزر فرکشنال با ایجاد میکروستون‌های کنترل‌شده، بازسازی کلاژن را تحریک می‌کند و برای بهبود اسکار، جای جوش و لک‌های سطحی کاربرد دارد.',
+    content: `
+      لیزر فرکشنال یکی از روش‌های مدرن درماتولوژی است که به جای تخریب کل سطح پوست، تعداد زیادی ستون‌های کوچک و کنترل‌شده از بافت سالم ایجاد می‌کند. بدن برای ترمیم این ستون‌ها، کلاژن جدید می‌سازد.
+
+      ### کاربردهای اصلی لیزر فرکشنال
+      * بهبود جای جوش و اسکارهای فرورفته
+      * کاهش ظاهر منافذ باز و ناهمواری سطح پوست
+      * روشن‌سازی لک‌ها و تیرگی‌های سطحی
+      * بهبود بافت و شفافیت کلی پوست
+
+      ### دوره بهبودی
+      معمولاً پوست تا ۳ تا ۵ روز قرمز و حساس است. استفاده از کرم‌های ترمیم‌کننده، پرهیز از آفتاب و رعایت دستورهای پزشک در این مدت بسیار مهم است.
+
+      تعداد جلسات و شدت لیزر بسته به نوع پوست و هدف درمان تعیین می‌شود. دکتر نخعی پیش از شروع درمان، پوست شما را معاینه و برنامه مناسب را پیشنهاد می‌دهد.
+    `,
+    category: 'درماتولوژی',
+    author: 'دکتر محمدجواد نخعی',
+    date: '۱۰ آبان ۱۴۰۵',
+    readTime: '۴ دقیقه',
+    image: '/images/services/laser-treatment.webp'
+  },
+  {
+    id: '10',
+    title: 'آکنه بزرگسالان؛ علل پنهان و روش‌های درمان علمی',
+    slug: 'adult-acne-causes-and-treatment',
+    excerpt: 'جوش‌های بزرگسالی معمولاً ریشه‌های متفاوتی نسبت به نوجوانی دارند. شناخت علت، کلید درمان موثر و جلوگیری از ایجاد جای جوش است.',
+    content: `
+      آکنه پس از ۲۵ سالگی که به آن آکنه بزرگسالان گفته می‌شود، اغلب با تغییرات هورمونی، استرس، رژیم غذایی و استفاده از لوازم آرایشی نامناسب در ارتباط است. به همین دلیل درمان باید بر اساس علت باشد، نه فقط سرکوب جوش.
+
+      ### عوامل شایع
+      * نوسانات هورمونی، به‌ویژه در خانم‌ها پیش از قاعدگی
+      * ترشح بیش از حد چربی پوست و انسداد منافذ
+      * استفاده از محصولات نامناسب و پاکسازی ناکافی
+      * استرس و خواب ناکافی
+
+      ### روش‌های درمان تخصصی
+      درمان دارویی شامل داروهای موضعی و در موارد لازم خوراکی است. در کنار آن، پاکسازی کنترل‌شده، مزوتراپی و پروتکل‌های تخصصی به کاهش التهاب و جلوگیری از جای جوش کمک می‌کنند.
+
+      توصیه می‌شود جوش‌ها را فشار ندهید؛ این کار احتمال عفونت و جای جوش ماندگار را افزایش می‌دهد. درمان زودهنگام، بهترین راه حفظ سلامت پوست است.
+    `,
+    category: 'بیماری‌های پوست',
+    author: 'دکتر محمدجواد نخعی',
+    date: '۳ آبان ۱۴۰۵',
+    readTime: '۴ دقیقه',
+    image: '/images/services/acne-treatment.webp'
   },
 ];

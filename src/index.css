@@ -40,3 +40,12 @@ button[class*="bg-blue-900"] svg,
 button[class*="bg-slate-900"] svg {
   color: #7dd3fc !important; /* آبی یخی ملایم و هماهنگ */
 }
+/* 5. فونت مناسب هر زبان (عربی: Almarai، انگلیسی: Inter) */
+html[lang='ar'] {
+  --font-sans: 'Almarai', 'Vazirmatn', system-ui, sans-serif;
+  --font-header: 'Almarai', sans-serif;
+}
+html[lang='en'] {
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-header: 'Inter', system-ui, sans-serif;
+}
