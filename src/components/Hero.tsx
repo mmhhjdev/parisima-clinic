@@ -1,77 +1,98 @@
-import React from 'react';
-import { Calendar, Phone, MessageSquare, MapPin, ShieldCheck, Award } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Calendar, Phone, MapPin, ShieldCheck, Award, MessageSquare } from 'lucide-react';
 import { useI18n } from '../i18n/LanguageProvider';
 import { assetUrl } from '../lib/assets';
+import { BRAND_TAG } from '../i18n/config';
 
 interface HeroProps {
   onOpenBooking: () => void;
 }
 
+// بنر تمام‌عرض (Full-width hero banner): تصویر پس‌زمینه کامل، متن در سمت شروع (راست در RTL)
 export const Hero: React.FC<HeroProps> = ({ onOpenBooking }) => {
   const { t, content } = useI18n();
   const clinic = content.clinic;
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setReady(true));
+    return () => cancelAnimationFrame(id);
+  }, []);
+
+  const reveal = (delay: string) =>
+    `transition-all duration-700 ease-out ${delay} ${ready ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`;
 
   return (
-    <section id="home" className="relative pt-16 pb-24 lg:pt-20 lg:pb-32 overflow-hidden">
-      <div className="absolute inset-0 z-0">
-        <div role="img" aria-label={t('hero.imgAlt')} className="w-full h-full bg-cover bg-center scale-105" style={{ backgroundImage: `url(${assetUrl('images/hero-bg.svg')})` }} />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#F0F9FF]/95 via-[#FFFFFF]/90 to-[#FFFFFF]/95" />
-      </div>
-      <div className="absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-slate-50 via-slate-50/80 to-transparent z-10 pointer-events-none" />
+    <section id="home" className="relative isolate overflow-hidden min-h-[560px] sm:min-h-[600px] lg:min-h-[680px] flex items-center bg-[#082F49]">
+      {/* تصویر پس‌زمینه */}
+      <img
+        src={assetUrl('images/hero-clinic-blue.webp')}
+        alt={`${t('hero.imgAlt')} | ${BRAND_TAG}`}
+        width={1829}
+        height={860}
+        fetchPriority="high"
+        className="absolute inset-0 -z-20 h-full w-full object-cover object-[60%_center] saturate-150"
+      />
+      {/* لایه‌ی تیره‌ی شفاف از سمت راست: متن سفید خوانا و تصویر پررنگ و شفاف در سمت چپ */}
+      <div className="absolute inset-0 -z-10 bg-gradient-to-l from-[#082F49]/92 via-[#0C4A6E]/70 to-[#0C4A6E]/15" />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-t from-[#082F49]/60 via-transparent to-transparent" />
+      {/* درخشش ظریف */}
+      <div className="pointer-events-none absolute -top-24 -left-24 -z-10 h-80 w-80 rounded-full bg-sky-400/15 blur-3xl" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20">
-        <div className="flex justify-center mb-6">
-          <div className="inline-flex items-center gap-2 bg-white px-4 py-1.5 rounded-full border border-[#BAE6FD] shadow-xs text-xs font-semibold text-[#0284C7] font-header">
-            <Award className="w-3.5 h-3.5 text-[#0284C7]" />
+      <div className="relative mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10 py-20 lg:py-28">
+        <div className="max-w-xl lg:max-w-2xl text-right space-y-6">
+          <div className={`inline-flex items-center gap-2 rounded-full border border-sky-200/40 bg-white/10 px-4 py-1.5 text-xs sm:text-sm font-semibold text-sky-100 backdrop-blur-sm font-header ${reveal('')}`}>
+            <Award className="h-3.5 w-3.5 text-sky-200" />
             <span>{t('hero.pill')}</span>
           </div>
-        </div>
 
-        <div className="text-center max-w-3xl mx-auto space-y-5">
-          <h1 className="font-header text-3xl sm:text-4xl lg:text-5xl font-black text-[#0F172A] tracking-tight leading-tight">
-            {t('hero.title')} <span className="font-header font-black text-[#0284C7]">{t('hero.titleAccent')}</span>
+          <h1 className={`font-header font-black text-white leading-[1.25] tracking-tight text-[1.9rem] sm:text-4xl lg:text-[3.25rem] ${reveal('delay-100')}`}>
+            {t('hero.title')}{' '}
+            <span className="block mt-2 text-sky-200 drop-shadow-sm">{t('hero.titleAccent')}</span>
           </h1>
 
-          <p className="font-sans text-base sm:text-lg text-slate-600 font-normal leading-relaxed max-w-2xl mx-auto">
+          <p className={`font-sans text-sm sm:text-lg text-sky-50/90 leading-loose max-w-xl ml-auto lg:ml-0 ${reveal('delay-200')}`}>
             {t('hero.subtitle')}
           </p>
 
-          <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 font-header">
+          <div className={`pt-2 flex flex-col sm:flex-row items-stretch sm:items-center justify-start gap-3 sm:gap-4 font-header ${reveal('delay-300')}`}>
             <button
               onClick={() => onOpenBooking()}
-              className="w-full sm:w-auto px-8 py-3.5 rounded-xl text-sm font-bold text-white bg-[#1E3A8A] hover:bg-[#0284C7] active:scale-95 transition-all shadow-md shadow-blue-950/20 flex items-center justify-center gap-2.5 cursor-pointer group"
+              className="group flex w-full sm:w-auto items-center justify-center gap-2.5 rounded-xl bg-white px-7 py-3.5 text-sm sm:text-base font-bold text-[#0C4A6E] shadow-lg shadow-sky-950/30 transition-all hover:bg-sky-100 active:scale-95 cursor-pointer"
             >
-              <Calendar className="w-4 h-4 text-sky-300 group-hover:text-white transition-colors" />
+              <Calendar className="h-4 w-4 text-[#0369A1] group-hover:scale-110 transition-transform" />
               <span>{t('hero.book')}</span>
             </button>
 
             <a
               href={`tel:${clinic.phone1}`}
-              className="w-full sm:w-auto px-6 py-3.5 rounded-xl text-sm font-semibold text-[#1E3A8A] bg-white border border-[#CBD5E1] hover:border-[#0284C7] hover:bg-[#F0F9FF] transition-all flex items-center justify-center gap-2 shadow-xs"
+              className="flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl border border-white/40 bg-white/10 px-6 py-3.5 text-sm sm:text-base font-semibold text-white backdrop-blur-sm transition-all hover:bg-white/20"
             >
-              <Phone className="w-4 h-4 text-[#0284C7]" />
-              <span>{t('hero.callPrefix')} <strong className="font-mono" dir="ltr">{clinic.phone1Display}</strong></span>
+              <Phone className="h-4 w-4 text-sky-200" />
+              <span>
+                {t('hero.callPrefix')} <strong className="font-mono" dir="ltr">{clinic.phone1Display}</strong>
+              </span>
             </a>
           </div>
 
-          <div className="pt-2 flex items-center justify-center gap-2 text-xs text-slate-500 font-sans">
-            <MapPin className="w-3.5 h-3.5 text-[#0284C7]" />
+          <div className={`flex items-center justify-start gap-2 text-xs sm:text-sm text-sky-100/90 font-sans ${reveal('delay-300')}`}>
+            <MapPin className="h-3.5 w-3.5 text-sky-200 shrink-0" />
             <span>{clinic.addressShort}</span>
           </div>
-        </div>
 
-        <div className="mt-12 grid grid-cols-2 md:grid-cols-3 gap-4 max-w-2xl mx-auto pt-6 border-t border-slate-200/80 font-header text-xs sm:text-sm text-slate-700">
-          <div className="flex items-center justify-center gap-2 bg-white/90 py-2.5 px-4 rounded-xl border border-slate-200 shadow-xs">
-            <ShieldCheck className="w-4 h-4 text-[#0284C7]" />
-            <span>{t('hero.f1')}</span>
-          </div>
-          <div className="flex items-center justify-center gap-2 bg-white/90 py-2.5 px-4 rounded-xl border border-slate-200 shadow-xs">
-            <Award className="w-4 h-4 text-[#0284C7]" />
-            <span>{t('hero.f2')}</span>
-          </div>
-          <div className="col-span-2 md:col-span-1 flex items-center justify-center gap-2 bg-white/90 py-2.5 px-4 rounded-xl border border-slate-200 shadow-xs">
-            <MessageSquare className="w-4 h-4 text-[#0284C7]" />
-            <span>{t('hero.f3')}</span>
+          <div className={`grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3 pt-4 max-w-2xl font-header text-xs sm:text-sm text-white ${reveal('delay-400')}`}>
+            <div className="flex items-center gap-2 rounded-xl border border-white/15 bg-white/10 px-3.5 py-2.5 backdrop-blur-sm">
+              <ShieldCheck className="h-4 w-4 shrink-0 text-sky-200" />
+              <span>{t('hero.f1')}</span>
+            </div>
+            <div className="flex items-center gap-2 rounded-xl border border-white/15 bg-white/10 px-3.5 py-2.5 backdrop-blur-sm">
+              <Award className="h-4 w-4 shrink-0 text-sky-200" />
+              <span>{t('hero.f2')}</span>
+            </div>
+            <div className="flex items-center gap-2 rounded-xl border border-white/15 bg-white/10 px-3.5 py-2.5 backdrop-blur-sm">
+              <MessageSquare className="h-4 w-4 shrink-0 text-sky-200" />
+              <span>{t('hero.f3')}</span>
+            </div>
           </div>
         </div>
       </div>

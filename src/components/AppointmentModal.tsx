@@ -83,7 +83,7 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({ isOpen, onCl
       <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-100 font-sans">
         <div className="bg-[#0F172A] text-white p-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-[#0284C7]/20 text-[#38BDF8]">
+            <div className="p-2.5 rounded-xl bg-[#0369A1]/20 text-[#38BDF8]">
               <Calendar className="w-6 h-6" />
             </div>
             <div>
@@ -104,7 +104,7 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({ isOpen, onCl
               </div>
               <h4 className="font-header text-xl font-bold text-slate-800">{t('modal.okTitle')}</h4>
               <p className="text-xs text-slate-500 max-w-xs mx-auto leading-relaxed">{t('modal.okText')}</p>
-              <button onClick={handleClose} className="mt-4 px-6 py-2.5 rounded-xl bg-[#1E3A8A] text-white text-xs font-bold font-header hover:bg-[#0F172A] transition-colors cursor-pointer">
+              <button onClick={handleClose} className="mt-4 px-6 py-2.5 rounded-xl bg-[#0C4A6E] text-white text-xs font-bold font-header hover:bg-[#0F172A] transition-colors cursor-pointer">
                 {t('modal.close')}
               </button>
             </div>
@@ -132,7 +132,7 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({ isOpen, onCl
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-4">
-                {error && <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-600 text-xs font-bold">{error}</div>}
+                {error && <div className="p-3 rounded-xl bg-sky-50 border border-sky-200 text-sky-700 text-xs font-bold">{error}</div>}
 
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1.5 font-header">{t('modal.name')}</label>
@@ -143,7 +143,7 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({ isOpen, onCl
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
                       placeholder={t('modal.namePh')}
-                      className="w-full ps-9 pe-3 py-2.5 rounded-xl border border-slate-200 text-xs text-slate-800 focus:outline-none focus:border-[#0284C7] focus:ring-1 focus:ring-[#0284C7]"
+                      className="w-full ps-9 pe-3 py-2.5 rounded-xl border border-slate-200 text-xs text-slate-800 focus:outline-none focus:border-[#0369A1] focus:ring-1 focus:ring-[#0369A1]"
                     />
                   </div>
                 </div>
@@ -159,7 +159,7 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({ isOpen, onCl
                       placeholder="09123456789"
                       maxLength={11}
                       dir="ltr"
-                      className="w-full ps-9 pe-3 py-2.5 rounded-xl border border-slate-200 text-xs text-slate-800 focus:outline-none focus:border-[#0284C7] focus:ring-1 focus:ring-[#0284C7] font-mono"
+                      className="w-full ps-9 pe-3 py-2.5 rounded-xl border border-slate-200 text-xs text-slate-800 focus:outline-none focus:border-[#0369A1] focus:ring-1 focus:ring-[#0369A1] font-mono"
                     />
                   </div>
                 </div>
@@ -171,7 +171,7 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({ isOpen, onCl
                     <select
                       value={selectedService}
                       onChange={(e) => setSelectedService(e.target.value)}
-                      className="w-full ps-9 pe-3 py-2.5 rounded-xl border border-slate-200 text-xs text-slate-800 focus:outline-none focus:border-[#0284C7] bg-white cursor-pointer"
+                      className="w-full ps-9 pe-3 py-2.5 rounded-xl border border-slate-200 text-xs text-slate-800 focus:outline-none focus:border-[#0369A1] bg-white cursor-pointer"
                     >
                       <option value="">{t('modal.serviceNone')}</option>
                       {content.services.map((srv) => (
@@ -181,7 +181,7 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({ isOpen, onCl
                   </div>
                 </div>
 
-                <button type="submit" className="w-full py-3 mt-2 rounded-xl bg-[#1E3A8A] hover:bg-[#0F172A] text-white text-xs font-bold font-header transition-all shadow-md shadow-blue-900/20 active:scale-95 cursor-pointer">
+                <button type="submit" className="w-full py-3 mt-2 rounded-xl bg-[#0C4A6E] hover:bg-[#0F172A] text-white text-xs font-bold font-header transition-all shadow-md shadow-blue-900/20 active:scale-95 cursor-pointer">
                   {t('modal.submit')}
                 </button>
               </form>

@@ -83,7 +83,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 placeholder="مثال: علی محمدی"
-                className="w-full pr-9 pl-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-[#0284C7] focus:ring-1 focus:ring-[#0284C7] text-xs"
+                className="w-full pr-9 pl-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-[#0369A1] focus:ring-1 focus:ring-[#0369A1] text-xs"
               />
             </div>
           </div>
@@ -99,14 +99,14 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="09123456789"
                 maxLength={11}
-                className="w-full pr-9 pl-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-[#0284C7] focus:ring-1 focus:ring-[#0284C7] text-xs font-mono text-right dir-ltr"
+                className="w-full pr-9 pl-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-[#0369A1] focus:ring-1 focus:ring-[#0369A1] text-xs font-mono text-right dir-ltr"
               />
             </div>
           </div>
 
           <button
             type="submit"
-            className="w-full bg-[#1E3A8A] hover:bg-[#0F172A] text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2 text-xs font-header shadow-md mt-2 cursor-pointer"
+            className="w-full bg-[#0C4A6E] hover:bg-[#0F172A] text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2 text-xs font-header shadow-md mt-2 cursor-pointer"
           >
             <Send className="w-4 h-4" />
             <span>ثبت نوبت در سیستم</span>

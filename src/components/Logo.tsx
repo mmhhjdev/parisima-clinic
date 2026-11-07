@@ -21,7 +21,7 @@ export const Logo: React.FC<LogoProps> = ({ size = 'md', textColor = 'dark', sho
       <div className="flex flex-col text-start">
         <span className={`font-header font-black leading-tight ${titleSizes[size]} ${isDark ? 'text-[#0F172A]' : 'text-white'}`}>
           {t('logo.name1')}{' '}
-          <span className="font-header font-black text-[#0284C7]">{t('logo.name2')}</span>
+          <span className="font-header font-black text-[#0369A1]">{t('logo.name2')}</span>
         </span>
         {showSubtitle && (
           <span className={`font-header font-bold ${subtitleSizes[size]} ${isDark ? 'text-slate-500' : 'text-slate-300'} mt-0.5`}>

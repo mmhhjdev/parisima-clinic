@@ -31,7 +31,7 @@ export const FloatingActions: React.FC<FloatingActionsProps> = ({ onOpenBooking 
       </a>
       <a
         href={`tel:${content.clinic.phone1}`}
-        className="w-12 h-12 rounded-full bg-[#1E3A8A] hover:bg-[#0F172A] text-white flex items-center justify-center shadow-lg shadow-blue-900/30 transition-all hover:scale-110 active:scale-95"
+        className="w-12 h-12 rounded-full bg-[#0C4A6E] hover:bg-[#0F172A] text-white flex items-center justify-center shadow-lg shadow-blue-900/30 transition-all hover:scale-110 active:scale-95"
         title={t('float.call')}
         aria-label={t('float.call')}
       >
@@ -39,7 +39,7 @@ export const FloatingActions: React.FC<FloatingActionsProps> = ({ onOpenBooking 
       </a>
       <button
         onClick={() => onOpenBooking()}
-        className="h-12 px-4 rounded-full bg-[#0284C7] hover:bg-[#0369A1] text-white font-header text-xs font-bold shadow-lg shadow-sky-500/30 transition-all hover:scale-105 active:scale-95 cursor-pointer flex items-center gap-2"
+        className="h-12 px-4 rounded-full bg-[#0369A1] hover:bg-[#0369A1] text-white font-header text-xs font-bold shadow-lg shadow-sky-500/30 transition-all hover:scale-105 active:scale-95 cursor-pointer flex items-center gap-2"
       >
         <Calendar className="w-4 h-4" />
         <span>{t('float.book')}</span>

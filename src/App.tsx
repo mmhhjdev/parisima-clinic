@@ -77,7 +77,7 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF9F6] text-[#0F172A] flex flex-col font-sans selection:bg-[#0284C7] selection:text-white" dir={dir} lang={lang}>
+    <div className="min-h-screen bg-[#FAF9F6] text-[#0F172A] flex flex-col font-sans selection:bg-[#0369A1] selection:text-white" dir={dir} lang={lang}>
       <Navbar onOpenBooking={() => handleOpenBooking()} onOpenAdmin={() => setIsAdminOpen(true)} pendingCount={pendingCount} />
 
       {article ? (

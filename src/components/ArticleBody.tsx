@@ -13,7 +13,7 @@ const Inline: React.FC<{ text: string }> = ({ text }) => (
       const link = part.match(/^\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)$/);
       if (link) {
         return (
-          <a key={i} href={link[2]} target="_blank" rel="noopener noreferrer" className="text-[#0284C7] underline underline-offset-2 break-all">
+          <a key={i} href={link[2]} target="_blank" rel="noopener noreferrer" className="text-[#0369A1] underline underline-offset-2 break-all">
             {link[1]}
           </a>
         );

@@ -131,7 +131,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
         {/* Panel Header */}
         <div className="p-4 sm:p-6 bg-[#0F172A] text-white flex flex-wrap items-center justify-between gap-4 border-b border-slate-800">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#1E3A8A] flex items-center justify-center text-[#38BDF8]">
+            <div className="w-10 h-10 rounded-xl bg-[#0C4A6E] flex items-center justify-center text-[#38BDF8]">
               <Database className="w-5 h-5" />
             </div>
             <div>
@@ -187,7 +187,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
         {/* لایه فرم ورود با رمز عبور */}
         {!isAuthenticated ? (
           <div className="p-8 sm:p-12 flex flex-col items-center justify-center my-auto">
-            <div className="w-16 h-16 bg-sky-50 rounded-full flex items-center justify-center text-[#0284C7] mb-4">
+            <div className="w-16 h-16 bg-sky-50 rounded-full flex items-center justify-center text-[#0369A1] mb-4">
               <Lock className="w-8 h-8" />
             </div>
             <h3 className="text-xl font-black text-slate-800 mb-1">ورود به پنل مدیریت</h3>
@@ -200,7 +200,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 value={emailInput}
                 onChange={(e) => setEmailInput(e.target.value)}
                 autoComplete="username"
-                className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:border-[#0284C7] focus:ring-1 focus:ring-[#0284C7] text-center text-base"
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:border-[#0369A1] focus:ring-1 focus:ring-[#0369A1] text-center text-base"
                 dir="ltr"
               />
               <input
@@ -209,7 +209,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 value={passwordInput}
                 onChange={(e) => setPasswordInput(e.target.value)}
                 autoComplete="current-password"
-                className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:border-[#0284C7] focus:ring-1 focus:ring-[#0284C7] text-center text-base"
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:border-[#0369A1] focus:ring-1 focus:ring-[#0369A1] text-center text-base"
               />
               {loginError && (
                 <p className="text-xs text-red-500 mt-1 flex items-center justify-center gap-1">
@@ -218,7 +218,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               )}
               <button
                 type="submit"
-                className="w-full bg-[#1E3A8A] text-white font-bold py-2.5 rounded-xl hover:bg-[#0F172A] transition"
+                className="w-full bg-[#0C4A6E] text-white font-bold py-2.5 rounded-xl hover:bg-[#0F172A] transition"
               >
                 ورود
               </button>
@@ -238,7 +238,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               <div 
                 onClick={() => setStatusFilter('all')}
                 className={`p-3 rounded-xl border cursor-pointer transition-all ${
-                  statusFilter === 'all' ? 'bg-white border-[#1E3A8A] shadow-xs' : 'bg-white/60 border-slate-200'
+                  statusFilter === 'all' ? 'bg-white border-[#0C4A6E] shadow-xs' : 'bg-white/60 border-slate-200'
                 }`}
               >
                 <span className="font-sans text-slate-500 block">کل درخواست‌ها</span>
@@ -284,7 +284,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="جستجو بر اساس نام بیمار، شماره تماس یا کد پیگیری..."
-                  className="font-sans w-full pl-3 pr-9 py-2 rounded-xl border border-slate-300 focus:border-[#0284C7] focus:ring-1 focus:ring-[#0284C7] text-xs outline-hidden"
+                  className="font-sans w-full pl-3 pr-9 py-2 rounded-xl border border-slate-300 focus:border-[#0369A1] focus:ring-1 focus:ring-[#0369A1] text-xs outline-hidden"
                 />
                 <Search className="w-4 h-4 text-slate-400 absolute right-3 top-2.5" />
               </div>
@@ -342,12 +342,12 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                               <span className="font-sans text-[11px] text-slate-400 font-mono" dir="ltr">{dateDisplay}</span>
                             </div>
                             <div className="font-sans flex items-center gap-3 text-slate-600 mt-1">
-                              <span className="flex items-center gap-1 font-mono font-bold text-[#1E3A8A]">
-                                <Phone className="w-3 h-3 text-[#0284C7]" />
+                              <span className="flex items-center gap-1 font-mono font-bold text-[#0C4A6E]">
+                                <Phone className="w-3 h-3 text-[#0369A1]" />
                                 <a href={`tel:${item.phone}`} className="hover:underline">{item.phone}</a>
                               </span>
                               <span>&bull;</span>
-                              <span className="font-medium text-[#0284C7]">{item.doctor_name}</span>
+                              <span className="font-medium text-[#0369A1]">{item.doctor_name}</span>
                               <span>&bull;</span>
                               <span className="text-slate-700">{item.service_type}</span>
                             </div>
@@ -360,7 +360,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                             className="font-header px-2.5 py-1.5 rounded-lg bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-semibold flex items-center gap-1"
                             title="تماس تلفنی با بیمار"
                           >
-                            <Phone className="w-3.5 h-3.5 text-[#0284C7]" />
+                            <Phone className="w-3.5 h-3.5 text-[#0369A1]" />
                             <span>تماس</span>
                           </a>
 
@@ -416,7 +416,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                             />
                             <button
                               onClick={() => handleSaveNotes(item.id)}
-                              className="font-header px-2.5 py-1 rounded-lg bg-[#1E3A8A] text-white text-xs font-bold flex items-center gap-1"
+                              className="font-header px-2.5 py-1 rounded-lg bg-[#0C4A6E] text-white text-xs font-bold flex items-center gap-1"
                             >
                               <Save className="w-3 h-3" />
                               <span>ذخیره</span>
@@ -446,7 +446,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                                 setEditingNoteId(item.id);
                                 setEditingNoteText(item.notes || '');
                               }}
-                              className="font-header text-[#0284C7] hover:underline text-[11px] font-semibold flex items-center gap-1 flex-shrink-0 mr-2"
+                              className="font-header text-[#0369A1] hover:underline text-[11px] font-semibold flex items-center gap-1 flex-shrink-0 mr-2"
                             >
                               <Edit3 className="w-3 h-3" />
                               <span>{item.notes ? 'ویرایش یادداشت' : 'افزودن یادداشت'}</span>

@@ -46,7 +46,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking, onOpenAdmin }) =>
           lang={LANG_META[l].htmlLang}
           aria-current={l === lang ? 'true' : undefined}
           className={`px-2 py-0.5 rounded-md text-[11px] font-bold transition-colors ${
-            l === lang ? 'bg-[#0284C7] text-white' : 'text-slate-300 hover:text-white'
+            l === lang ? 'bg-[#0369A1] text-white' : 'text-slate-300 hover:text-white'
           }`}
         >
           {LANG_META[l].label}
@@ -55,7 +55,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking, onOpenAdmin }) =>
     </div>
   );
 
-  const navLinkClass = 'hover:text-[#0284C7] transition-colors py-1';
+  const navLinkClass = 'hover:text-[#0369A1] transition-colors py-1';
 
   return (
     <header className="sticky top-0 z-40 w-full transition-all duration-300">
@@ -69,7 +69,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking, onOpenAdmin }) =>
             </div>
             <div className="flex items-center gap-3 font-mono font-bold text-slate-300" dir="ltr">
               <a href={`tel:${clinic.phone1}`} className="flex items-center gap-1 hover:text-white transition-colors">
-                <Phone className="w-3.5 h-3.5 text-[#0284C7]" />
+                <Phone className="w-3.5 h-3.5 text-[#0369A1]" />
                 {clinic.phone1Display}
               </a>
               <span>&bull;</span>
@@ -94,13 +94,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking, onOpenAdmin }) =>
           </a>
 
           <div className="hidden lg:flex items-center gap-6 xl:gap-8 text-sm font-bold text-slate-800 font-header">
-            <a href={`${homeHref}#promotions`} className="hover:text-[#0284C7] transition-colors py-1 flex items-center gap-1.5 text-rose-600">
-              <Flame className="w-4 h-4 text-rose-500 animate-pulse" />
+            <a href={`${homeHref}#promotions`} className="hover:text-[#0369A1] transition-colors py-1 flex items-center gap-1.5 text-sky-700">
+              <Flame className="w-4 h-4 text-sky-600 animate-pulse" />
               <span>{t('nav.promotions')}</span>
             </a>
             <a href={`${homeHref}#services`} className={navLinkClass}>{t('nav.services')}</a>
-            <a href={`${homeHref}#articles`} className="hover:text-[#0284C7] transition-colors py-1 flex items-center gap-1.5">
-              <BookOpen className="w-4 h-4 text-[#0284C7]" />
+            <a href={`${homeHref}#articles`} className="hover:text-[#0369A1] transition-colors py-1 flex items-center gap-1.5">
+              <BookOpen className="w-4 h-4 text-[#0369A1]" />
               <span>{t('nav.articles')}</span>
             </a>
             <a href={`${homeHref}#contact`} className={navLinkClass}>{t('nav.contact')}</a>
@@ -109,14 +109,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking, onOpenAdmin }) =>
           <div className="hidden sm:flex items-center gap-3 font-header shrink-0">
             <a
               href={`tel:${clinic.phone1}`}
-              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold text-[#1E3A8A] bg-[#F0F9FF] border border-[#BAE6FD] hover:bg-[#E0F2FE] transition-colors"
+              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold text-[#0C4A6E] bg-[#F0F9FF] border border-[#BAE6FD] hover:bg-[#E0F2FE] transition-colors"
             >
-              <Phone className="w-4 h-4 text-[#0284C7]" />
+              <Phone className="w-4 h-4 text-[#0369A1]" />
               <span className="font-mono" dir="ltr">{clinic.phone1Display}</span>
             </a>
             <button
               onClick={onOpenBooking}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white bg-[#1E3A8A] hover:bg-[#0F172A] active:scale-95 transition-all shadow-sm shadow-blue-900/20 cursor-pointer"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white bg-[#0C4A6E] hover:bg-[#0F172A] active:scale-95 transition-all shadow-sm shadow-blue-900/20 cursor-pointer"
             >
               <Calendar className="w-4 h-4 text-[#38BDF8]" />
               <span>{t('nav.book')}</span>
@@ -124,7 +124,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking, onOpenAdmin }) =>
           </div>
 
           <div className="flex sm:hidden items-center gap-2 font-header">
-            <button onClick={onOpenBooking} className="px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-[#1E3A8A]">
+            <button onClick={onOpenBooking} className="px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-[#0C4A6E]">
               {t('nav.bookShort')}
             </button>
             <button
@@ -139,13 +139,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking, onOpenAdmin }) =>
 
         {mobileMenuOpen && (
           <div className="sm:hidden bg-white border-b border-slate-200 px-4 pt-3 pb-6 space-y-3 mt-3 font-header">
-            <a href={`${homeHref}#promotions`} onClick={() => setMobileMenuOpen(false)} className="py-2 text-sm font-bold text-rose-600 border-b border-slate-100 flex items-center gap-2">
-              <Flame className="w-4 h-4 text-rose-500" />
+            <a href={`${homeHref}#promotions`} onClick={() => setMobileMenuOpen(false)} className="py-2 text-sm font-bold text-sky-700 border-b border-slate-100 flex items-center gap-2">
+              <Flame className="w-4 h-4 text-sky-600" />
               <span>{t('nav.promotions')}</span>
             </a>
             <a href={`${homeHref}#services`} onClick={() => setMobileMenuOpen(false)} className="block py-2 text-sm font-bold text-slate-800 border-b border-slate-100">{t('nav.services')}</a>
             <a href={`${homeHref}#articles`} onClick={() => setMobileMenuOpen(false)} className="py-2 text-sm font-bold text-slate-800 border-b border-slate-100 flex items-center gap-2">
-              <BookOpen className="w-4 h-4 text-[#0284C7]" />
+              <BookOpen className="w-4 h-4 text-[#0369A1]" />
               <span>{t('nav.articles')}</span>
             </a>
             <a href={`${homeHref}#contact`} onClick={() => setMobileMenuOpen(false)} className="block py-2 text-sm font-bold text-slate-800 border-b border-slate-100">{t('nav.contact')}</a>
@@ -153,7 +153,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking, onOpenAdmin }) =>
             <div className="pt-2">
               <button
                 onClick={() => { setMobileMenuOpen(false); onOpenBooking(); }}
-                className="w-full py-3 rounded-xl text-xs font-bold text-white bg-[#1E3A8A] flex items-center justify-center gap-2"
+                className="w-full py-3 rounded-xl text-xs font-bold text-white bg-[#0C4A6E] flex items-center justify-center gap-2"
               >
                 <Calendar className="w-4 h-4 text-[#38BDF8]" />
                 <span>{t('nav.bookMobile')}</span>

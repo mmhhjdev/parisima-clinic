@@ -24,7 +24,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenBooking }) => {
           </div>
 
           <div className="lg:col-span-3 space-y-3">
-            <h4 className="font-header text-sm font-bold text-white border-b border-[#0284C7] pb-2 inline-block">{t('footer.quick')}</h4>
+            <h4 className="font-header text-sm font-bold text-white border-b border-[#0369A1] pb-2 inline-block">{t('footer.quick')}</h4>
             <ul className="font-sans space-y-2 text-xs text-slate-400 font-light">
               <li><a href={`${homeHref}#home`} className="hover:text-[#38BDF8] transition-colors">{t('footer.home')}</a></li>
               <li><a href={`${homeHref}#promotions`} className="hover:text-[#38BDF8] transition-colors">{t('footer.doctors')}</a></li>
@@ -35,7 +35,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenBooking }) => {
           </div>
 
           <div className="lg:col-span-4 space-y-3">
-            <h4 className="font-header text-sm font-bold text-white border-b border-[#0284C7] pb-2 inline-block">{t('footer.info')}</h4>
+            <h4 className="font-header text-sm font-bold text-white border-b border-[#0369A1] pb-2 inline-block">{t('footer.info')}</h4>
             <div className="font-sans space-y-2.5 text-xs text-slate-400 font-light">
               <div className="flex items-center gap-2 flex-wrap" dir="ltr">
                 <Phone className="w-3.5 h-3.5 text-[#38BDF8]" />
@@ -45,7 +45,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenBooking }) => {
                 <span className="font-mono text-white">{clinic.phone2Display}</span>
               </div>
               <div className="flex items-center gap-2 flex-wrap" dir="ltr">
-                <Phone className="w-3.5 h-3.5 text-[#0284C7]" />
+                <Phone className="w-3.5 h-3.5 text-[#0369A1]" />
                 <span>{t('footer.mobiles')}</span>
                 <span className="font-mono text-white">{clinic.mobile1Display}</span>
                 <span>-</span>
@@ -63,7 +63,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenBooking }) => {
             <div className="pt-2">
               <button
                 onClick={onOpenBooking}
-                className="font-header w-full py-2.5 px-4 rounded-xl bg-[#1E3A8A] hover:bg-[#0284C7] text-white text-xs font-bold transition-all text-center flex items-center justify-center gap-2"
+                className="font-header w-full py-2.5 px-4 rounded-xl bg-[#0C4A6E] hover:bg-[#0369A1] text-white text-xs font-bold transition-all text-center flex items-center justify-center gap-2"
               >
                 <Calendar className="w-3.5 h-3.5 text-[#38BDF8]" />
                 <span>{t('footer.book')}</span>
