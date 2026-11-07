@@ -1,6 +1,7 @@
 import React from 'react';
 import { Sparkles, ArrowLeft, Tag, MessageSquare, Image as ImageIcon, Calendar } from 'lucide-react';
 import { useI18n } from '../i18n/LanguageProvider';
+import { brandAlt } from '../i18n/config';
 import { assetUrl } from '../lib/assets';
 
 interface DoctorsSectionProps {
@@ -27,7 +28,7 @@ export const DoctorsSection: React.FC<DoctorsSectionProps> = ({ onOpenBooking })
             <div className="relative w-full aspect-video overflow-hidden bg-slate-900 flex items-center justify-center">
               <img
                 src={assetUrl('images/special-offer-hair.webp')}
-                alt={t('promo.cardImgAlt')}
+                alt={brandAlt(t('promo.cardImgAlt'))}
                 className="w-full h-full object-contain object-center group-hover:scale-105 transition-transform duration-500"
               />
               <div className="absolute top-4 start-4 bg-[#0284C7] text-white font-header text-xs font-extrabold px-3.5 py-1.5 rounded-full flex items-center gap-1.5 shadow-md z-10">

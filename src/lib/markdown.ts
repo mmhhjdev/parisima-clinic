@@ -3,7 +3,8 @@
 export type Block =
   | { type: 'h3'; text: string }
   | { type: 'p'; text: string }
-  | { type: 'ul' | 'ol'; items: string[] };
+  | { type: 'ul' | 'ol'; items: string[] }
+  | { type: 'img'; src: string; alt: string };
 
 export function parseBlocks(src: string): Block[] {
   const blocks: Block[] = [];
@@ -28,6 +29,13 @@ export function parseBlocks(src: string): Block[] {
     if (!line) {
       flushPara();
       flushList();
+      continue;
+    }
+    const img = line.match(/^!\[([^\]]*)\]\(([^)\s]+)\)$/);
+    if (img) {
+      flushPara();
+      flushList();
+      blocks.push({ type: 'img', alt: img[1], src: img[2] });
       continue;
     }
     if (line.startsWith('### ')) {

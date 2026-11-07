@@ -11,7 +11,7 @@ import { FloatingActions } from './components/FloatingActions';
 import { AppointmentModal } from './components/AppointmentModal';
 import { AdminPanel } from './components/AdminPanel';
 import { Service } from './types';
-import { getLocalConsultations } from './lib/supabase';
+import { fetchConsultations, getAdminSession } from './lib/supabase';
 import { useI18n } from './i18n/LanguageProvider';
 import { ArticlePage } from './components/ArticlePage';
 
@@ -22,10 +22,15 @@ export function App() {
   const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [pendingCount, setPendingCount] = useState(0);
 
-  const refreshPendingCount = useCallback(() => {
+  // شمارش نوبت‌های در انتظار فقط برای مدیر احراز هویت‌شده از Supabase خوانده می‌شود
+  const refreshPendingCount = useCallback(async () => {
     try {
-      const list = getLocalConsultations() || [];
-      setPendingCount(Array.isArray(list) ? list.filter((item) => item && item.status === 'pending').length : 0);
+      if (!(await getAdminSession())) {
+        setPendingCount(0);
+        return;
+      }
+      const res = await fetchConsultations();
+      setPendingCount(res.data.filter((item) => item.status === 'pending').length);
     } catch (error) {
       console.error('Error fetching consultations:', error);
       setPendingCount(0);

@@ -37,7 +37,7 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({ isOpen, onCl
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!fullName.trim() || !phone.trim()) {
       setError(t('modal.errRequired'));
@@ -49,13 +49,16 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({ isOpen, onCl
     }
     try {
       const service = content.services.find((s) => s.id === selectedService);
-      saveLocalConsultation({
+      const res = await saveLocalConsultation({
         fullName: fullName.trim(),
         phone: phone.trim(),
         serviceId: service ? service.title : t('modal.serviceNone'),
-        createdAt: new Date().toISOString(),
-        status: 'pending',
       });
+      if (!res.success) {
+        console.error('Booking not stored:', res.error);
+        setError(t('modal.errGeneric'));
+        return;
+      }
       if (typeof window !== 'undefined' && window.gtag) {
         window.gtag('event', 'generate_lead', { service_id: selectedService || 'general', event_category: 'consultation_form' });
       }

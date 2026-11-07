@@ -49,3 +49,7 @@ export function parseRoute(pathname: string): Route {
   }
   return { lang };
 }
+
+// برند تصویری: هر تصویر سایت با این عبارت تگ می‌شود تا با هر دو املای «پریسیما» و «پری-سیما» قابل جستجو باشد
+export const BRAND_TAG = 'کلینیک زیبایی پریسیما (پری-سیما) زعفرانیه تهران';
+export const brandAlt = (text: string) => `${text} | ${BRAND_TAG}`;

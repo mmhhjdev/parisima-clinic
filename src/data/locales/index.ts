@@ -8,7 +8,7 @@ import { ARTICLE_EXTRAS } from '../articleExtras';
 // افزودن بخش‌های تکمیلی به متن هر مقاله
 const withExtras = (lang: Lang, content: LocaleContent): LocaleContent => ({
   ...content,
-  articles: content.articles.map((a) => {
+  articles: content.articles.filter((a) => !a.langs || a.langs.includes(lang)).map((a) => {
     const extra = ARTICLE_EXTRAS[lang][a.slug];
     return { ...a, content: extra ? `${a.content.trim()}\n\n${extra}` : a.content.trim() };
   }),

@@ -3,7 +3,7 @@ import { Calendar, Clock, User, ArrowLeft, MessageSquare } from 'lucide-react';
 import { useI18n } from '../i18n/LanguageProvider';
 import { ArticleBody } from './ArticleBody';
 import { assetUrl } from '../lib/assets';
-import { articlePath, homePath } from '../i18n/config';
+import { articlePath, brandAlt, homePath } from '../i18n/config';
 import type { Article } from '../types';
 
 interface ArticlePageProps {
@@ -40,7 +40,7 @@ export const ArticlePage: React.FC<ArticlePageProps> = ({ article, onOpenBooking
         </div>
 
         <div className="relative w-full aspect-video rounded-2xl overflow-hidden mb-8 bg-slate-100">
-          <img src={assetUrl(article.image)} alt={article.title} className="w-full h-full object-cover" />
+          <img src={assetUrl(article.image)} alt={brandAlt(article.imageAlt ?? article.title)} className="w-full h-full object-cover" />
         </div>
 
         <p className={`font-sans text-base sm:text-lg text-slate-600 leading-relaxed mb-8 bg-[#F8FAFC] rounded-xl p-5 ${dir === 'rtl' ? 'border-r-4' : 'border-l-4'} border-[#0284C7]`}>
@@ -70,7 +70,7 @@ export const ArticlePage: React.FC<ArticlePageProps> = ({ article, onOpenBooking
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {related.map((r) => (
                 <a key={r.id} href={articlePath(lang, r.slug)} className="group rounded-2xl border border-slate-200 hover:border-[#0284C7] overflow-hidden transition-all">
-                  <img src={assetUrl(r.image)} alt={r.title} className="w-full h-28 object-cover" loading="lazy" />
+                  <img src={assetUrl(r.image)} alt={brandAlt(r.imageAlt ?? r.title)} className="w-full h-28 object-cover" loading="lazy" />
                   <div className="p-4">
                     <span className="text-[11px] font-bold text-[#0284C7]">{r.category}</span>
                     <h3 className="font-header text-sm font-bold text-[#0F172A] group-hover:text-[#0284C7] line-clamp-2 mt-1">{r.title}</h3>

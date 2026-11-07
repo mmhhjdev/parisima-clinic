@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import { Consultation } from '../types';
 import { 
+  getAdminSession, signInAdmin, signOutAdmin,
   fetchConsultations, 
   updateConsultationStatus, 
   updateConsultationNotes, 
@@ -24,8 +25,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 }) => {
   // مدیریت ورود و احراز هویت
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [emailInput, setEmailInput] = useState('');
   const [passwordInput, setPasswordInput] = useState('');
-  const [passwordError, setPasswordError] = useState(false);
+  const [loginError, setLoginError] = useState('');
+  const [loadError, setLoadError] = useState('');
 
   const [consultations, setConsultations] = useState<Consultation[]>([]);
   const [loading, setLoading] = useState(false);
@@ -38,20 +41,23 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
   const [editingNoteText, setEditingNoteText] = useState('');
 
-  // رمز عبور ورود به پنل
-  const ADMIN_PASSWORD = 'admin.772-pass'; 
-
   const loadData = async () => {
     setLoading(true);
     try {
       const res = await fetchConsultations();
       setConsultations(res.data);
       setIsLiveSupabase(res.isLiveSupabase);
+      setLoadError(res.error ?? '');
       if (onRefreshStats) onRefreshStats();
     } finally {
       setLoading(false);
     }
   };
+
+  // اگر مدیر قبلاً وارد شده باشد، نشست Supabase را بررسی می‌کنیم
+  useEffect(() => {
+    if (isOpen) getAdminSession().then(setIsAuthenticated);
+  }, [isOpen]);
 
   useEffect(() => {
     if (isOpen && isAuthenticated) {
@@ -61,19 +67,21 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
   if (!isOpen) return null;
 
-  // بررسی رمز عبور
-  const handleLogin = (e: React.FormEvent) => {
+  // ورود با ایمیل و رمز عبور مدیر در Supabase Auth
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (passwordInput === ADMIN_PASSWORD) {
+    setLoginError('');
+    const res = await signInAdmin(emailInput, passwordInput);
+    if (res.ok) {
       setIsAuthenticated(true);
-      setPasswordError(false);
       setPasswordInput('');
     } else {
-      setPasswordError(true);
+      setLoginError(res.error || 'ورود ناموفق بود.');
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await signOutAdmin();
     setIsAuthenticated(false);
   };
 
@@ -135,7 +143,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                       ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
                       : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
                   }`}>
-                    {isLiveSupabase ? 'Supabase Live Connected' : 'Local Data / Offline Mode'}
+                    {isLiveSupabase ? 'Supabase Live Connected' : 'Supabase Not Connected'}
                   </span>
                 )}
               </div>
@@ -183,25 +191,32 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               <Lock className="w-8 h-8" />
             </div>
             <h3 className="text-xl font-black text-slate-800 mb-1">ورود به پنل مدیریت</h3>
-            <p className="text-xs text-slate-500 mb-6">جهت دسترسی رمز عبور منشی را وارد کنید</p>
-            
+            <p className="text-xs text-slate-500 mb-6">ایمیل و رمز عبور مدیر را وارد کنید</p>
+
             <form onSubmit={handleLogin} className="w-full max-w-sm flex flex-col gap-3">
-              <div>
-                <input 
-                  type="password"
-                  placeholder="رمز عبور..."
-                  value={passwordInput}
-                  onChange={(e) => setPasswordInput(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:border-[#0284C7] focus:ring-1 focus:ring-[#0284C7] text-center text-base"
-                  autoFocus
-                />
-                {passwordError && (
-                  <p className="text-xs text-red-500 mt-2 flex items-center justify-center gap-1">
-                    <AlertCircle className="w-3.5 h-3.5" /> رمز عبور اشتباه است
-                  </p>
-                )}
-              </div>
-              <button 
+              <input
+                type="email"
+                placeholder="ایمیل مدیر"
+                value={emailInput}
+                onChange={(e) => setEmailInput(e.target.value)}
+                autoComplete="username"
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:border-[#0284C7] focus:ring-1 focus:ring-[#0284C7] text-center text-base"
+                dir="ltr"
+              />
+              <input
+                type="password"
+                placeholder="رمز عبور"
+                value={passwordInput}
+                onChange={(e) => setPasswordInput(e.target.value)}
+                autoComplete="current-password"
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:border-[#0284C7] focus:ring-1 focus:ring-[#0284C7] text-center text-base"
+              />
+              {loginError && (
+                <p className="text-xs text-red-500 mt-1 flex items-center justify-center gap-1">
+                  <AlertCircle className="w-3.5 h-3.5" /> {loginError}
+                </p>
+              )}
+              <button
                 type="submit"
                 className="w-full bg-[#1E3A8A] text-white font-bold py-2.5 rounded-xl hover:bg-[#0F172A] transition"
               >
@@ -212,6 +227,12 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
         ) : (
           /* محتوای اصلی پنل پس از ورود */
           <>
+            {loadError && (
+              <div className="mx-4 mt-4 p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-start gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                <span>خطا در اتصال به Supabase: {loadError}</span>
+              </div>
+            )}
             {/* Quick Stats Bar */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 bg-[#F8FAFC] border-b border-slate-200 text-xs">
               <div 

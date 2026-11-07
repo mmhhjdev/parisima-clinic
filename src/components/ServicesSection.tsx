@@ -1,6 +1,7 @@
 import React from 'react';
 import { Layers, Calendar, Check, Star } from 'lucide-react';
 import { useI18n } from '../i18n/LanguageProvider';
+import { brandAlt } from '../i18n/config';
 import { assetUrl } from '../lib/assets';
 import { Service } from '../types';
 
@@ -32,7 +33,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ onSelectServic
                   <div className="relative h-52 w-full overflow-hidden bg-slate-900/5 border-b border-slate-100 flex items-center justify-center">
                     <img
                       src={assetUrl(service.image)}
-                      alt={service.imageAlt || service.title}
+                      alt={brandAlt(service.imageAlt || service.title)}
                       className="w-full h-full object-cover object-center transition-transform duration-500 hover:scale-105"
                       loading="lazy"
                     />

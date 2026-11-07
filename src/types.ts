@@ -49,6 +49,10 @@ export interface Article {
   image: string;
   keywords?: string;
   publishedAt?: string;
+  imageAlt?: string;
+  seoTitle?: string;
+  // اگر مقاله فقط به چند زبان ترجمه شده، فقط همان زبان‌ها ساخته و فهرست می‌شوند
+  langs?: ('fa' | 'en' | 'ar')[];
 }
 
 export interface ClinicInfo {

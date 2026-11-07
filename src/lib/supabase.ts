@@ -1,100 +1,62 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { Consultation } from '../types';
 
-// خواندن اطلاعات امن از متغیرهای محیطی
+// خواندن کلیدهای عمومی (publishable/anon) از متغیرهای محیطی ساخت پروژه (.env)
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 
 export const isSupabaseConfigured = Boolean(
-  supabaseUrl && 
-  supabaseAnonKey && 
+  supabaseUrl &&
+  supabaseAnonKey &&
   supabaseUrl !== 'https://your-project.supabase.co'
 );
 
 export const supabase: SupabaseClient | null = isSupabaseConfigured
-  ? createClient(supabaseUrl, supabaseAnonKey)
+  ? createClient(supabaseUrl, supabaseAnonKey, {
+      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false },
+    })
   : null;
 
-const LOCAL_STORAGE_KEY = 'parisima_clinic_consultations';
-
-// داده‌های نمونه اولیه خالی شدند
-const INITIAL_DEMO_CONSULTATIONS: Consultation[] = [];
-
-export function getLocalConsultations(): Consultation[] {
-  try {
-    const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
-    if (!saved) {
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(INITIAL_DEMO_CONSULTATIONS));
-      return INITIAL_DEMO_CONSULTATIONS;
-    }
-    return JSON.parse(saved);
-  } catch {
-    return INITIAL_DEMO_CONSULTATIONS;
-  }
-}
-
-function saveLocalConsultations(items: Consultation[]) {
-  try {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(items));
-  } catch (err) {
-    console.error('Error writing to local storage:', err);
-  }
-}
-
-export function saveLocalConsultation(entry: {
-  fullName: string;
-  phone: string;
-  doctorId?: string;
-  serviceId?: string;
-  createdAt?: string;
-  status?: 'pending' | 'called' | 'completed';
-}) {
-  return submitConsultation({
-    patient_name: entry.fullName,
-    phone: entry.phone,
-    doctor_name: entry.doctorId || 'تعیین نشده',
-    service_type: entry.serviceId || 'تعیین نشده',
-  });
-}
+export type ConsultationStatus = 'pending' | 'called' | 'completed';
 
 /**
- * دریافت تمامی نوبت‌ها
+ * نوبت‌ها فقط در Supabase ذخیره می‌شوند.
+ * هیچ ذخیره‌سازی محلی (localStorage) برای نوبت بیمار وجود ندارد تا درخواستی گم نشود.
  */
-export async function fetchConsultations(): Promise<{ data: Consultation[]; isLiveSupabase: boolean; error?: string }> {
-  if (isSupabaseConfigured && supabase) {
-    try {
-      const { data, error } = await supabase
-        .from('consultations')
-        .select('*')
-        .order('created_at', { ascending: false });
+const NOT_CONFIGURED = 'اتصال به Supabase تنظیم نشده است (VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY).';
 
-      if (error) {
-        console.warn('Supabase fetch error, falling back to local:', error.message);
-        return { data: getLocalConsultations(), isLiveSupabase: false, error: error.message };
-      }
+/* ---------- احراز هویت مدیر (Supabase Auth) ---------- */
 
-      return { data: (data || []) as Consultation[], isLiveSupabase: true };
-    } catch (err: any) {
-      console.warn('Supabase fetch exception, falling back to local:', err?.message);
-      return { data: getLocalConsultations(), isLiveSupabase: false, error: err?.message };
-    }
-  }
-
-  return { data: getLocalConsultations(), isLiveSupabase: false };
+export async function getAdminSession(): Promise<boolean> {
+  if (!supabase) return false;
+  const { data } = await supabase.auth.getSession();
+  return Boolean(data.session);
 }
 
-/**
- * ثبت نوبت جدید
- */
+export async function signInAdmin(email: string, password: string): Promise<{ ok: boolean; error?: string }> {
+  if (!supabase) return { ok: false, error: NOT_CONFIGURED };
+  const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
+  return error ? { ok: false, error: error.message } : { ok: true };
+}
+
+export async function signOutAdmin(): Promise<void> {
+  if (supabase) await supabase.auth.signOut();
+}
+
+/* ---------- نوبت‌ها ---------- */
+
+/** ثبت نوبت جدید (عمومی؛ فقط INSERT مجاز است) */
 export async function submitConsultation(entry: {
   patient_name: string;
   phone: string;
   doctor_name: string;
   service_type: string;
   notes?: string;
-}): Promise<{ success: boolean; id: string; isLiveSupabase: boolean; error?: string }> {
+}): Promise<{ success: boolean; id?: string; error?: string }> {
+  if (!supabase) return { success: false, error: NOT_CONFIGURED };
+
   const trackingId = `PRS-${Math.floor(10000 + Math.random() * 90000)}`;
-  const newRecord: Consultation = {
+  const record: Consultation = {
     id: trackingId,
     patient_name: entry.patient_name.trim(),
     phone: entry.phone.trim(),
@@ -105,126 +67,65 @@ export async function submitConsultation(entry: {
     created_at: new Date().toISOString(),
   };
 
-  if (isSupabaseConfigured && supabase) {
-    try {
-      const { data, error } = await supabase
-        .from('consultations')
-        .insert([newRecord])
-        .select();
-
-      if (error) {
-        console.warn('Supabase insert warning (saved locally):', error.message);
-        const localList = getLocalConsultations();
-        saveLocalConsultations([newRecord, ...localList]);
-        return { success: true, id: newRecord.id, isLiveSupabase: false, error: error.message };
-      }
-
-      return { success: true, id: data?.[0]?.id || newRecord.id, isLiveSupabase: true };
-    } catch (err: any) {
-      console.warn('Supabase insert exception (saved locally):', err?.message);
-      const localList = getLocalConsultations();
-      saveLocalConsultations([newRecord, ...localList]);
-      return { success: true, id: newRecord.id, isLiveSupabase: false, error: err?.message };
+  try {
+    const { error } = await supabase.from('consultations').insert([record]);
+    if (error) {
+      console.error('Supabase insert error:', error.message);
+      return { success: false, error: error.message };
     }
+    return { success: true, id: trackingId };
+  } catch (err: any) {
+    console.error('Supabase insert exception:', err?.message);
+    return { success: false, error: err?.message || 'unknown error' };
   }
-
-  const localList = getLocalConsultations();
-  saveLocalConsultations([newRecord, ...localList]);
-  return { success: true, id: newRecord.id, isLiveSupabase: false };
 }
 
-/**
- * تغییر وضعیت نوبت
- */
-export async function updateConsultationStatus(
-  id: string,
-  newStatus: 'pending' | 'called' | 'completed'
-): Promise<boolean> {
-  let success = true;
-
-  if (isSupabaseConfigured && supabase) {
-    try {
-      const { error } = await supabase
-        .from('consultations')
-        .update({ status: newStatus })
-        .eq('id', id);
-
-      if (error) {
-        console.error('Supabase update status error:', error.message);
-        success = false;
-      }
-    } catch (err) {
-      console.error('Supabase update status exception:', err);
-      success = false;
-    }
-  }
-
-  const current = getLocalConsultations();
-  const updated = current.map(item => item.id === id ? { ...item, status: newStatus } : item);
-  saveLocalConsultations(updated);
-
-  return success;
+/** ثبت نوبت از فرم رزرو (نام تابع قبلی برای سازگاری با کامپوننت‌ها حفظ شده است) */
+export async function saveLocalConsultation(entry: {
+  fullName: string;
+  phone: string;
+  serviceId?: string;
+}) {
+  return submitConsultation({
+    patient_name: entry.fullName,
+    phone: entry.phone,
+    doctor_name: 'تعیین نشده',
+    service_type: entry.serviceId || 'تعیین نشده',
+  });
 }
 
-/**
- * ویرایش یادداشت نوبت
- */
-export async function updateConsultationNotes(
-  id: string,
-  notes: string
-): Promise<boolean> {
-  let success = true;
-
-  if (isSupabaseConfigured && supabase) {
-    try {
-      const { error } = await supabase
-        .from('consultations')
-        .update({ notes })
-        .eq('id', id);
-
-      if (error) {
-        console.error('Supabase update notes error:', error.message);
-        success = false;
-      }
-    } catch (err) {
-      console.error('Supabase update notes exception:', err);
-      success = false;
-    }
+/** دریافت نوبت‌ها؛ فقط برای مدیر احرازشده (RLS) */
+export async function fetchConsultations(): Promise<{ data: Consultation[]; isLiveSupabase: boolean; error?: string }> {
+  if (!supabase) return { data: [], isLiveSupabase: false, error: NOT_CONFIGURED };
+  try {
+    const { data, error } = await supabase
+      .from('consultations')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (error) return { data: [], isLiveSupabase: false, error: error.message };
+    return { data: (data || []) as Consultation[], isLiveSupabase: true };
+  } catch (err: any) {
+    return { data: [], isLiveSupabase: false, error: err?.message || 'unknown error' };
   }
-
-  const current = getLocalConsultations();
-  const updated = current.map(item => item.id === id ? { ...item, notes } : item);
-  saveLocalConsultations(updated);
-
-  return success;
 }
 
-/**
- * حذف نوبت
- */
+export async function updateConsultationStatus(id: string, status: ConsultationStatus): Promise<boolean> {
+  if (!supabase) return false;
+  const { error } = await supabase.from('consultations').update({ status }).eq('id', id);
+  if (error) console.error('Supabase update status error:', error.message);
+  return !error;
+}
+
+export async function updateConsultationNotes(id: string, notes: string): Promise<boolean> {
+  if (!supabase) return false;
+  const { error } = await supabase.from('consultations').update({ notes }).eq('id', id);
+  if (error) console.error('Supabase update notes error:', error.message);
+  return !error;
+}
+
 export async function deleteConsultation(id: string): Promise<boolean> {
-  let success = true;
-
-  if (isSupabaseConfigured && supabase) {
-    try {
-      const { error } = await supabase
-        .from('consultations')
-        .delete()
-        .eq('id', id);
-
-      if (error) {
-        console.error('Supabase delete error:', error.message);
-        success = false;
-      }
-    } catch (err) {
-      console.error('Supabase delete exception:', err);
-      success = false;
-    }
-  }
-
-  const current = getLocalConsultations();
-  const updated = current.filter(item => item.id !== id);
-  saveLocalConsultations(updated);
-
-  return success;
+  if (!supabase) return false;
+  const { error } = await supabase.from('consultations').delete().eq('id', id);
+  if (error) console.error('Supabase delete error:', error.message);
+  return !error;
 }

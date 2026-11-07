@@ -1,16 +1,25 @@
 import React from 'react';
 import { parseBlocks } from '../lib/markdown';
+import { assetUrl } from '../lib/assets';
+import { brandAlt } from '../i18n/config';
 
-// نمایش **پررنگ** داخل یک بند
+// نمایش **پررنگ** و [متن لینک](https://...) داخل یک بند
 const Inline: React.FC<{ text: string }> = ({ text }) => (
   <>
-    {text.split(/\*\*(.+?)\*\*/g).map((part, i) =>
-      i % 2 === 1 ? (
-        <strong key={i} className="font-bold text-slate-900">{part}</strong>
-      ) : (
-        <React.Fragment key={i}>{part}</React.Fragment>
-      ),
-    )}
+    {text.split(/(\*\*.+?\*\*|\[[^\]]+\]\(https?:\/\/[^)\s]+\))/g).map((part, i) => {
+      if (part.startsWith('**') && part.endsWith('**')) {
+        return <strong key={i} className="font-bold text-slate-900">{part.slice(2, -2)}</strong>;
+      }
+      const link = part.match(/^\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)$/);
+      if (link) {
+        return (
+          <a key={i} href={link[2]} target="_blank" rel="noopener noreferrer" className="text-[#0284C7] underline underline-offset-2 break-all">
+            {link[1]}
+          </a>
+        );
+      }
+      return <React.Fragment key={i}>{part}</React.Fragment>;
+    })}
   </>
 );
 
@@ -23,6 +32,13 @@ export const ArticleBody: React.FC<{ content: string }> = ({ content }) => (
       }
       if (block.type === 'p') {
         return <p key={i}><Inline text={block.text} /></p>;
+      }
+      if (block.type === 'img') {
+        return (
+          <figure key={i} className="my-6">
+            <img src={assetUrl(block.src)} alt={brandAlt(block.alt)} width={1200} height={675} loading="lazy" className="w-full rounded-2xl" />
+          </figure>
+        );
       }
       const Tag = block.type === 'ol' ? 'ol' : 'ul';
       return (
