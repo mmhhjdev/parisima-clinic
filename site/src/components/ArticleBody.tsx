@@ -1,6 +1,7 @@
 import React from 'react';
 import { parseBlocks } from '../lib/markdown';
 import { assetUrl } from '../lib/assets';
+import { brandAlt } from '../i18n/config';
 
 // نمایش **پررنگ** و [متن لینک](https://...) داخل یک بند
 const Inline: React.FC<{ text: string }> = ({ text }) => (
@@ -35,7 +36,7 @@ export const ArticleBody: React.FC<{ content: string }> = ({ content }) => (
       if (block.type === 'img') {
         return (
           <figure key={i} className="my-6">
-            <img src={assetUrl(block.src)} alt={block.alt} width={1200} height={675} loading="lazy" className="w-full rounded-2xl" />
+            <img src={assetUrl(block.src)} alt={brandAlt(block.alt)} width={1200} height={675} loading="lazy" className="w-full rounded-2xl" />
           </figure>
         );
       }

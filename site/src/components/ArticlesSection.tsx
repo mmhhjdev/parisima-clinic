@@ -30,7 +30,7 @@ export const ArticlesSection: React.FC = () => {
             >
               <div>
                 <div className="relative h-48 w-full overflow-hidden bg-slate-100">
-                  <img src={assetUrl(article.image)} alt={article.imageAlt ?? brandAlt(article.title)} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
+                  <img src={assetUrl(article.image)} alt={brandAlt(article.imageAlt ?? article.title)} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
                   <span className="absolute top-3 end-3 bg-[#0284C7] text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow-sm">{article.category}</span>
                 </div>
                 <div className="p-6">

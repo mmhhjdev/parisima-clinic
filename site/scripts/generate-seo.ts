@@ -39,7 +39,7 @@ const blocksToHtml = (blocks: Block[]) =>
     .map((b) => {
       if (b.type === 'h3') return `<h2 class="font-header text-base font-black text-[#0F172A] pt-2">${inline(b.text)}</h2>`;
       if (b.type === 'p') return `<p>${inline(b.text)}</p>`;
-      if (b.type === 'img') return `<figure class="my-6"><img src="${esc(absoluteUrl(b.src))}" alt="${esc(b.alt)}" width="1200" height="675" loading="lazy" class="w-full rounded-2xl" /></figure>`;
+      if (b.type === 'img') return `<figure class="my-6"><img src="${esc(absoluteUrl(b.src))}" alt="${esc(brandAlt(b.alt))}" width="1200" height="675" loading="lazy" class="w-full rounded-2xl" /></figure>`;
       const tag = b.type === 'ol' ? 'ol' : 'ul';
       return `<${tag}>${b.items.map((i) => `<li>${inline(i)}</li>`).join('')}</${tag}>`;
     })
@@ -140,7 +140,7 @@ function faqFromBlocks(blocks: Block[]): { q: string; a: string }[] {
     const b = blocks[i];
     if (b.type === 'h3') {
       if (/پرسش|سوالات|Frequently|الأسئلة/.test(b.text)) { inFaq = true; continue; }
-      if (inFaq && b.text.trim().endsWith('؟')) {
+      if (inFaq && /[؟?]$/.test(b.text.trim())) {
         const next = blocks[i + 1];
         if (next && next.type === 'p') out.push({ q: plain(b.text), a: plain(next.text) });
         continue;
@@ -239,7 +239,7 @@ function main() {
       const altPaths = Object.fromEntries(availLangs.map((l) => [l, articlePath(l, a.slug)])) as Record<Lang, string>;
       const canonical = absoluteUrl(urlPath);
       const imageUrl = absoluteUrl(`/${a.image.replace(/^\//, '')}`);
-      const heroAlt = a.imageAlt ?? brandAlt(a.title);
+      const heroAlt = brandAlt(a.imageAlt ?? a.title);
       const title = a.seoTitle ?? `${a.title} | ${content.clinic.shortName}`;
       const keywords = a.keywords ?? `${a.category}, ${t(lang, 'seo.keywords')}`;
       const blocks = parseBlocks(a.content);
@@ -314,7 +314,7 @@ ${blocksToHtml(blocks)}
         bodyHtml,
       });
       written.push(writeFileSafe(urlPath, html));
-      const bodyImages = blocks.flatMap((b) => (b.type === 'img' ? [{ loc: absoluteUrl(b.src), title: b.alt, caption: b.alt }] : []));
+      const bodyImages = blocks.flatMap((b) => (b.type === 'img' ? [{ loc: absoluteUrl(b.src), title: brandAlt(b.alt), caption: brandAlt(b.alt) }] : []));
       sitemapEntries.push({
         loc: canonical,
         alts: altPaths,
