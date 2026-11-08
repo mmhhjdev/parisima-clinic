@@ -135,6 +135,8 @@ function renderPage(template: string, m: PageMeta): string {
     `<meta name="description" content="${esc(m.description)}" />`,
     `<meta name="keywords" content="${esc(m.keywords)}" />`,
     `<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />`,
+    `<meta name="geo.region" content="IR-07" />`,
+    `<meta name="geo.placename" content="زعفرانیه، تهران، ایران" />`,
     `<link rel="canonical" href="${canonical}" />`,
     ...alternates,
     `<meta property="og:type" content="${m.ogType}" />`,
@@ -233,6 +235,8 @@ function main() {
           '@id': `${absoluteUrl(home)}#clinic`,
           name: content.clinic.name,
           alternateName: ['پریسیما', 'پری-سیما', 'پری سیما', 'Parisima', 'Pari-Sima', content.clinic.shortName],
+          disambiguatingDescription: t(lang, 'seo.disambiguation'),
+          areaServed: [{ '@type': 'Place', name: 'Zafaraniyeh, Tehran' }, { '@type': 'Place', name: 'Zafaraniyeh' }],
           url: absoluteUrl(home),
           logo: absoluteUrl('/logo.png'),
           image: absoluteUrl('/logo.png'),
@@ -251,7 +255,6 @@ function main() {
           ...(CLINIC_GEO
             ? { geo: { '@type': 'GeoCoordinates', latitude: CLINIC_GEO.latitude, longitude: CLINIC_GEO.longitude } }
             : {}),
-          areaServed: { '@type': 'City', name: 'Tehran' },
           openingHoursSpecification: CLINIC_HOURS.map((h) => ({
             '@type': 'OpeningHoursSpecification',
             dayOfWeek: h.days,
