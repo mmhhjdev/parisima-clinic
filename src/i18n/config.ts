@@ -30,7 +30,13 @@ export const CLINIC_POSTAL = {
 
 // مختصات دقیق کلینیک (عرض و طول جغرافیایی) را از Google Maps بگیرید و اینجا قرار دهید.
 // تا وقتی مقدار داده نشده، فیلد geo در JSON-LD اضافه نمی‌شود.
-export const CLINIC_GEO: { latitude: number; longitude: number } | null = null;
+export const CLINIC_GEO: { latitude: number; longitude: number } | null = { latitude: 35.803444, longitude: 51.420361 };
+
+// لینک مسیریابی دقیق: با مختصات کلینیک، سنجاق روی ساختمان قرار می‌گیرد
+export const clinicMapsUrl = (addressQuery: string) =>
+  CLINIC_GEO
+    ? `https://www.google.com/maps/search/?api=1&query=${CLINIC_GEO.latitude},${CLINIC_GEO.longitude}`
+    : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addressQuery)}`;
 
 export const CLINIC_HOURS = [
   { days: ['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday'], opens: '07:00', closes: '20:00' },

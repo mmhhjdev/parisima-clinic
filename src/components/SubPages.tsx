@@ -2,7 +2,7 @@ import React from 'react';
 import { Calendar, Clock, MapPin, Phone, ChevronLeft, Award } from 'lucide-react';
 import { useI18n } from '../i18n/LanguageProvider';
 import { assetUrl } from '../lib/assets';
-import { brandAlt, homePath, servicePath, servicesPath, aboutPath, contactPath } from '../i18n/config';
+import { brandAlt, homePath, servicePath, servicesPath, aboutPath, contactPath, clinicMapsUrl } from '../i18n/config';
 import { pageT } from '../i18n/pages';
 
 // نوار مسیر (Breadcrumb) برای صفحات داخلی
@@ -129,7 +129,7 @@ export const AboutPage: React.FC<{ onOpenBooking: () => void }> = ({ onOpenBooki
 export const ContactPage: React.FC<{ onOpenBooking: () => void }> = ({ onOpenBooking }) => {
   const { lang, content } = useI18n();
   const c = content.clinic;
-  const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(c.addressShort + ' ' + c.name)}`;
+  const mapUrl = clinicMapsUrl(c.addressShort + ' ' + c.name);
   return (
     <PageShell title={pageT(lang, 'contactTitle')} desc={pageT(lang, 'contactDesc')} crumbs={[{ label: pageT(lang, 'back'), href: homePath(lang) }, { label: pageT(lang, 'contact') }]}>
       <div className="grid md:grid-cols-2 gap-6 font-sans text-sm">

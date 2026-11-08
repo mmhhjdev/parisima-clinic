@@ -7,6 +7,7 @@ import {
   BRAND_TAG,
   brandAlt,
   CLINIC_GEO,
+  clinicMapsUrl,
   CLINIC_HOURS,
   CLINIC_POSTAL,
   LANGS,
@@ -80,7 +81,7 @@ function homeBody(lang: Lang, home: string): string {
   ]
     .map(([hash, label]) => `<li><a href="${home}${hash}">${esc(label)}</a></li>`)
     .join('');
-  const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(c.addressShort + ' ' + c.name)}`;
+  const mapUrl = clinicMapsUrl(c.addressShort + ' ' + c.name);
   return `<main class="flex-1"><section class="max-w-3xl mx-auto px-4 py-10 font-sans text-sm leading-loose text-slate-700">
 <h1 class="font-header text-2xl font-black text-[#0F172A] mb-4">${esc(c.name)}</h1>
 <p>${esc(t(lang, 'seo.description'))}</p>
@@ -137,6 +138,7 @@ function renderPage(template: string, m: PageMeta): string {
     `<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />`,
     `<meta name="geo.region" content="IR-07" />`,
     `<meta name="geo.placename" content="زعفرانیه، تهران، ایران" />`,
+    ...(CLINIC_GEO ? [`<meta name="geo.position" content="${CLINIC_GEO.latitude};${CLINIC_GEO.longitude}" />`, `<meta name="ICBM" content="${CLINIC_GEO.latitude}, ${CLINIC_GEO.longitude}" />`] : []),
     `<link rel="canonical" href="${canonical}" />`,
     ...alternates,
     `<meta property="og:type" content="${m.ogType}" />`,
@@ -244,7 +246,7 @@ function main() {
           inLanguage: meta.htmlLang,
           medicalSpecialty: ['Dermatology', 'HairRestoration'],
           telephone: CLINIC_POSTAL.telephone,
-          hasMap: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(content.clinic.addressShort + ' ' + content.clinic.name)}`,
+          hasMap: clinicMapsUrl(content.clinic.addressShort + ' ' + content.clinic.name),
           address: {
             '@type': 'PostalAddress',
             streetAddress: CLINIC_POSTAL.streetAddress,
@@ -281,7 +283,7 @@ function main() {
     const homeCrumb: [string, string] = [pageT(lang, 'back'), home];
     const c0 = content.clinic;
     const mapQ = encodeURIComponent(c0.addressShort + ' ' + c0.name);
-    const mapHref = `https://www.google.com/maps/search/?api=1&query=${mapQ}`;
+    const mapHref = clinicMapsUrl(c0.addressShort + ' ' + c0.name);
 
     // فهرست خدمات
     subPages.push({
