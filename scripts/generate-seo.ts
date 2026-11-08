@@ -17,7 +17,12 @@ import {
   homePath,
   absoluteUrl,
   type Lang,
+  servicesPath,
+  servicePath,
+  aboutPath,
+  contactPath,
 } from '../src/i18n/config';
+import { pageT } from '../src/i18n/pages';
 import { CONTENT } from '../src/data/locales';
 import { STRINGS } from '../src/i18n/strings';
 import { parseBlocks, type Block } from '../src/lib/markdown';
@@ -67,15 +72,29 @@ function homeBody(lang: Lang, home: string): string {
   const articles = CONTENT[lang].articles
     .map((a) => `<li><a href="${articlePath(lang, a.slug)}">${esc(a.title)}</a></li>`)
     .join('');
+  const sections = [
+    ['#services', t(lang, 'nav.services')],
+    ['#articles', t(lang, 'nav.articles')],
+    ['#faq', t(lang, 'footer.faq')],
+    ['#contact', t(lang, 'nav.contact')],
+  ]
+    .map(([hash, label]) => `<li><a href="${home}${hash}">${esc(label)}</a></li>`)
+    .join('');
+  const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(c.addressShort + ' ' + c.name)}`;
   return `<main class="flex-1"><section class="max-w-3xl mx-auto px-4 py-10 font-sans text-sm leading-loose text-slate-700">
 <h1 class="font-header text-2xl font-black text-[#0F172A] mb-4">${esc(c.name)}</h1>
 <p>${esc(t(lang, 'seo.description'))}</p>
+<nav aria-label="${esc(t(lang, 'nav.menu'))}"><ul class="flex flex-wrap gap-3 my-4">${sections}</ul></nav>
 <address class="not-italic mt-4">
 <div>${esc(c.address)}</div>
 <div><a href="tel:${tel}">${esc(c.phone1Display)}</a> · <a href="tel:+98${c.mobile1.replace(/^0/, '')}">${esc(c.mobile1Display)}</a></div>
 <div>${esc(c.workingHours)}</div>
+<div><a href="${mapUrl}" rel="noopener">${esc(t(lang, 'contact.maps'))}</a></div>
 </address>
-<h2 class="font-header text-lg font-black text-[#0F172A] mt-8 mb-2">${esc(t(lang, 'article.allArticles'))}</h2>
+<h2 class="font-header text-lg font-black text-[#0F172A] mt-8 mb-2">${esc(t(lang, 'nav.services'))}</h2>
+<ul class="list-disc pr-5">${CONTENT[lang].services.map((sv) => `<li><a href="${servicePath(lang, sv.slug)}">${esc(sv.title)}</a></li>`).join('')}</ul>
+<p><a href="${servicesPath(lang)}">${esc(pageT(lang, 'allServices'))}</a> · <a href="${aboutPath(lang)}">${esc(pageT(lang, 'about'))}</a> · <a href="${contactPath(lang)}">${esc(pageT(lang, 'contact'))}</a></p>
+<h2 class="font-header text-lg font-black text-[#0F172A] mt-8 mb-2">${esc(t(lang, 'nav.articles'))}</h2>
 <ul class="list-disc pr-5">${articles}</ul>
 </section></main>`;
 }
@@ -91,6 +110,17 @@ interface PageMeta {
   ogType: 'website' | 'article';
   jsonLd: object[];
   bodyHtml: string;
+}
+
+// آدرس معادل هر صفحه داخلی در زبان‌های دیگر (برای hreflang و نقشه‌ی سایت)
+function subPathFor(l: Lang, key: string): string {
+  if (key === 'services') return servicesPath(l);
+  if (key === 'about') return aboutPath(l);
+  if (key === 'contact') return contactPath(l);
+  return servicePath(l, key.replace(/^service:/, ''));
+}
+function subAlts(key: string): Record<Lang, string> {
+  return Object.fromEntries(LANGS.map((l) => [l, subPathFor(l, key)])) as Record<Lang, string>;
 }
 
 function renderPage(template: string, m: PageMeta): string {
@@ -193,6 +223,12 @@ function main() {
       jsonLd: [
         {
           '@context': 'https://schema.org',
+          '@type': 'SiteNavigationElement',
+          name: [t(lang, 'nav.services'), t(lang, 'nav.articles'), t(lang, 'footer.faq'), t(lang, 'nav.contact')],
+          url: [`${absoluteUrl(home)}#services`, `${absoluteUrl(home)}#articles`, `${absoluteUrl(home)}#faq`, `${absoluteUrl(home)}#contact`],
+        },
+        {
+          '@context': 'https://schema.org',
           '@type': 'MedicalClinic',
           '@id': `${absoluteUrl(home)}#clinic`,
           name: content.clinic.name,
@@ -204,6 +240,7 @@ function main() {
           inLanguage: meta.htmlLang,
           medicalSpecialty: ['Dermatology', 'HairRestoration'],
           telephone: CLINIC_POSTAL.telephone,
+          hasMap: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(content.clinic.addressShort + ' ' + content.clinic.name)}`,
           address: {
             '@type': 'PostalAddress',
             streetAddress: CLINIC_POSTAL.streetAddress,
@@ -231,6 +268,122 @@ function main() {
       .filter((s) => s.image)
       .map((s) => ({ loc: absoluteUrl(`/${s.image.replace(/^\//, '')}`), title: s.title, caption: brandAlt(s.imageAlt || s.title) }));
     sitemapEntries.push({ loc: absoluteUrl(home), alts: homeAlts, images: homeImages });
+
+    // صفحات داخلی: خدمات، جزئیات هر خدمت، درباره ما، تماس
+    const subPages: { key: string; path: string; title: string; desc: string; body: string; crumbs: [string, string][]; ld: object[]; image: string }[] = [];
+    const crumbHtml = (items: [string, string][]) =>
+      `<nav aria-label="breadcrumb" class="text-xs text-slate-500 mb-4"><ol class="flex flex-wrap gap-1.5">${items
+        .map(([label, href], i) => (href && i < items.length - 1 ? `<li><a href="${href}">${esc(label)}</a> ›</li>` : `<li>${esc(label)}</li>`))
+        .join('')}</ol></nav>`;
+    const homeCrumb: [string, string] = [pageT(lang, 'back'), home];
+    const c0 = content.clinic;
+    const mapQ = encodeURIComponent(c0.addressShort + ' ' + c0.name);
+    const mapHref = `https://www.google.com/maps/search/?api=1&query=${mapQ}`;
+
+    // فهرست خدمات
+    subPages.push({
+      key: 'services',
+      path: servicesPath(lang),
+      title: `${pageT(lang, 'servicesTitle')} | ${c0.shortName}`,
+      desc: pageT(lang, 'servicesDesc'),
+      image: absoluteUrl('/logo.png'),
+      crumbs: [homeCrumb, [pageT(lang, 'services'), servicesPath(lang)]],
+      body: `${crumbHtml([homeCrumb, [pageT(lang, 'services'), servicesPath(lang)]])}<h1>${esc(pageT(lang, 'servicesTitle'))}</h1><p>${esc(pageT(lang, 'servicesDesc'))}</p><ul>${content.services
+        .map((s) => `<li><a href="${servicePath(lang, s.slug)}">${esc(s.title)}</a> — ${esc(s.shortDescription)}</li>`)
+        .join('')}</ul>`,
+      ld: [{ '@context': 'https://schema.org', '@type': 'CollectionPage', name: pageT(lang, 'servicesTitle'), url: absoluteUrl(servicesPath(lang)), inLanguage: meta.htmlLang }],
+    });
+
+    // صفحه‌ی هر خدمت
+    for (const sv of content.services) {
+      const p = servicePath(lang, sv.slug);
+      const crumbs: [string, string][] = [homeCrumb, [pageT(lang, 'services'), servicesPath(lang)], [sv.title, p]];
+      subPages.push({
+        key: `service:${sv.slug}`,
+        path: p,
+        title: `${sv.title} | ${c0.shortName}`,
+        desc: sv.shortDescription,
+        image: absoluteUrl(`/${sv.image.replace(/^\//, '')}`),
+        crumbs,
+        body: `${crumbHtml(crumbs)}<h1>${esc(sv.title)}</h1><p>${esc(sv.fullDescription)}</p>
+<img src="${absoluteUrl(`/${sv.image.replace(/^\//, '')}`)}" alt="${esc(brandAlt(sv.imageAlt || sv.title))}" width="1200" height="675" />
+${sv.benefits?.length ? `<h2>${esc(pageT(lang, 'benefits'))}</h2><ul>${sv.benefits.map((b) => `<li>${esc(b)}</li>`).join('')}</ul>` : ''}
+<ul><li>${esc(pageT(lang, 'duration'))}: ${esc(sv.duration)}</li><li>${esc(pageT(lang, 'sessions'))}: ${esc(sv.sessions)}</li><li>${esc(pageT(lang, 'recovery'))}: ${esc(sv.recoveryTime)}</li><li>${esc(pageT(lang, 'doctor'))}: <a href="${aboutPath(lang)}">${esc(sv.doctorName)}</a></li></ul>
+<p><a href="${servicesPath(lang)}">${esc(pageT(lang, 'allServices'))}</a></p>`,
+        ld: [
+          {
+            '@context': 'https://schema.org',
+            '@type': 'MedicalProcedure',
+            name: sv.title,
+            description: sv.shortDescription,
+            url: absoluteUrl(p),
+            image: absoluteUrl(`/${sv.image.replace(/^\//, '')}`),
+            inLanguage: meta.htmlLang,
+            procedureType: sv.categoryLabel,
+            provider: { '@id': `${absoluteUrl(home)}#clinic` },
+          },
+          {
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: crumbs.map(([name, href], i) => ({ '@type': 'ListItem', position: i + 1, name, item: absoluteUrl(href) })),
+          },
+        ],
+      });
+    }
+
+    // درباره ما (پزشکان)
+    subPages.push({
+      key: 'about',
+      path: aboutPath(lang),
+      title: `${pageT(lang, 'aboutTitle')} | ${c0.shortName}`,
+      desc: pageT(lang, 'aboutDesc'),
+      image: absoluteUrl('/logo.png'),
+      crumbs: [homeCrumb, [pageT(lang, 'about'), aboutPath(lang)]],
+      body: `${crumbHtml([homeCrumb, [pageT(lang, 'about'), aboutPath(lang)]])}<h1>${esc(pageT(lang, 'aboutTitle'))}</h1><p>${esc(pageT(lang, 'aboutDesc'))}</p>${content.doctors
+        .map((d) => `<article><h2>${esc(d.name)}</h2><p>${esc(d.title)}</p><p>${esc(d.bio)}</p><p>${esc(pageT(lang, 'medicalCode'))}: ${esc(d.medicalCode)}</p><h3>${esc(pageT(lang, 'specialties'))}</h3><ul>${d.specialties.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></article>`)
+        .join('')}`,
+      ld: [
+        {
+          '@context': 'https://schema.org',
+          '@type': 'AboutPage',
+          name: pageT(lang, 'aboutTitle'),
+          url: absoluteUrl(aboutPath(lang)),
+          inLanguage: meta.htmlLang,
+          about: { '@id': `${absoluteUrl(home)}#clinic` },
+        },
+        ...content.doctors.map((d) => ({ '@context': 'https://schema.org', '@type': 'Physician', name: d.name, jobTitle: d.title, medicalSpecialty: d.specialties, worksFor: { '@id': `${absoluteUrl(home)}#clinic` } })),
+      ],
+    });
+
+    // تماس و نشانی
+    subPages.push({
+      key: 'contact',
+      path: contactPath(lang),
+      title: `${pageT(lang, 'contactTitle')} | ${c0.shortName}`,
+      desc: pageT(lang, 'contactDesc'),
+      image: absoluteUrl('/logo.png'),
+      crumbs: [homeCrumb, [pageT(lang, 'contact'), contactPath(lang)]],
+      body: `${crumbHtml([homeCrumb, [pageT(lang, 'contact'), contactPath(lang)]])}<h1>${esc(pageT(lang, 'contactTitle'))}</h1><p>${esc(pageT(lang, 'contactDesc'))}</p>
+<address>${esc(pageT(lang, 'address'))}: ${esc(c0.address)}<br/>${esc(pageT(lang, 'phone'))}: <a href="tel:${c0.phone1}">${esc(c0.phone1Display)}</a> · <a href="tel:${c0.mobile1}">${esc(c0.mobile1Display)}</a><br/>${esc(pageT(lang, 'hours'))}: ${esc(c0.workingHours)}<br/><a href="${mapHref}" rel="noopener">${esc(pageT(lang, 'map'))}</a></address>`,
+      ld: [{ '@context': 'https://schema.org', '@type': 'ContactPage', name: pageT(lang, 'contactTitle'), url: absoluteUrl(contactPath(lang)), inLanguage: meta.htmlLang, about: { '@id': `${absoluteUrl(home)}#clinic` } }],
+    });
+
+    for (const sp of subPages) {
+      const html = renderPage(template, {
+        lang,
+        urlPath: sp.path,
+        altPaths: subAlts(sp.key),
+        title: sp.title,
+        description: sp.desc,
+        keywords: t(lang, 'seo.keywords'),
+        image: sp.image,
+        ogType: 'website',
+        jsonLd: sp.ld,
+        bodyHtml: `<main class="flex-1"><section class="max-w-4xl mx-auto px-5 py-10 font-sans text-sm leading-loose text-slate-700">${sp.body}</section></main>`,
+      } as PageMeta);
+      written.push(writeFileSafe(sp.path, html));
+      sitemapEntries.push({ loc: absoluteUrl(sp.path), alts: subAlts(sp.key), lastmod: '2026-11-08' });
+    }
 
     // صفحه هر مقاله
     for (const a of content.articles) {

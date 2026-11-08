@@ -14,6 +14,8 @@ import { Service } from './types';
 import { fetchConsultations, getAdminSession } from './lib/supabase';
 import { useI18n } from './i18n/LanguageProvider';
 import { ArticlePage } from './components/ArticlePage';
+import { ServicesIndexPage, ServicePage, AboutPage, ContactPage } from './components/SubPages';
+import { parseRoute } from './i18n/config';
 
 export function App() {
   const { dir, lang, article } = useI18n();
@@ -76,12 +78,24 @@ export function App() {
     }
   };
 
+  // صفحات داخلی: خدمات، جزئیات هر خدمت، درباره ما، تماس
+  const route = parseRoute(typeof window !== 'undefined' ? window.location.pathname : '/');
+  const openBooking = () => handleOpenBooking();
+  const subPage: React.ReactNode =
+    route.page === 'services' ? <ServicesIndexPage onOpenBooking={openBooking} />
+    : route.page === 'service' && route.serviceSlug ? <ServicePage slug={route.serviceSlug} onOpenBooking={openBooking} />
+    : route.page === 'about' ? <AboutPage onOpenBooking={openBooking} />
+    : route.page === 'contact' ? <ContactPage onOpenBooking={openBooking} />
+    : null;
+
   return (
     <div className="min-h-screen bg-[#FAF9F6] text-[#0F172A] flex flex-col font-sans selection:bg-[#0369A1] selection:text-white" dir={dir} lang={lang}>
       <Navbar onOpenBooking={() => handleOpenBooking()} onOpenAdmin={() => setIsAdminOpen(true)} pendingCount={pendingCount} />
 
       {article ? (
         <ArticlePage article={article} onOpenBooking={() => handleOpenBooking()} />
+      ) : subPage ? (
+        subPage
       ) : (
         <main className="flex-1">
           <Hero onOpenBooking={() => handleOpenBooking()} />

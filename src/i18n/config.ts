@@ -14,6 +14,10 @@ export const LANG_META: Record<Lang, { htmlLang: string; dir: 'rtl' | 'ltr'; ogL
 export const homePath = (lang: Lang) => `${LANG_META[lang].prefix}/`;
 export const articlePath = (lang: Lang, slug: string) => `${LANG_META[lang].prefix}/articles/${slug}/`;
 export const absoluteUrl = (path: string) => `${SITE_URL}${path}`;
+export const servicesPath = (lang: Lang) => `${LANG_META[lang].prefix}/services/`;
+export const servicePath = (lang: Lang, slug: string) => `${LANG_META[lang].prefix}/services/${slug}/`;
+export const aboutPath = (lang: Lang) => `${LANG_META[lang].prefix}/about/`;
+export const contactPath = (lang: Lang) => `${LANG_META[lang].prefix}/contact/`;
 
 // آدرس ساختاریافته کلینیک برای داده‌های ساختاریافته (JSON-LD) و سئوی محلی.
 export const CLINIC_POSTAL = {
@@ -35,6 +39,8 @@ export const CLINIC_HOURS = [
 export interface Route {
   lang: Lang;
   articleSlug?: string;
+  page?: 'services' | 'service' | 'about' | 'contact';
+  serviceSlug?: string;
 }
 
 export function parseRoute(pathname: string): Route {
@@ -47,6 +53,10 @@ export function parseRoute(pathname: string): Route {
   if (segs[0] === 'articles' && segs[1]) {
     return { lang, articleSlug: decodeURIComponent(segs[1]) };
   }
+  if (segs[0] === 'services' && segs[1]) return { lang, page: 'service', serviceSlug: decodeURIComponent(segs[1]) };
+  if (segs[0] === 'services') return { lang, page: 'services' };
+  if (segs[0] === 'about') return { lang, page: 'about' };
+  if (segs[0] === 'contact') return { lang, page: 'contact' };
   return { lang };
 }
 
