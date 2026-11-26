@@ -4,6 +4,7 @@ import {
   Edit3, Save, Search, Filter, Lock, LogOut, AlertCircle 
 } from 'lucide-react';
 import { Consultation } from '../types';
+import { ReviewsAdmin } from './ReviewsAdmin';
 import { 
   getAdminSession, signInAdmin, signOutAdmin,
   fetchConsultations, 
@@ -302,6 +303,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 </select>
               </div>
             </div>
+
+            {/* Reviews moderation */}
+            <ReviewsAdmin />
 
             {/* Consultations Table / List */}
             <div className="flex-1 overflow-y-auto p-4 space-y-3">

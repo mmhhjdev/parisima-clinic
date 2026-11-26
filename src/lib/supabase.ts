@@ -129,3 +129,66 @@ export async function deleteConsultation(id: string): Promise<boolean> {
   if (error) console.error('Supabase delete error:', error.message);
   return !error;
 }
+
+/* ---------- نظرات بیماران ---------- */
+
+export type ReviewStatus = 'pending' | 'approved' | 'rejected';
+export interface Review {
+  id: string;
+  name: string;
+  rating: number;
+  comment: string;
+  status: ReviewStatus;
+  created_at: string;
+}
+
+/** ثبت نظر جدید؛ بعد از تایید مدیر نمایش داده می‌شود */
+export async function submitReview(entry: { name: string; rating: number; comment: string }): Promise<{ success: boolean; error?: string }> {
+  if (!supabase) return { success: false, error: NOT_CONFIGURED };
+  const { error } = await supabase.from('reviews').insert([{
+    name: entry.name.trim(),
+    rating: entry.rating,
+    comment: entry.comment.trim(),
+    status: 'pending',
+  }]);
+  if (error) {
+    console.error('Supabase review insert error:', error.message);
+    return { success: false, error: error.message };
+  }
+  return { success: true };
+}
+
+/** نظرهای تاییدشده برای نمایش عمومی */
+export async function fetchApprovedReviews(): Promise<Review[]> {
+  if (!supabase) return [];
+  const { data, error } = await supabase
+    .from('reviews')
+    .select('id,name,rating,comment,status,created_at')
+    .eq('status', 'approved')
+    .order('created_at', { ascending: false })
+    .limit(30);
+  if (error) { console.error('Supabase reviews read error:', error.message); return []; }
+  return (data || []) as Review[];
+}
+
+/** همه‌ی نظرها برای پنل مدیر */
+export async function fetchAllReviews(): Promise<{ data: Review[]; error?: string }> {
+  if (!supabase) return { data: [], error: NOT_CONFIGURED };
+  const { data, error } = await supabase.from('reviews').select('*').order('created_at', { ascending: false });
+  if (error) return { data: [], error: error.message };
+  return { data: (data || []) as Review[] };
+}
+
+export async function setReviewStatus(id: string, status: ReviewStatus): Promise<boolean> {
+  if (!supabase) return false;
+  const { error } = await supabase.from('reviews').update({ status }).eq('id', id);
+  if (error) console.error('Supabase review status error:', error.message);
+  return !error;
+}
+
+export async function deleteReview(id: string): Promise<boolean> {
+  if (!supabase) return false;
+  const { error } = await supabase.from('reviews').delete().eq('id', id);
+  if (error) console.error('Supabase review delete error:', error.message);
+  return !error;
+}

@@ -112,7 +112,7 @@ export const AboutPage: React.FC<{ onOpenBooking: () => void }> = ({ onOpenBooki
             <h2 className="font-header font-bold text-lg text-[#0F172A]">{d.name}</h2>
             <p className="font-header text-sm text-[#0369A1]">{d.title}</p>
             <p className="font-sans text-sm text-slate-700 leading-loose">{d.bio}</p>
-            <div className="font-sans text-xs text-slate-500">{pageT(lang, 'medicalCode')}: {d.medicalCode}</div>
+            <div className="font-sans text-xs text-slate-500">{d.medicalCode.includes(':') ? d.medicalCode : `${pageT(lang, 'medicalCode')}: ${d.medicalCode}`}</div>
             <div>
               <h3 className="font-header font-semibold text-sm text-[#0F172A] mb-1">{pageT(lang, 'specialties')}</h3>
               <ul className="list-disc ps-5 font-sans text-sm text-slate-700 space-y-1">{d.specialties.map((x, i) => <li key={i}>{x}</li>)}</ul>

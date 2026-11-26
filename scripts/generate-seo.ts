@@ -376,7 +376,7 @@ ${sv.benefits?.length ? `<h2>${esc(pageT(lang, 'benefits'))}</h2><ul>${sv.benefi
       image: absoluteUrl('/logo.png'),
       crumbs: [homeCrumb, [pageT(lang, 'about'), aboutPath(lang)]],
       body: `${crumbHtml([homeCrumb, [pageT(lang, 'about'), aboutPath(lang)]])}<h1>${esc(pageT(lang, 'aboutTitle'))}</h1><p>${esc(pageT(lang, 'aboutDesc'))}</p>${content.doctors
-        .map((d) => `<article><h2>${esc(d.name)}</h2><p>${esc(d.title)}</p><p>${esc(d.bio)}</p><p>${esc(pageT(lang, 'medicalCode'))}: ${esc(d.medicalCode)}</p><h3>${esc(pageT(lang, 'specialties'))}</h3><ul>${d.specialties.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></article>`)
+        .map((d) => `<article><h2>${esc(d.name)}</h2><p>${esc(d.title)}</p><p>${esc(d.bio)}</p><p>${esc(d.medicalCode.includes(':') ? d.medicalCode : `${pageT(lang, 'medicalCode')}: ${d.medicalCode}`)}</p><h3>${esc(pageT(lang, 'specialties'))}</h3><ul>${d.specialties.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></article>`)
         .join('')}`,
       ld: [
         {
@@ -387,7 +387,7 @@ ${sv.benefits?.length ? `<h2>${esc(pageT(lang, 'benefits'))}</h2><ul>${sv.benefi
           inLanguage: meta.htmlLang,
           about: { '@id': `${absoluteUrl(home)}#clinic` },
         },
-        ...content.doctors.map((d) => ({ '@context': 'https://schema.org', '@type': 'Physician', name: d.name, jobTitle: d.title, medicalSpecialty: d.specialties, worksFor: { '@id': `${absoluteUrl(home)}#clinic` } })),
+        ...content.doctors.map((d) => ({ '@context': 'https://schema.org', '@type': 'Physician', name: d.name, jobTitle: d.title, medicalSpecialty: d.specialties, identifier: { '@type': 'PropertyValue', propertyID: 'medical license', value: d.medicalCode.replace(/\D/g, '') }, worksFor: { '@id': `${absoluteUrl(home)}#clinic` } })),
       ],
     });
 

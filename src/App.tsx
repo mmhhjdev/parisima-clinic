@@ -6,6 +6,7 @@ import { ServicesSection } from './components/ServicesSection';
 import { ArticlesSection } from './components/ArticlesSection';
 import { ContactSection } from './components/ContactSection';
 import { FaqSection } from './components/FaqSection';
+import { ReviewsSection } from './components/ReviewsSection';
 import { Footer } from './components/Footer';
 import { FloatingActions } from './components/FloatingActions';
 import { AppointmentModal } from './components/AppointmentModal';
@@ -105,6 +106,7 @@ export function App() {
           <ArticlesSection />
           <ContactSection onOpenBooking={() => handleOpenBooking()} />
           <FaqSection />
+          <ReviewsSection />
         </main>
       )}
 

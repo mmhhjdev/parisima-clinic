@@ -52,3 +52,39 @@ create policy "admin delete consultations"
 -- (ایمیل و رمز عبور مدیر). سپس در Authentication → Sign In / Providers
 -- گزینه "Allow new users to sign up" را خاموش کنید تا کسی بتواند خودش ثبت‌نام کند.
 -- ============================================================
+
+
+-- ============================================================
+-- نظرات بیماران (با تایید مدیر نمایش داده می‌شوند)
+-- ============================================================
+create table if not exists public.reviews (
+  id          uuid primary key default gen_random_uuid(),
+  name        text        not null,
+  rating      smallint    not null check (rating between 1 and 5),
+  comment     text        not null,
+  status      text        not null default 'pending' check (status in ('pending', 'approved', 'rejected')),
+  created_at  timestamptz not null default now()
+);
+create index if not exists reviews_status_created_idx on public.reviews (status, created_at desc);
+alter table public.reviews enable row level security;
+
+-- عمومی: فقط ثبت نظر جدید با وضعیت pending؛ خواندن فقط نظرهای تاییدشده
+drop policy if exists "public submit review" on public.reviews;
+create policy "public submit review" on public.reviews for insert to anon, authenticated
+  with check (
+    status = 'pending'
+    and char_length(name) between 2 and 60
+    and char_length(comment) between 10 and 800
+    and rating between 1 and 5
+  );
+drop policy if exists "public read approved reviews" on public.reviews;
+create policy "public read approved reviews" on public.reviews for select to anon, authenticated
+  using (status = 'approved');
+
+-- مدیر: دیدن همه، تایید/رد و حذف
+drop policy if exists "admin read reviews" on public.reviews;
+create policy "admin read reviews" on public.reviews for select to authenticated using (true);
+drop policy if exists "admin update reviews" on public.reviews;
+create policy "admin update reviews" on public.reviews for update to authenticated using (true) with check (true);
+drop policy if exists "admin delete reviews" on public.reviews;
+create policy "admin delete reviews" on public.reviews for delete to authenticated using (true);
