@@ -52,7 +52,7 @@ export const QnASection: React.FC = () => {
     const res = await submitQuestion({ firstName: firstNameOnly(qFirst), service: qService || pageT(lang, 'qaGeneral'), question: qText });
     setBusy(false);
     if (res.success) { setMsg({ type: 'ok', text: pageT(lang, 'qaSent') }); setQText(''); setQFirst(''); setQConsent(false); setShowAsk(false); }
-    else setMsg({ type: 'err', text: pageT(lang, 'qaError') });
+    else setMsg({ type: 'err', text: `${pageT(lang, 'qaError')}${res.error ? ` [${res.error}]` : ''}` });
   };
 
   const onAnswer = async (e: React.FormEvent, questionId: string) => {
@@ -65,7 +65,7 @@ export const QnASection: React.FC = () => {
     const res = await submitUserAnswer({ questionId, firstName: firstNameOnly(aFirst), body: aText });
     setBusy(false);
     if (res.success) { setMsg({ type: 'ok', text: pageT(lang, 'qaSent') }); setAText(''); setAFirst(''); setOpenId(null); }
-    else setMsg({ type: 'err', text: pageT(lang, 'qaError') });
+    else setMsg({ type: 'err', text: `${pageT(lang, 'qaError')}${res.error ? ` [${res.error}]` : ''}` });
   };
 
   return (

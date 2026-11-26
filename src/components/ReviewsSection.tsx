@@ -51,7 +51,8 @@ export const ReviewsSection: React.FC = () => {
       setMsg({ type: 'ok', text: pageT(lang, 'rvSent') });
       setName(''); setComment(''); setRating(5); setConsent(false);
     } else {
-      setMsg({ type: 'err', text: pageT(lang, 'rvError') });
+      // خطای فنی برای عیب‌یابی نمایش داده می‌شود؛ بعد از رفع مشکل حذف شود
+      setMsg({ type: 'err', text: `${pageT(lang, 'rvError')}${res.error ? ` [${res.error}]` : ''}` });
     }
   };
 
