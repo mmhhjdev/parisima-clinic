@@ -50,7 +50,7 @@ export const ArticlePage: React.FC<ArticlePageProps> = ({ article, onOpenBooking
           {article.excerpt}
         </p>
 
-        <ArticleBody content={article.content} />
+        <ArticleBody content={article.content} articleSlug={article.slug} />
 
         <div className="mt-12 p-6 rounded-2xl bg-gradient-to-r from-[#0C4A6E] to-[#0F172A] text-white flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>

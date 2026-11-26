@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useMemo } from 'react';
 import { LANGS, LANG_META, DEFAULT_LANG, Lang, parseRoute, homePath, articlePath, articlesIndexPath, servicesPath, servicePath, aboutPath, contactPath, faqPath, absoluteUrl } from './config';
 import { STRINGS } from './strings';
 import { CONTENT } from '../data/locales';
+import { pageT } from './pages';
 import type { Article, LocaleContent } from '../types';
 
 export interface I18nValue {
@@ -81,8 +82,41 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
     document.documentElement.lang = meta.htmlLang;
     document.documentElement.dir = meta.dir;
 
-    const title = article ? (article.seoTitle ?? `${article.title} | ${content.clinic.shortName}`) : t('seo.title');
-    const description = article ? (article.metaDescription ?? article.excerpt) : t('seo.description');
+    // Keep client metadata aligned with the route-specific static HTML generated at build time.
+    // Previously all non-article routes were overwritten with homepage metadata after hydration.
+    const route = parseRoute(window.location.pathname);
+    const service = route.page === 'service'
+      ? content.services.find((item) => item.slug === route.serviceSlug)
+      : undefined;
+    const pageMeta = (() => {
+      switch (route.page) {
+        case 'articles': {
+          const archiveTitle = lang === 'fa' ? 'مقالات پوست، مو و زیبایی' : lang === 'ar' ? 'مقالات الجلد والشعر والتجميل' : 'Skin, Hair & Aesthetic Articles';
+          const archiveDesc = lang === 'fa'
+            ? 'راهنماها و پاسخ‌های تخصصی درباره سلامت پوست، مو و خدمات زیبایی؛ با هدف آگاهی‌رسانی و تصمیم‌گیری آگاهانه.'
+            : lang === 'ar'
+              ? 'أدلة ومعلومات حول صحة البشرة والشعر والخدمات التجميلية لاتخاذ قرارات أكثر وعياً.'
+              : 'Guides and practical information about skin, hair and aesthetic services to support informed decisions.';
+          return { title: `${archiveTitle}${(route.articlesPage ?? 1) > 1 ? ` – ${route.articlesPage}` : ''} | ${content.clinic.shortName}`, description: archiveDesc };
+        }
+        case 'services':
+          return { title: `${pageT(lang, 'servicesTitle')} | ${content.clinic.shortName}`, description: pageT(lang, 'servicesDesc') };
+        case 'service':
+          return service
+            ? { title: `${service.title} | ${content.clinic.shortName}`, description: service.shortDescription }
+            : { title: t('seo.title'), description: t('seo.description') };
+        case 'about':
+          return { title: `${pageT(lang, 'aboutTitle')} | ${content.clinic.shortName}`, description: pageT(lang, 'aboutDesc') };
+        case 'contact':
+          return { title: `${pageT(lang, 'contactTitle')} | ${content.clinic.shortName}`, description: pageT(lang, 'contactDesc') };
+        case 'faq':
+          return { title: `${pageT(lang, 'faqTitle')} | ${content.clinic.shortName}`, description: pageT(lang, 'faqDesc') };
+        default:
+          return { title: t('seo.title'), description: t('seo.description') };
+      }
+    })();
+    const title = article ? (article.seoTitle ?? `${article.title} | ${content.clinic.shortName}`) : pageMeta.title;
+    const description = article ? (article.metaDescription ?? article.excerpt) : pageMeta.description;
     const canonical = absoluteUrl(hrefFor(lang));
 
     document.title = title;

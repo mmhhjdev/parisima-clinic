@@ -29,6 +29,7 @@ import { pageT } from '../src/i18n/pages';
 import { CONTENT } from '../src/data/locales';
 import { STRINGS } from '../src/i18n/strings';
 import { parseBlocks, type Block } from '../src/lib/markdown';
+import { ARTICLE_INLINE_IMAGES } from '../src/data/articleImages';
 
 const DIST = path.resolve(process.cwd(), 'dist');
 const TEMPLATE_PATH = path.join(DIST, 'index.html');
@@ -42,18 +43,45 @@ const inline = (s: string) =>
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
     .replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
 
-const blocksToHtml = (blocks: Block[]) =>
-  blocks
-    .map((b) => {
-      if (b.type === 'h2') return `<h2 class="font-header text-xl font-black text-[#0F172A] pt-4">${inline(b.text)}</h2>`;
-      if (b.type === 'h3') return `<h3 class="font-header text-base font-black text-[#0F172A] pt-2">${inline(b.text)}</h3>`;
-      if (b.type === 'p') return `<p>${inline(b.text)}</p>`;
-      if (b.type === 'img') return `<figure class="my-6"><img src="${esc(absoluteUrl(b.src))}" alt="${esc(brandAlt(b.alt))}" width="1200" height="675" loading="lazy" decoding="async" class="w-full rounded-2xl" /></figure>`;
-      if (b.type === 'table') return `<div class="my-6 overflow-x-auto"><table><thead><tr>${b.headers.map((c) => `<th>${inline(c)}</th>`).join('')}</tr></thead><tbody>${b.rows.map((r) => `<tr>${r.map((c) => `<td>${inline(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+const blocksToHtml = (blocks: Block[], articleSlug?: string) => {
+  const imageSet = articleSlug ? ARTICLE_INLINE_IMAGES[articleSlug] : undefined;
+  const used = new Set<number>();
+  let headingCount = 0;
+  const html: string[] = [];
+  const inlineFigure = (img: { src: string; alt: string }) =>
+    `<figure class="my-7 overflow-hidden rounded-2xl border border-slate-100 bg-slate-50"><img src="${esc(absoluteUrl(img.src))}" alt="${esc(brandAlt(img.alt))}" width="1200" height="675" loading="lazy" decoding="async" class="block w-full h-auto aspect-video object-cover" /></figure>`;
+
+  for (const b of blocks) {
+    if (b.type === 'h2' || b.type === 'h3') {
+      headingCount += 1;
+      html.push(b.type === 'h2'
+        ? `<h2 class="font-header text-xl font-black text-[#0F172A] pt-4">${inline(b.text)}</h2>`
+        : `<h3 class="font-header text-base font-black text-[#0F172A] pt-2">${inline(b.text)}</h3>`);
+      if (imageSet && used.size < 2) {
+        const heading = b.text.toLocaleLowerCase('fa');
+        const closingSection = ['پرسش', 'سوال', 'جمع‌بندی', 'مراجع', 'منابع'].some((word) => heading.includes(word));
+        const keywordMatch = !closingSection && imageSet.headingKeywords.some((word) => heading.includes(word.toLocaleLowerCase('fa')));
+        const fallbackSlot = !closingSection && (used.size === 0 ? headingCount >= 2 : headingCount >= 4);
+        if (keywordMatch || fallbackSlot) {
+          html.push(inlineFigure(imageSet.images[used.size]));
+          used.add(used.size);
+        }
+      }
+      continue;
+    }
+    if (b.type === 'p') html.push(`<p>${inline(b.text)}</p>`);
+    else if (b.type === 'img') html.push(`<figure class="my-6"><img src="${esc(absoluteUrl(b.src))}" alt="${esc(brandAlt(b.alt))}" width="1200" height="675" loading="lazy" decoding="async" class="w-full rounded-2xl" /></figure>`);
+    else if (b.type === 'table') html.push(`<div class="my-6 overflow-x-auto"><table><thead><tr>${b.headers.map((c) => `<th>${inline(c)}</th>`).join('')}</tr></thead><tbody>${b.rows.map((r) => `<tr>${r.map((c) => `<td>${inline(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`);
+    else {
       const tag = b.type === 'ol' ? 'ol' : 'ul';
-      return `<${tag}>${b.items.map((i) => `<li>${inline(i)}</li>`).join('')}</${tag}>`;
-    })
-    .join('\n');
+      html.push(`<${tag}>${b.items.map((i) => `<li>${inline(i)}</li>`).join('')}</${tag}>`);
+    }
+  }
+  if (imageSet && used.size < 2) {
+    for (const img of imageSet.images.slice(used.size)) html.push(inlineFigure(img));
+  }
+  return html.join('\n');
+};
 
 const t = (lang: Lang, key: string, params?: Record<string, string>) => {
   let str = STRINGS[lang][key] ?? STRINGS[DEFAULT_LANG][key] ?? key;
@@ -527,7 +555,7 @@ ${sv.benefits?.length ? `<h2>${esc(pageT(lang, 'benefits'))}</h2><ul>${sv.benefi
 <img src="${imageUrl}" alt="${esc(heroAlt)}" width="1600" height="900" fetchpriority="high" decoding="async" class="w-full rounded-2xl mb-8" />
 <p class="font-sans text-base sm:text-lg text-slate-600 leading-relaxed mb-8">${esc(a.excerpt)}</p>
 <div class="font-sans text-sm text-slate-700 leading-loose space-y-4">
-${blocksToHtml(blocks)}
+${blocksToHtml(blocks, a.slug)}
 </div>
 ${relatedHtml}
 </article></main>`;
@@ -540,6 +568,11 @@ ${relatedHtml}
           description,
           image: [
             { '@type': 'ImageObject', url: imageUrl, caption: heroAlt, name: a.title, creator: { '@type': 'Organization', name: content.clinic.name }, copyrightHolder: { '@type': 'Organization', name: content.clinic.name } },
+            ...(ARTICLE_INLINE_IMAGES[a.slug]?.images ?? []).map((img) => ({
+              '@type': 'ImageObject', url: absoluteUrl(img.src), caption: brandAlt(img.alt), name: a.title,
+              creator: { '@type': 'Organization', name: content.clinic.name },
+              copyrightHolder: { '@type': 'Organization', name: content.clinic.name },
+            })),
           ],
           inLanguage: meta.htmlLang,
           articleSection: a.category,
@@ -576,7 +609,10 @@ ${relatedHtml}
         bodyHtml,
       });
       written.push(writeFileSafe(urlPath, html));
-      const bodyImages = blocks.flatMap((b) => (b.type === 'img' ? [{ loc: absoluteUrl(b.src), title: brandAlt(b.alt), caption: brandAlt(b.alt) }] : []));
+      const bodyImages = [
+        ...blocks.flatMap((b) => (b.type === 'img' ? [{ loc: absoluteUrl(b.src), title: brandAlt(b.alt), caption: brandAlt(b.alt) }] : [])),
+        ...(ARTICLE_INLINE_IMAGES[a.slug]?.images ?? []).map((img) => ({ loc: absoluteUrl(img.src), title: brandAlt(img.alt), caption: brandAlt(img.alt) })),
+      ];
       sitemapEntries.push({
         loc: canonical,
         alts: altPaths,

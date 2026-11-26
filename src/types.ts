@@ -99,3 +99,8 @@ export interface Consultation {
   notes?: string;
   created_at: string;
 }
+
+export interface ArticleInlineImageSet {
+  images: { src: string; alt: string }[];
+  headingKeywords: string[];
+}
