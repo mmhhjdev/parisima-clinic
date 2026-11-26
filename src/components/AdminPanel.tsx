@@ -113,10 +113,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     if (doctorFilter !== 'all' && item.doctor_name !== doctorFilter) return false;
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
-      const matchName = item.patient_name.toLowerCase().includes(q);
+      const matchName = (item.patient_name ?? '').toLowerCase().includes(q);
       const matchPhone = item.phone.includes(q);
-      const matchId = item.id.toLowerCase().includes(q);
-      const matchService = item.service_type.toLowerCase().includes(q);
+      const matchId = (item.id ?? '').toLowerCase().includes(q);
+      const matchService = (item.service_type ?? '').toLowerCase().includes(q);
       return matchName || matchPhone || matchId || matchService;
     }
     return true;

@@ -48,7 +48,7 @@ export function App() {
   // میانبر کیبورد پنل مدیریت: Ctrl + Shift + A
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      const isAKey = e.key.toLowerCase() === 'a' || e.key === 'ش' || e.code === 'KeyA';
+      const isAKey = (e.key ?? '').toLowerCase() === 'a' || e.key === 'ش' || e.code === 'KeyA';
       if ((e.ctrlKey || e.metaKey) && e.shiftKey && isAKey) {
         e.preventDefault();
         setIsAdminOpen((prev) => !prev);

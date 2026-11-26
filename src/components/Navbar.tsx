@@ -26,7 +26,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking, onOpenAdmin }) =>
   // میانبر مخفی کیبورد (Ctrl + Alt + M)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.ctrlKey && e.altKey && e.key.toLowerCase() === 'm') {
+      if (e.ctrlKey && e.altKey && (e.key ?? '').toLowerCase() === 'm') {
         e.preventDefault();
         onOpenAdmin();
       }
