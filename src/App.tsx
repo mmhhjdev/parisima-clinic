@@ -14,7 +14,7 @@ import { Service } from './types';
 import { fetchConsultations, getAdminSession } from './lib/supabase';
 import { useI18n } from './i18n/LanguageProvider';
 import { ArticlePage } from './components/ArticlePage';
-import { ServicesIndexPage, ServicePage, AboutPage, ContactPage } from './components/SubPages';
+import { ServicesIndexPage, ServicePage, AboutPage, ContactPage, FaqPage } from './components/SubPages';
 import { parseRoute } from './i18n/config';
 
 export function App() {
@@ -86,6 +86,7 @@ export function App() {
     : route.page === 'service' && route.serviceSlug ? <ServicePage slug={route.serviceSlug} onOpenBooking={openBooking} />
     : route.page === 'about' ? <AboutPage onOpenBooking={openBooking} />
     : route.page === 'contact' ? <ContactPage onOpenBooking={openBooking} />
+    : route.page === 'faq' ? <FaqPage onOpenBooking={openBooking} />
     : null;
 
   return (

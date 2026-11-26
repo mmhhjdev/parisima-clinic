@@ -2,7 +2,7 @@ import React from 'react';
 import { Calendar, Clock, MapPin, Phone, ChevronLeft, Award } from 'lucide-react';
 import { useI18n } from '../i18n/LanguageProvider';
 import { assetUrl } from '../lib/assets';
-import { brandAlt, homePath, servicePath, servicesPath, aboutPath, contactPath, clinicMapsUrl } from '../i18n/config';
+import { brandAlt, homePath, servicePath, servicesPath, aboutPath, contactPath, faqPath, clinicMapsUrl } from '../i18n/config';
 import { pageT } from '../i18n/pages';
 
 // نوار مسیر (Breadcrumb) برای صفحات داخلی
@@ -144,6 +144,26 @@ export const ContactPage: React.FC<{ onOpenBooking: () => void }> = ({ onOpenBoo
           <BookButton onClick={onOpenBooking} label={pageT(lang, 'bookNow')} />
         </div>
       </div>
+    </PageShell>
+  );
+};
+
+export const FaqPage: React.FC<{ onOpenBooking: () => void }> = ({ onOpenBooking }) => {
+  const { lang, content } = useI18n();
+  return (
+    <PageShell title={pageT(lang, 'faqTitle')} desc={pageT(lang, 'faqDesc')} crumbs={[{ label: pageT(lang, 'back'), href: homePath(lang) }, { label: pageT(lang, 'faq') }]}>
+      <div className="space-y-4 max-w-3xl">
+        {content.faqs.map((f) => (
+          <details key={f.id} className="group rounded-2xl bg-white border border-slate-200 p-5 open:shadow-md">
+            <summary className="cursor-pointer font-header font-semibold text-[#0F172A] text-base list-none flex items-center justify-between gap-4">
+              <span>{f.question}</span>
+              <span className="text-[#0369A1] group-open:rotate-45 transition-transform text-xl leading-none">+</span>
+            </summary>
+            <p className="font-sans text-sm text-slate-700 leading-loose mt-3">{f.answer}</p>
+          </details>
+        ))}
+      </div>
+      <div className="mt-10"><BookButton onClick={onOpenBooking} label={pageT(lang, 'bookNow')} /></div>
     </PageShell>
   );
 };

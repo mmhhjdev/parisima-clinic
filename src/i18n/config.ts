@@ -18,6 +18,7 @@ export const servicesPath = (lang: Lang) => `${LANG_META[lang].prefix}/services/
 export const servicePath = (lang: Lang, slug: string) => `${LANG_META[lang].prefix}/services/${slug}/`;
 export const aboutPath = (lang: Lang) => `${LANG_META[lang].prefix}/about/`;
 export const contactPath = (lang: Lang) => `${LANG_META[lang].prefix}/contact/`;
+export const faqPath = (lang: Lang) => `${LANG_META[lang].prefix}/faq/`;
 
 // آدرس ساختاریافته کلینیک برای داده‌های ساختاریافته (JSON-LD) و سئوی محلی.
 export const CLINIC_POSTAL = {
@@ -45,7 +46,7 @@ export const CLINIC_HOURS = [
 export interface Route {
   lang: Lang;
   articleSlug?: string;
-  page?: 'services' | 'service' | 'about' | 'contact';
+  page?: 'services' | 'service' | 'about' | 'contact' | 'faq';
   serviceSlug?: string;
 }
 
@@ -63,6 +64,7 @@ export function parseRoute(pathname: string): Route {
   if (segs[0] === 'services') return { lang, page: 'services' };
   if (segs[0] === 'about') return { lang, page: 'about' };
   if (segs[0] === 'contact') return { lang, page: 'contact' };
+  if (segs[0] === 'faq') return { lang, page: 'faq' };
   return { lang };
 }
 

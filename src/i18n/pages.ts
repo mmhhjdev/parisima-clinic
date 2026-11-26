@@ -27,6 +27,9 @@ export const PAGE_STRINGS: Record<Lang, Record<string, string>> = {
     about: 'درباره ما',
     contact: 'تماس و نشانی',
     medicalCode: 'کد نظام پزشکی',
+    faqTitle: 'سوالات متداول درباره کاشت مو، بوتاکس، فیلر و درمان پوست',
+    faqDesc: 'پاسخ پزشکان کلینیک زیبایی و درماتولوژی پری سیما در زعفرانیه تهران به پرسش‌های رایج درباره‌ی خدمات، مدت اثر، درد و مراقبت‌های بعد از درمان.',
+    faq: 'سوالات متداول',
   },
   en: {
     servicesTitle: 'Specialized Skin, Hair & Aesthetic Services in Zafaraniyeh',
@@ -53,6 +56,9 @@ export const PAGE_STRINGS: Record<Lang, Record<string, string>> = {
     about: 'About us',
     contact: 'Contact & address',
     medicalCode: 'Medical license',
+    faqTitle: 'Frequently Asked Questions About Hair Transplant, Botox, Fillers and Skin Care',
+    faqDesc: 'Answers from the doctors of Pari Sima Cosmetic & Dermatology Clinic in Zafaraniyeh, Tehran, to common questions about services, duration of results, pain and aftercare.',
+    faq: 'Frequently asked questions',
   },
   ar: {
     servicesTitle: 'خدمات متخصصة للبشرة والشعر والتجميل في زعفرانية',
@@ -79,6 +85,9 @@ export const PAGE_STRINGS: Record<Lang, Record<string, string>> = {
     about: 'عن العيادة',
     contact: 'الاتصال والعنوان',
     medicalCode: 'رقم الترخيص الطبي',
+    faqTitle: 'أسئلة شائعة حول زراعة الشعر والبوتوكس والفيلر وعلاج البشرة',
+    faqDesc: 'إجابات أطباء عيادة بري سيما للتجميل والأمراض الجلدية في زعفرانية طهران عن الأسئلة الشائعة حول الخدمات ومدة النتائج والألم والعناية بعد العلاج.',
+    faq: 'أسئلة شائعة',
   },
 };
 

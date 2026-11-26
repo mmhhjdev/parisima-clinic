@@ -19,6 +19,7 @@ import {
   absoluteUrl,
   type Lang,
   servicesPath,
+  faqPath,
   servicePath,
   aboutPath,
   contactPath,
@@ -95,6 +96,9 @@ function homeBody(lang: Lang, home: string): string {
 <h2 class="font-header text-lg font-black text-[#0F172A] mt-8 mb-2">${esc(t(lang, 'nav.services'))}</h2>
 <ul class="list-disc pr-5">${CONTENT[lang].services.map((sv) => `<li><a href="${servicePath(lang, sv.slug)}">${esc(sv.title)}</a></li>`).join('')}</ul>
 <p><a href="${servicesPath(lang)}">${esc(pageT(lang, 'allServices'))}</a> · <a href="${aboutPath(lang)}">${esc(pageT(lang, 'about'))}</a> · <a href="${contactPath(lang)}">${esc(pageT(lang, 'contact'))}</a></p>
+<h2 class="font-header text-lg font-black text-[#0F172A] mt-8 mb-2">${esc(t(lang, 'footer.faq'))}</h2>
+<ul class="list-disc pr-5">${CONTENT[lang].faqs.map((f) => `<li>${esc(f.question)}</li>`).join('')}</ul>
+<p><a href="${faqPath(lang)}">${esc(pageT(lang, 'faq'))}</a></p>
 <h2 class="font-header text-lg font-black text-[#0F172A] mt-8 mb-2">${esc(t(lang, 'nav.articles'))}</h2>
 <ul class="list-disc pr-5">${articles}</ul>
 </section></main>`;
@@ -227,6 +231,11 @@ function main() {
       jsonLd: [
         {
           '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: CONTENT[lang].faqs.map((f) => ({ '@type': 'Question', name: f.question, acceptedAnswer: { '@type': 'Answer', text: f.answer } })),
+        },
+        {
+          '@context': 'https://schema.org',
           '@type': 'SiteNavigationElement',
           name: [t(lang, 'nav.services'), t(lang, 'nav.articles'), t(lang, 'footer.faq'), t(lang, 'nav.contact')],
           url: [`${absoluteUrl(home)}#services`, `${absoluteUrl(home)}#articles`, `${absoluteUrl(home)}#faq`, `${absoluteUrl(home)}#contact`],
@@ -335,6 +344,28 @@ ${sv.benefits?.length ? `<h2>${esc(pageT(lang, 'benefits'))}</h2><ul>${sv.benefi
         ],
       });
     }
+
+    // سوالات متداول (پاسخ‌های بلند برای عبارت‌های پرسشی)
+    const faqItems = content.faqs;
+    subPages.push({
+      key: 'faq',
+      path: faqPath(lang),
+      title: `${pageT(lang, 'faqTitle')} | ${c0.shortName}`,
+      desc: pageT(lang, 'faqDesc'),
+      image: absoluteUrl('/logo.png'),
+      crumbs: [homeCrumb, [pageT(lang, 'faq'), faqPath(lang)]],
+      body: `${crumbHtml([homeCrumb, [pageT(lang, 'faq'), faqPath(lang)]])}<h1>${esc(pageT(lang, 'faqTitle'))}</h1><p>${esc(pageT(lang, 'faqDesc'))}</p>${faqItems
+        .map((f) => `<h2>${esc(f.question)}</h2><p>${esc(f.answer)}</p>`)
+        .join('')}`,
+      ld: [{
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        name: pageT(lang, 'faqTitle'),
+        url: absoluteUrl(faqPath(lang)),
+        inLanguage: meta.htmlLang,
+        mainEntity: faqItems.map((f) => ({ '@type': 'Question', name: f.question, acceptedAnswer: { '@type': 'Answer', text: f.answer } })),
+      }],
+    });
 
     // درباره ما (پزشکان)
     subPages.push({
