@@ -1,13 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { X, Calendar, User, Phone, Sparkles, CheckCircle2, MessageSquare } from 'lucide-react';
-import { saveLocalConsultation } from '../lib/supabase';
+import React, { useEffect } from 'react';
+import { X, Phone, MessageCircle, Clock } from 'lucide-react';
 import { useI18n } from '../i18n/LanguageProvider';
-
-declare global {
-  interface Window {
-    gtag?: (...args: any[]) => void;
-  }
-}
+import { pageT } from '../i18n/pages';
 
 interface AppointmentModalProps {
   isOpen: boolean;
@@ -16,177 +10,43 @@ interface AppointmentModalProps {
   onConsultationSubmitted?: () => void;
 }
 
-export const AppointmentModal: React.FC<AppointmentModalProps> = ({ isOpen, onClose, initialServiceId, onConsultationSubmitted }) => {
-  const { t, content } = useI18n();
-  const [fullName, setFullName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [selectedService, setSelectedService] = useState(initialServiceId || '');
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [error, setError] = useState('');
-
-  const whatsappNumber = content.clinic.mobile1.replace(/^0/, '98');
-  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(t('float.waMsg'))}`;
+// رزرو نوبت: بدون ذخیره‌سازی در پایگاه داده؛ بیمار مستقیم با کلینیک تماس می‌گیرد یا پیام می‌دهد
+export const AppointmentModal: React.FC<AppointmentModalProps> = ({ isOpen, onClose }) => {
+  const { lang, content } = useI18n();
+  const c = content.clinic;
 
   useEffect(() => {
-    if (isOpen) {
-      setSelectedService(initialServiceId || '');
-      setIsSubmitted(false);
-      setError('');
-    }
-  }, [isOpen, initialServiceId]);
+    if (!isOpen) return;
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!fullName.trim() || !phone.trim()) {
-      setError(t('modal.errRequired'));
-      return;
-    }
-    if (!/^09\d{9}$/.test(phone.trim())) {
-      setError(t('modal.errPhone'));
-      return;
-    }
-    try {
-      const service = content.services.find((s) => s.id === selectedService);
-      const res = await saveLocalConsultation({
-        fullName: fullName.trim(),
-        phone: phone.trim(),
-        serviceId: service ? service.title : t('modal.serviceNone'),
-      });
-      if (!res.success) {
-        console.error('Booking not stored:', res.error);
-        setError(t('modal.errGeneric'));
-        return;
-      }
-      if (typeof window !== 'undefined' && window.gtag) {
-        window.gtag('event', 'generate_lead', { service_id: selectedService || 'general', event_category: 'consultation_form' });
-      }
-      setIsSubmitted(true);
-      onConsultationSubmitted?.();
-    } catch (err) {
-      console.error(err);
-      setError(t('modal.errGeneric'));
-    }
-  };
-
-  const handleClose = () => {
-    setFullName('');
-    setPhone('');
-    setIsSubmitted(false);
-    setError('');
-    onClose();
-  };
+  const waNumber = `98${c.mobile1.replace(/^0/, '')}`;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-      <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-100 font-sans">
-        <div className="bg-[#0F172A] text-white p-6 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-[#0369A1]/20 text-[#38BDF8]">
-              <Calendar className="w-6 h-6" />
-            </div>
-            <div>
-              <h3 className="font-header text-lg font-black">{t('modal.title')}</h3>
-              <p className="text-xs text-slate-400 mt-0.5">{t('modal.sub')}</p>
-            </div>
-          </div>
-          <button onClick={handleClose} aria-label={t('modal.close')} className="p-2 rounded-full hover:bg-slate-800 text-slate-400 hover:text-white transition-colors cursor-pointer">
-            <X className="w-5 h-5" />
-          </button>
+    <div className="fixed inset-0 z-[80] flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm" onClick={onClose}>
+      <div role="dialog" aria-modal="true" onClick={(e) => e.stopPropagation()} className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl space-y-5">
+        <div className="flex items-start justify-between gap-4">
+          <h2 className="font-header text-xl font-bold text-[#0F172A]">{pageT(lang, 'bkTitle')}</h2>
+          <button onClick={onClose} aria-label={pageT(lang, 'bkClose')} className="rounded-lg p-1 text-slate-500 hover:bg-slate-100"><X className="h-5 w-5" /></button>
         </div>
-
-        <div className="p-6">
-          {isSubmitted ? (
-            <div className="text-center py-8 space-y-4">
-              <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto">
-                <CheckCircle2 className="w-10 h-10" />
-              </div>
-              <h4 className="font-header text-xl font-bold text-slate-800">{t('modal.okTitle')}</h4>
-              <p className="text-xs text-slate-500 max-w-xs mx-auto leading-relaxed">{t('modal.okText')}</p>
-              <button onClick={handleClose} className="mt-4 px-6 py-2.5 rounded-xl bg-[#0C4A6E] text-white text-xs font-bold font-header hover:bg-[#0F172A] transition-colors cursor-pointer">
-                {t('modal.close')}
-              </button>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-between gap-3">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-9 h-9 rounded-xl bg-[#25D366] text-white flex items-center justify-center shrink-0">
-                    <MessageSquare className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <span className="block font-header text-xs font-bold text-emerald-950">{t('modal.waTitle')}</span>
-                    <span className="text-[11px] text-emerald-700 font-mono" dir="ltr">{content.clinic.mobile1Display}</span>
-                  </div>
-                </div>
-                <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="px-3.5 py-2 rounded-xl bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold text-xs flex items-center gap-1.5 shrink-0">
-                  <MessageSquare className="w-4 h-4" />
-                  <span>{t('modal.waBtn')}</span>
-                </a>
-              </div>
-
-              <div className="relative my-3 text-center">
-                <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-200"></div></div>
-                <span className="relative bg-white px-3 text-[11px] text-slate-400 font-medium">{t('modal.or')}</span>
-              </div>
-
-              <form onSubmit={handleSubmit} className="space-y-4">
-                {error && <div className="p-3 rounded-xl bg-sky-50 border border-sky-200 text-sky-700 text-xs font-bold">{error}</div>}
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1.5 font-header">{t('modal.name')}</label>
-                  <div className="relative">
-                    <User className="w-4 h-4 text-slate-400 absolute start-3 top-3" />
-                    <input
-                      type="text"
-                      value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
-                      placeholder={t('modal.namePh')}
-                      className="w-full ps-9 pe-3 py-2.5 rounded-xl border border-slate-200 text-xs text-slate-800 focus:outline-none focus:border-[#0369A1] focus:ring-1 focus:ring-[#0369A1]"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1.5 font-header">{t('modal.phone')}</label>
-                  <div className="relative">
-                    <Phone className="w-4 h-4 text-slate-400 absolute start-3 top-3" />
-                    <input
-                      type="tel"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      placeholder="09123456789"
-                      maxLength={11}
-                      dir="ltr"
-                      className="w-full ps-9 pe-3 py-2.5 rounded-xl border border-slate-200 text-xs text-slate-800 focus:outline-none focus:border-[#0369A1] focus:ring-1 focus:ring-[#0369A1] font-mono"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1.5 font-header">{t('modal.service')}</label>
-                  <div className="relative">
-                    <Sparkles className="w-4 h-4 text-slate-400 absolute start-3 top-3" />
-                    <select
-                      value={selectedService}
-                      onChange={(e) => setSelectedService(e.target.value)}
-                      className="w-full ps-9 pe-3 py-2.5 rounded-xl border border-slate-200 text-xs text-slate-800 focus:outline-none focus:border-[#0369A1] bg-white cursor-pointer"
-                    >
-                      <option value="">{t('modal.serviceNone')}</option>
-                      {content.services.map((srv) => (
-                        <option key={srv.id} value={srv.id}>{srv.title}</option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                <button type="submit" className="w-full py-3 mt-2 rounded-xl bg-[#0C4A6E] hover:bg-[#0F172A] text-white text-xs font-bold font-header transition-all shadow-md shadow-blue-900/20 active:scale-95 cursor-pointer">
-                  {t('modal.submit')}
-                </button>
-              </form>
-            </div>
-          )}
+        <p className="font-sans text-sm text-slate-600 leading-loose">{pageT(lang, 'bkDesc')}</p>
+        <div className="space-y-3">
+          <a href={`tel:${c.phone1}`} className="flex items-center justify-center gap-2 rounded-xl bg-[#0C4A6E] hover:bg-[#0369A1] text-white px-5 py-3 text-sm font-semibold font-header" dir="ltr">
+            <Phone className="h-4 w-4" /> {c.phone1Display}
+          </a>
+          <a href={`tel:${c.mobile1}`} className="flex items-center justify-center gap-2 rounded-xl border border-slate-300 text-[#0F172A] px-5 py-3 text-sm font-semibold font-header" dir="ltr">
+            <Phone className="h-4 w-4" /> {c.mobile1Display}
+          </a>
+          <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 rounded-xl border border-emerald-500 text-emerald-700 px-5 py-3 text-sm font-semibold font-header">
+            <MessageCircle className="h-4 w-4" /> {pageT(lang, 'bkWa')}
+          </a>
+        </div>
+        <div className="flex items-start gap-2 text-xs text-slate-500 font-sans leading-relaxed">
+          <Clock className="h-3.5 w-3.5 mt-0.5 shrink-0" />
+          <span>{pageT(lang, 'bkWorking')}: {c.workingHours}</span>
         </div>
       </div>
     </div>

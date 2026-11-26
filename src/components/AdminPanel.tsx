@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import { Consultation } from '../types';
 import { ReviewsAdmin } from './ReviewsAdmin';
+import { QnAAdmin } from './QnAAdmin';
 import { 
   getAdminSession, signInAdmin, signOutAdmin,
   fetchConsultations, 
@@ -305,6 +306,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             </div>
 
             {/* Reviews moderation */}
+            <QnAAdmin />
             <ReviewsAdmin />
 
             {/* Consultations Table / List */}
