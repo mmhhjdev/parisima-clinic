@@ -51,6 +51,9 @@ export interface Article {
   publishedAt?: string;
   imageAlt?: string;
   seoTitle?: string;
+  metaDescription?: string;
+  relatedSlugs?: string[];
+  relatedServiceSlug?: string;
   // اگر مقاله فقط به چند زبان ترجمه شده، فقط همان زبان‌ها ساخته و فهرست می‌شوند
   langs?: ('fa' | 'en' | 'ar')[];
 }

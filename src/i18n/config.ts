@@ -12,6 +12,8 @@ export const LANG_META: Record<Lang, { htmlLang: string; dir: 'rtl' | 'ltr'; ogL
 };
 
 export const homePath = (lang: Lang) => `${LANG_META[lang].prefix}/`;
+export const articlesIndexPath = (lang: Lang, page = 1) =>
+  page <= 1 ? `${LANG_META[lang].prefix}/articles/` : `${LANG_META[lang].prefix}/articles/page/${page}/`;
 export const articlePath = (lang: Lang, slug: string) => `${LANG_META[lang].prefix}/articles/${slug}/`;
 export const absoluteUrl = (path: string) => `${SITE_URL}${path}`;
 export const servicesPath = (lang: Lang) => `${LANG_META[lang].prefix}/services/`;
@@ -46,8 +48,9 @@ export const CLINIC_HOURS = [
 export interface Route {
   lang: Lang;
   articleSlug?: string;
-  page?: 'services' | 'service' | 'about' | 'contact' | 'faq';
+  page?: 'services' | 'service' | 'about' | 'contact' | 'faq' | 'articles';
   serviceSlug?: string;
+  articlesPage?: number;
 }
 
 export function parseRoute(pathname: string): Route {
@@ -57,7 +60,12 @@ export function parseRoute(pathname: string): Route {
     lang = segs[0];
     segs.shift();
   }
-  if (segs[0] === 'articles' && segs[1]) {
+  if (segs[0] === 'articles') {
+    if (!segs[1]) return { lang, page: 'articles', articlesPage: 1 };
+    if (segs[1] === 'page') {
+      const page = Number.parseInt(segs[2] ?? '1', 10);
+      return { lang, page: 'articles', articlesPage: Number.isFinite(page) && page > 0 ? page : 1 };
+    }
     return { lang, articleSlug: decodeURIComponent(segs[1]) };
   }
   if (segs[0] === 'services' && segs[1]) return { lang, page: 'service', serviceSlug: decodeURIComponent(segs[1]) };
@@ -70,4 +78,4 @@ export function parseRoute(pathname: string): Route {
 
 // برند تصویری: هر تصویر سایت با این عبارت تگ می‌شود تا با هر دو املای «پریسیما» و «پری-سیما» قابل جستجو باشد
 export const BRAND_TAG = 'کلینیک زیبایی پریسیما (پری-سیما) زعفرانیه تهران';
-export const brandAlt = (text: string) => `${text} | ${BRAND_TAG}`;
+export const brandAlt = (text: string) => text;

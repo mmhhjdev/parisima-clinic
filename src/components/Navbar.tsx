@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Phone, Calendar, Menu, X, Flame, MapPin, BookOpen } from 'lucide-react';
 import Logo from './Logo';
 import { useI18n } from '../i18n/LanguageProvider';
-import { LANGS, LANG_META, homePath } from '../i18n/config';
+import { LANGS, LANG_META, homePath, articlesIndexPath } from '../i18n/config';
 
 interface NavbarProps {
   onOpenBooking: () => void;
@@ -99,7 +99,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking, onOpenAdmin }) =>
               <span>{t('nav.promotions')}</span>
             </a>
             <a href={`${homeHref}#services`} className={navLinkClass}>{t('nav.services')}</a>
-            <a href={`${homeHref}#articles`} className="hover:text-[#0369A1] transition-colors py-1 flex items-center gap-1.5">
+            <a href={articlesIndexPath(lang)} className="hover:text-[#0369A1] transition-colors py-1 flex items-center gap-1.5">
               <BookOpen className="w-4 h-4 text-[#0369A1]" />
               <span>{t('nav.articles')}</span>
             </a>
@@ -144,7 +144,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking, onOpenAdmin }) =>
               <span>{t('nav.promotions')}</span>
             </a>
             <a href={`${homeHref}#services`} onClick={() => setMobileMenuOpen(false)} className="block py-2 text-sm font-bold text-slate-800 border-b border-slate-100">{t('nav.services')}</a>
-            <a href={`${homeHref}#articles`} onClick={() => setMobileMenuOpen(false)} className="py-2 text-sm font-bold text-slate-800 border-b border-slate-100 flex items-center gap-2">
+            <a href={articlesIndexPath(lang)} onClick={() => setMobileMenuOpen(false)} className="py-2 text-sm font-bold text-slate-800 border-b border-slate-100 flex items-center gap-2">
               <BookOpen className="w-4 h-4 text-[#0369A1]" />
               <span>{t('nav.articles')}</span>
             </a>

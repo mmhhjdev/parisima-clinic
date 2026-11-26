@@ -1,7 +1,7 @@
 {
   "name": "parisima-clinic",
   "private": true,
-  "version": "0.0.0",
+  "version": "22.0.0",
   "type": "module",
   "homepage": "https://mmhhjdev.github.io/parisima-clinic",
   "scripts": {

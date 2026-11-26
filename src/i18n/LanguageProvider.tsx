@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useMemo } from 'react';
-import { LANGS, LANG_META, DEFAULT_LANG, Lang, parseRoute, homePath, articlePath, absoluteUrl } from './config';
+import { LANGS, LANG_META, DEFAULT_LANG, Lang, parseRoute, homePath, articlePath, articlesIndexPath, servicesPath, servicePath, aboutPath, contactPath, faqPath, absoluteUrl } from './config';
 import { STRINGS } from './strings';
 import { CONTENT } from '../data/locales';
 import type { Article, LocaleContent } from '../types';
@@ -60,7 +60,18 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
     const article = route.articleSlug ? content.articles.find((a) => a.slug === route.articleSlug) : undefined;
     const t = (key: string, params?: Record<string, string | number>) =>
       format(STRINGS[lang][key] ?? STRINGS[DEFAULT_LANG][key] ?? key, params);
-    const hrefFor = (l: Lang) => (article ? articlePath(l, article.slug) : homePath(l));
+    const hrefFor = (l: Lang) => {
+      if (article) return article.langs && !article.langs.includes(l) ? articlePath(lang, article.slug) : articlePath(l, article.slug);
+      switch (route.page) {
+        case 'articles': return articlesIndexPath(l, route.articlesPage ?? 1);
+        case 'services': return servicesPath(l);
+        case 'service': return route.serviceSlug ? servicePath(l, route.serviceSlug) : servicesPath(l);
+        case 'about': return aboutPath(l);
+        case 'contact': return contactPath(l);
+        case 'faq': return faqPath(l);
+        default: return homePath(l);
+      }
+    };
     return { lang, dir: LANG_META[lang].dir, content, article, t, hrefFor };
   }, []);
 
@@ -70,8 +81,8 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
     document.documentElement.lang = meta.htmlLang;
     document.documentElement.dir = meta.dir;
 
-    const title = article ? `${article.title} | ${content.clinic.shortName}` : t('seo.title');
-    const description = article ? article.excerpt : t('seo.description');
+    const title = article ? (article.seoTitle ?? `${article.title} | ${content.clinic.shortName}`) : t('seo.title');
+    const description = article ? (article.metaDescription ?? article.excerpt) : t('seo.description');
     const canonical = absoluteUrl(hrefFor(lang));
 
     document.title = title;
@@ -84,8 +95,12 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
     setMeta('name', 'twitter:title', title);
     setMeta('name', 'twitter:description', description);
     setCanonical(canonical);
+    const currentRoute = parseRoute(window.location.pathname);
+    const alternateLangs = article?.langs ?? (currentRoute.page === 'articles'
+      ? LANGS.filter((l) => Math.ceil(CONTENT[l].articles.length / 6) >= (currentRoute.articlesPage ?? 1))
+      : LANGS);
     setAlternates([
-      ...LANGS.map((l) => ({ hreflang: LANG_META[l].htmlLang, href: absoluteUrl(hrefFor(l)) })),
+      ...alternateLangs.map((l) => ({ hreflang: LANG_META[l].htmlLang, href: absoluteUrl(hrefFor(l)) })),
       { hreflang: 'x-default', href: absoluteUrl(hrefFor(DEFAULT_LANG)) },
     ]);
   }, [value]);

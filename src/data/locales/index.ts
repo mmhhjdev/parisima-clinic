@@ -8,10 +8,13 @@ import { ARTICLE_EXTRAS } from '../articleExtras';
 // افزودن بخش‌های تکمیلی به متن هر مقاله
 const withExtras = (lang: Lang, content: LocaleContent): LocaleContent => ({
   ...content,
-  articles: content.articles.filter((a) => !a.langs || a.langs.includes(lang)).map((a) => {
-    const extra = ARTICLE_EXTRAS[lang][a.slug];
-    return { ...a, content: extra ? `${a.content.trim()}\n\n${extra}` : a.content.trim() };
-  }),
+  articles: content.articles
+    .filter((a) => !a.langs || a.langs.includes(lang))
+    .filter((a) => lang !== 'fa' || Boolean(a.langs) || !content.articles.some((newArticle) => newArticle.langs?.includes('fa') && newArticle.slug === a.slug))
+    .map((a) => {
+      const extra = ARTICLE_EXTRAS[lang][a.slug];
+      return { ...a, content: extra ? `${a.content.trim()}\n\n${extra}` : a.content.trim() };
+    }),
 });
 
 export const CONTENT: Record<Lang, LocaleContent> = {

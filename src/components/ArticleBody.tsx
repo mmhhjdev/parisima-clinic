@@ -27,6 +27,9 @@ const Inline: React.FC<{ text: string }> = ({ text }) => (
 export const ArticleBody: React.FC<{ content: string }> = ({ content }) => (
   <div className="font-sans text-sm text-slate-700 leading-loose space-y-4">
     {parseBlocks(content).map((block, i) => {
+      if (block.type === 'h2') {
+        return <h2 key={i} className="font-header text-xl font-black text-[#0F172A] pt-4">{block.text}</h2>;
+      }
       if (block.type === 'h3') {
         return <h3 key={i} className="font-header text-base font-black text-[#0F172A] pt-2">{block.text}</h3>;
       }
@@ -36,8 +39,18 @@ export const ArticleBody: React.FC<{ content: string }> = ({ content }) => (
       if (block.type === 'img') {
         return (
           <figure key={i} className="my-6">
-            <img src={assetUrl(block.src)} alt={brandAlt(block.alt)} width={1200} height={675} loading="lazy" className="w-full rounded-2xl" />
+            <img src={assetUrl(block.src)} alt={brandAlt(block.alt)} width={1200} height={675} loading="lazy" decoding="async" className="w-full rounded-2xl" />
           </figure>
+        );
+      }
+      if (block.type === 'table') {
+        return (
+          <div key={i} className="my-6 overflow-x-auto rounded-xl border border-slate-200">
+            <table className="w-full min-w-[520px] text-sm text-start">
+              <thead className="bg-slate-50"><tr>{block.headers.map((cell, j) => <th key={j} scope="col" className="px-4 py-3 font-bold text-slate-900 border-b border-slate-200"><Inline text={cell} /></th>)}</tr></thead>
+              <tbody>{block.rows.map((row, r) => <tr key={r} className="odd:bg-white even:bg-slate-50">{row.map((cell, c) => <td key={c} className="px-4 py-3 border-b border-slate-100 align-top"><Inline text={cell} /></td>)}</tr>)}</tbody>
+            </table>
+          </div>
         );
       }
       const Tag = block.type === 'ol' ? 'ol' : 'ul';

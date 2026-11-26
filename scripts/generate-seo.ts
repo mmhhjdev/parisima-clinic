@@ -15,6 +15,7 @@ import {
   DEFAULT_LANG,
   SITE_URL,
   articlePath,
+  articlesIndexPath,
   homePath,
   absoluteUrl,
   type Lang,
@@ -44,9 +45,11 @@ const inline = (s: string) =>
 const blocksToHtml = (blocks: Block[]) =>
   blocks
     .map((b) => {
-      if (b.type === 'h3') return `<h2 class="font-header text-base font-black text-[#0F172A] pt-2">${inline(b.text)}</h2>`;
+      if (b.type === 'h2') return `<h2 class="font-header text-xl font-black text-[#0F172A] pt-4">${inline(b.text)}</h2>`;
+      if (b.type === 'h3') return `<h3 class="font-header text-base font-black text-[#0F172A] pt-2">${inline(b.text)}</h3>`;
       if (b.type === 'p') return `<p>${inline(b.text)}</p>`;
-      if (b.type === 'img') return `<figure class="my-6"><img src="${esc(absoluteUrl(b.src))}" alt="${esc(brandAlt(b.alt))}" width="1200" height="675" loading="lazy" class="w-full rounded-2xl" /></figure>`;
+      if (b.type === 'img') return `<figure class="my-6"><img src="${esc(absoluteUrl(b.src))}" alt="${esc(brandAlt(b.alt))}" width="1200" height="675" loading="lazy" decoding="async" class="w-full rounded-2xl" /></figure>`;
+      if (b.type === 'table') return `<div class="my-6 overflow-x-auto"><table><thead><tr>${b.headers.map((c) => `<th>${inline(c)}</th>`).join('')}</tr></thead><tbody>${b.rows.map((r) => `<tr>${r.map((c) => `<td>${inline(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
       const tag = b.type === 'ol' ? 'ol' : 'ul';
       return `<${tag}>${b.items.map((i) => `<li>${inline(i)}</li>`).join('')}</${tag}>`;
     })
@@ -71,9 +74,7 @@ function stripHead(html: string) {
 function homeBody(lang: Lang, home: string): string {
   const c = CONTENT[lang].clinic;
   const tel = `+98${c.phone1.replace(/^0/, '')}`;
-  const articles = CONTENT[lang].articles
-    .map((a) => `<li><a href="${articlePath(lang, a.slug)}">${esc(a.title)}</a></li>`)
-    .join('');
+  const articles = `<li><a href="${articlesIndexPath(lang)}">${esc(t(lang, 'nav.articles'))}</a></li>`;
   const sections = [
     ['#services', t(lang, 'nav.services')],
     ['#articles', t(lang, 'nav.articles')],
@@ -192,6 +193,12 @@ function faqFromBlocks(blocks: Block[]): { q: string; a: string }[] {
 // آدرس‌های قدیمی که دیگر مقاله ندارند به مقالهٔ جایگزین منتقل می‌شوند (کانونیکال + ریدایرکت)
 const REDIRECTS: { lang: Lang; from: string; to: string | null }[] = [
   { lang: 'fa', from: 'adult-acne-causes-and-treatment', to: 'adult-acne-causes-treatment' },
+  { lang: 'fa', from: 'post-hair-transplant-care-guide', to: 'hair-transplant-aftercare-guide' },
+  { lang: 'fa', from: 'what-is-hifu-and-benefits-for-face', to: 'hifu-facial-lifting-guide' },
+  { lang: 'fa', from: 'how-is-melasma-and-facial-spots-treated', to: 'melasma-facial-dark-spots' },
+  { lang: 'fa', from: 'eczema-treatment-in-adults', to: 'eczema-dry-sensitive-skin' },
+  { lang: 'fa', from: 'causes-of-adult-acne', to: 'adult-acne-causes-treatment' },
+  { lang: 'fa', from: 'what-is-skin-laser-therapy-guide', to: 'what-is-skin-laser-therapy' },
   { lang: 'ar', from: 'adult-acne-causes-and-treatment', to: null },
   { lang: 'en', from: 'adult-acne-causes-and-treatment', to: null },
 ];
@@ -226,19 +233,14 @@ function main() {
       title: t(lang, 'seo.title'),
       description: homeDesc,
       keywords: t(lang, 'seo.keywords'),
-      image: absoluteUrl('/logo.png'),
+      image: absoluteUrl('/images/hero-clinic-serene.webp'),
       ogType: 'website',
       jsonLd: [
         {
           '@context': 'https://schema.org',
-          '@type': 'FAQPage',
-          mainEntity: CONTENT[lang].faqs.map((f) => ({ '@type': 'Question', name: f.question, acceptedAnswer: { '@type': 'Answer', text: f.answer } })),
-        },
-        {
-          '@context': 'https://schema.org',
           '@type': 'SiteNavigationElement',
           name: [t(lang, 'nav.services'), t(lang, 'nav.articles'), t(lang, 'footer.faq'), t(lang, 'nav.contact')],
-          url: [`${absoluteUrl(home)}#services`, `${absoluteUrl(home)}#articles`, `${absoluteUrl(home)}#faq`, `${absoluteUrl(home)}#contact`],
+          url: [`${absoluteUrl(home)}#services`, absoluteUrl(articlesIndexPath(lang)), `${absoluteUrl(home)}#faq`, `${absoluteUrl(home)}#contact`],
         },
         {
           '@context': 'https://schema.org',
@@ -357,14 +359,7 @@ ${sv.benefits?.length ? `<h2>${esc(pageT(lang, 'benefits'))}</h2><ul>${sv.benefi
       body: `${crumbHtml([homeCrumb, [pageT(lang, 'faq'), faqPath(lang)]])}<h1>${esc(pageT(lang, 'faqTitle'))}</h1><p>${esc(pageT(lang, 'faqDesc'))}</p>${faqItems
         .map((f) => `<h2>${esc(f.question)}</h2><p>${esc(f.answer)}</p>`)
         .join('')}`,
-      ld: [{
-        '@context': 'https://schema.org',
-        '@type': 'FAQPage',
-        name: pageT(lang, 'faqTitle'),
-        url: absoluteUrl(faqPath(lang)),
-        inLanguage: meta.htmlLang,
-        mainEntity: faqItems.map((f) => ({ '@type': 'Question', name: f.question, acceptedAnswer: { '@type': 'Answer', text: f.answer } })),
-      }],
+      ld: [],
     });
 
     // درباره ما (پزشکان)
@@ -421,6 +416,89 @@ ${sv.benefits?.length ? `<h2>${esc(pageT(lang, 'benefits'))}</h2><ul>${sv.benefi
       sitemapEntries.push({ loc: absoluteUrl(sp.path), alts: subAlts(sp.key), lastmod: '2026-11-08' });
     }
 
+    // آرشیو مستقل مقالات با صفحه‌بندی واقعی و URL قابل خزش
+    const archivePageSize = 6;
+    const archiveArticles = [...content.articles].reverse();
+    const archivePageCount = Math.max(1, Math.ceil(archiveArticles.length / archivePageSize));
+    const archiveTitle = lang === 'fa' ? 'مقالات پوست، مو و زیبایی' : lang === 'ar' ? 'مقالات الجلد والشعر والتجميل' : 'Skin, Hair & Aesthetic Articles';
+    const archiveDesc = lang === 'fa'
+      ? 'راهنماها و پاسخ‌های تخصصی درباره سلامت پوست، مو و خدمات زیبایی؛ با هدف آگاهی‌رسانی و تصمیم‌گیری آگاهانه.'
+      : lang === 'ar'
+        ? 'أدلة ومعلومات حول صحة البشرة والشعر والخدمات التجميلية لاتخاذ قرارات أكثر وعياً.'
+        : 'Guides and practical information about skin, hair and aesthetic services to support informed decisions.';
+
+    for (let archivePage = 1; archivePage <= archivePageCount; archivePage++) {
+      const archivePath = articlesIndexPath(lang, archivePage);
+      const start = (archivePage - 1) * archivePageSize;
+      const pageArticles = archiveArticles.slice(start, start + archivePageSize);
+      const availableAltLangs = LANGS.filter((l) => Math.ceil(CONTENT[l].articles.length / archivePageSize) >= archivePage);
+      const archiveAlts = Object.fromEntries(availableAltLangs.map((l) => [l, articlesIndexPath(l, archivePage)])) as Record<Lang, string>;
+      const cards = pageArticles.map((a) => {
+        const img = absoluteUrl(`/${a.image.replace(/^\//, '')}`);
+        return `<article class="overflow-hidden rounded-2xl border border-slate-200 bg-white">
+          <a href="${articlePath(lang, a.slug)}" class="block">
+            <img src="${img}" alt="${esc(brandAlt(a.imageAlt ?? a.title))}" width="640" height="360" loading="lazy" decoding="async" class="aspect-video w-full object-cover" />
+            <div class="p-5">
+              <div class="mb-3 flex items-center justify-between gap-3 text-xs text-slate-500"><span>${esc(a.category)}</span><span>${esc(a.readTime)}</span></div>
+              <h2 class="text-base font-black leading-7 text-slate-900">${esc(a.title)}</h2>
+              <p class="mt-2 text-sm leading-7 text-slate-600">${esc(a.excerpt)}</p>
+              <span class="mt-4 inline-block text-xs font-bold text-sky-800">${esc(lang === 'fa' ? 'مطالعه مقاله' : lang === 'ar' ? 'اقرأ المقال' : 'Read article')}</span>
+            </div>
+          </a>
+        </article>`;
+      }).join('');
+      const pagination = archivePageCount > 1
+        ? `<nav aria-label="${esc(lang === 'fa' ? 'صفحه‌بندی مقالات' : lang === 'ar' ? 'ترقيم صفحات المقالات' : 'Article pagination')}" class="mt-10 flex flex-wrap justify-center gap-2">
+            ${archivePage > 1 ? `<a href="${articlesIndexPath(lang, archivePage - 1)}" rel="prev">${esc(lang === 'fa' ? 'صفحه قبل' : lang === 'ar' ? 'السابق' : 'Previous')}</a>` : ''}
+            ${Array.from({ length: archivePageCount }, (_, i) => i + 1).map((n) => `<a href="${articlesIndexPath(lang, n)}" ${n === archivePage ? 'aria-current="page"' : ''} class="rounded-lg border px-3 py-2">${n}</a>`).join('')}
+            ${archivePage < archivePageCount ? `<a href="${articlesIndexPath(lang, archivePage + 1)}" rel="next">${esc(lang === 'fa' ? 'صفحه بعد' : lang === 'ar' ? 'التالي' : 'Next')}</a>` : ''}
+          </nav>`
+        : '';
+      const archiveHtml = `<main class="flex-1 bg-[#FAF9F6]">
+        <section class="border-b border-slate-200 bg-white"><div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+          <nav aria-label="breadcrumb" class="mb-5 text-xs text-slate-500"><a href="${home}">${esc(t(lang, 'article.home'))}</a> / ${esc(t(lang, 'nav.articles'))}</nav>
+          <h1 class="text-2xl font-black leading-relaxed text-slate-950 sm:text-4xl">${esc(archiveTitle)}</h1>
+          <p class="mt-3 max-w-2xl text-sm leading-8 text-slate-600">${esc(archiveDesc)}</p>
+        </div></section>
+        <section class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+          <p class="mb-6 text-sm text-slate-500">${archiveArticles.length} ${esc(lang === 'fa' ? 'مقاله' : lang === 'ar' ? 'مقالة' : 'articles')} · ${esc(lang === 'fa' ? 'صفحه' : lang === 'ar' ? 'صفحة' : 'Page')} ${archivePage} / ${archivePageCount}</p>
+          <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">${cards}</div>${pagination}
+        </section></main>`;
+      const archiveJsonLd = [{
+        '@context': 'https://schema.org',
+        '@type': 'CollectionPage',
+        name: archiveTitle,
+        description: archiveDesc,
+        url: absoluteUrl(archivePath),
+        inLanguage: meta.htmlLang,
+        mainEntity: {
+          '@type': 'ItemList',
+          itemListOrder: 'https://schema.org/ItemListOrderDescending',
+          numberOfItems: pageArticles.length,
+          itemListElement: pageArticles.map((a, i) => ({
+            '@type': 'ListItem',
+            position: start + i + 1,
+            url: absoluteUrl(articlePath(lang, a.slug)),
+            name: a.title,
+          })),
+        },
+      }];
+      const archiveDocument = renderPage(template, {
+        lang,
+        urlPath: archivePath,
+        altPaths: archiveAlts,
+        title: `${archiveTitle} | ${content.clinic.shortName}`,
+        description: archiveDesc,
+        keywords: t(lang, 'seo.keywords'),
+        image: absoluteUrl('/logo.png'),
+        ogType: 'website',
+        jsonLd: archiveJsonLd,
+        bodyHtml: archiveHtml,
+      });
+      written.push(writeFileSafe(archivePath, archiveDocument));
+      sitemapEntries.push({ loc: absoluteUrl(archivePath), alts: archiveAlts, lastmod: '2026-11-26' });
+    }
+
     // صفحه هر مقاله
     for (const a of content.articles) {
       const urlPath = articlePath(lang, a.slug);
@@ -430,35 +508,43 @@ ${sv.benefits?.length ? `<h2>${esc(pageT(lang, 'benefits'))}</h2><ul>${sv.benefi
       const imageUrl = absoluteUrl(`/${a.image.replace(/^\//, '')}`);
       const heroAlt = brandAlt(a.imageAlt ?? a.title);
       const title = a.seoTitle ?? `${a.title} | ${content.clinic.shortName}`;
+      const description = a.metaDescription ?? a.excerpt;
       const keywords = a.keywords ?? `${a.category}, ${t(lang, 'seo.keywords')}`;
       const blocks = parseBlocks(a.content);
+      const relatedArticles = (a.relatedSlugs ?? [])
+        .map((slug) => content.articles.find((item) => item.slug === slug))
+        .filter((item): item is NonNullable<typeof item> => Boolean(item))
+        .slice(0, 3);
+      const relatedHtml = relatedArticles.length
+        ? `<section class="mt-12"><h2 class="font-header text-lg font-black text-[#0F172A] mb-4">${esc(t(lang, 'article.related'))}</h2><ul>${relatedArticles.map((item) => `<li><a href="${articlePath(lang, item.slug)}">${esc(item.title)}</a></li>`).join('')}</ul></section>`
+        : '';
 
       const bodyHtml = `<main class="flex-1 bg-white"><article class="max-w-3xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
-<nav aria-label="breadcrumb" class="flex flex-wrap items-center gap-2 text-xs text-slate-500 font-sans mb-6"><a href="${home}">${esc(t(lang, 'article.home'))}</a><span>/</span><a href="${home}#articles">${esc(t(lang, 'article.allArticles'))}</a><span>/</span><span class="text-slate-700">${esc(a.title)}</span></nav>
+<nav aria-label="breadcrumb" class="flex flex-wrap items-center gap-2 text-xs text-slate-500 font-sans mb-6"><a href="${home}">${esc(t(lang, 'article.home'))}</a><span>/</span><a href="${articlesIndexPath(lang)}">${esc(t(lang, 'article.allArticles'))}</a><span>/</span><span class="text-slate-700">${esc(a.title)}</span></nav>
 <span class="inline-block bg-[#F0F9FF] text-[#0284C7] text-xs font-bold px-3 py-1 rounded-md border border-[#BAE6FD]">${esc(a.category)}</span>
 <h1 class="font-header text-2xl sm:text-4xl font-black text-[#0F172A] leading-snug mt-4">${esc(a.title)}</h1>
-<div class="flex flex-wrap items-center gap-4 text-xs text-slate-500 my-5 font-sans border-y border-slate-100 py-3"><span class="font-semibold text-slate-700">${esc(a.author)}</span><span>${esc(a.date)}</span><span>${esc(t(lang, 'articles.readTime', { time: a.readTime }))}</span></div>
-<img src="${imageUrl}" alt="${esc(heroAlt)}" width="1600" height="900" class="w-full rounded-2xl mb-8" />
+<div class="flex flex-wrap items-center gap-4 text-xs text-slate-500 my-5 font-sans border-y border-slate-100 py-3"><span class="font-semibold text-slate-700">${esc(a.author)}</span>${a.date ? `<span>${esc(a.date)}</span>` : ''}<span>${esc(t(lang, 'articles.readTime', { time: a.readTime }))}</span></div>
+<img src="${imageUrl}" alt="${esc(heroAlt)}" width="1600" height="900" fetchpriority="high" decoding="async" class="w-full rounded-2xl mb-8" />
 <p class="font-sans text-base sm:text-lg text-slate-600 leading-relaxed mb-8">${esc(a.excerpt)}</p>
 <div class="font-sans text-sm text-slate-700 leading-loose space-y-4">
 ${blocksToHtml(blocks)}
 </div>
+${relatedHtml}
 </article></main>`;
 
-      const faq = faqFromBlocks(blocks);
       const jsonLd: object[] = [
         {
           '@context': 'https://schema.org',
           '@type': 'Article',
           headline: a.title,
-          description: a.excerpt,
+          description,
           image: [
             { '@type': 'ImageObject', url: imageUrl, caption: heroAlt, name: a.title, creator: { '@type': 'Organization', name: content.clinic.name }, copyrightHolder: { '@type': 'Organization', name: content.clinic.name } },
           ],
           inLanguage: meta.htmlLang,
           articleSection: a.category,
           mainEntityOfPage: { '@type': 'WebPage', '@id': canonical },
-          author: { '@type': 'Person', name: a.author, worksFor: { '@id': `${absoluteUrl(home)}#clinic` } },
+          author: { '@type': a.author.includes('دکتر') ? 'Person' : 'Organization', name: a.author },
           publisher: {
             '@type': 'Organization',
             name: content.clinic.name,
@@ -466,25 +552,12 @@ ${blocksToHtml(blocks)}
           },
           ...(a.publishedAt ? { datePublished: a.publishedAt, dateModified: a.publishedAt } : {}),
         },
-        ...(faq.length
-          ? [
-              {
-                '@context': 'https://schema.org',
-                '@type': 'FAQPage',
-                mainEntity: faq.map((f) => ({
-                  '@type': 'Question',
-                  name: f.q,
-                  acceptedAnswer: { '@type': 'Answer', text: f.a },
-                })),
-              },
-            ]
-          : []),
         {
           '@context': 'https://schema.org',
           '@type': 'BreadcrumbList',
           itemListElement: [
             { '@type': 'ListItem', position: 1, name: t(lang, 'article.home'), item: absoluteUrl(home) },
-            { '@type': 'ListItem', position: 2, name: t(lang, 'article.allArticles'), item: absoluteUrl(`${home}#articles`) },
+            { '@type': 'ListItem', position: 2, name: t(lang, 'article.allArticles'), item: absoluteUrl(articlesIndexPath(lang)) },
             { '@type': 'ListItem', position: 3, name: a.title, item: canonical },
           ],
         },
@@ -495,7 +568,7 @@ ${blocksToHtml(blocks)}
         urlPath,
         altPaths,
         title,
-        description: a.excerpt,
+        description,
         keywords,
         image: imageUrl,
         ogType: 'article',
@@ -515,7 +588,7 @@ ${blocksToHtml(blocks)}
 
   for (const r of REDIRECTS) {
     const from = articlePath(r.lang, r.from);
-    const target = r.to ? articlePath(r.lang, r.to) : homePath(r.lang) + '#articles';
+    const target = r.to ? articlePath(r.lang, r.to) : articlesIndexPath(r.lang);
     const html = `<!doctype html><html lang="${LANG_META[r.lang].htmlLang}"><head><meta charset="utf-8" /><title>انتقال به مقاله جدید</title><link rel="canonical" href="${absoluteUrl(target)}" /><meta http-equiv="refresh" content="0; url=${target}" /></head><body><a href="${target}">${esc(target)}</a><script>location.replace(${JSON.stringify(target)});</script></body></html>`;
     written.push(writeFileSafe(from, html));
   }

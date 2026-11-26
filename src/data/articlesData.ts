@@ -1,7 +1,9 @@
 import type { Article } from '../types';
+import { SEO_ARTICLES } from './seoArticles';
+import { ADDITIONAL_SEO_ARTICLES } from './seoArticlesAdditional';
 export type { Article };
 
-export const ARTICLES: Article[] = [
+const BASE_ARTICLES: Article[] = [
   {
     id: '1',
     title: 'هر آنچه باید درباره مراحل و مراقبت‌های بعد از کاشت مو بدانید',
@@ -732,4 +734,33 @@ export const ARTICLES: Article[] = [
     image: '/images/articles/parisima-nail-fungus-01.webp',
     imageAlt: 'نمای پوست خشک و ملتهب در مراقبت ترمیمی',
   },
+]; 
+
+const ARTICLE_RELATIONS: Record<string, string[]> = {
+  'how-painful-is-hair-transplant': ['hair-transplant-aftercare-guide', 'natural-hair-transplant-vs-micro-fit', 'who-is-a-candidate-for-hair-transplant'],
+  'hair-transplant-aftercare-guide': ['how-painful-is-hair-transplant', 'natural-hair-transplant-vs-micro-fit', 'who-is-a-candidate-for-hair-transplant'],
+  'natural-hair-transplant-vs-micro-fit': ['hair-transplant-aftercare-guide', 'how-painful-is-hair-transplant', 'who-is-a-candidate-for-hair-transplant'],
+  'hifu-facial-lifting-guide': ['fractional-laser-skin-guide', 'open-pores-treatment-methods', 'melasma-facial-dark-spots'],
+  'acne-scar-treatment-guide': ['adult-acne-causes-treatment', 'fractional-laser-skin-guide', 'open-pores-treatment-methods'],
+  'causes-of-hair-loss-in-women': ['hair-loss-causes-treatment', 'causes-of-hair-loss-in-men', 'who-is-a-candidate-for-hair-transplant'],
+  'causes-of-hair-loss-in-men': ['hair-loss-causes-treatment', 'causes-of-hair-loss-in-women', 'who-is-a-candidate-for-hair-transplant'],
+  'melasma-facial-dark-spots': ['fractional-laser-skin-guide', 'eczema-dry-sensitive-skin', 'adult-acne-causes-treatment'],
+  'eczema-dry-sensitive-skin': ['adult-acne-causes-treatment', 'melasma-facial-dark-spots', 'nail-fungus-causes-treatment'],
+  'adult-acne-causes-treatment': ['acne-scar-treatment-guide', 'open-pores-treatment-methods', 'melasma-facial-dark-spots'],
+  'how-to-remove-wart-safely': ['is-mole-removal-safe', 'eczema-dry-sensitive-skin', 'nail-fungus-causes-treatment'],
+  'is-mole-removal-safe': ['how-to-remove-wart-safely', 'fractional-laser-skin-guide', 'gym-plantar-warts-prevention'],
+  'difference-between-botox-and-filler': ['botox-vs-filler-comparison', 'how-long-does-botox-last', 'how-long-does-lip-filler-last'],
+  'russian-lip-filler-guide': ['how-long-does-lip-filler-last', 'botox-vs-filler-comparison', 'difference-between-botox-and-filler'],
+  'mesotherapy-benefits-for-hair-loss': ['what-is-hair-mesotherapy', 'causes-of-hair-loss-in-women', 'causes-of-hair-loss-in-men'],
+  'hair-loss-causes-treatment': ['what-is-hair-mesotherapy', 'causes-of-hair-loss-in-women', 'causes-of-hair-loss-in-men'],
+  'what-is-skin-laser-therapy': ['acne-scar-treatment-guide', 'melasma-facial-dark-spots', 'hifu-facial-lifting-guide'],
+  'zafaranieh-skin-and-hair-clinic-guide': ['zafaranieh-dermatology-clinic-services', 'hair-transplant-aftercare-guide', 'what-is-skin-laser-therapy'],
+  'zafaranieh-dermatology-clinic-services': ['zafaranieh-skin-and-hair-clinic-guide', 'eczema-dry-sensitive-skin', 'adult-acne-causes-treatment'],
+};
+
+export const ARTICLES: Article[] = [
+  ...[...BASE_ARTICLES, ...SEO_ARTICLES, ...ADDITIONAL_SEO_ARTICLES].map((article) => ({
+    ...article,
+    relatedSlugs: article.relatedSlugs ?? ARTICLE_RELATIONS[article.slug] ?? [],
+  })),
 ];

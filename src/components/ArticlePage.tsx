@@ -3,7 +3,7 @@ import { Calendar, Clock, User, ArrowLeft, MessageSquare } from 'lucide-react';
 import { useI18n } from '../i18n/LanguageProvider';
 import { ArticleBody } from './ArticleBody';
 import { assetUrl } from '../lib/assets';
-import { articlePath, brandAlt, homePath } from '../i18n/config';
+import { articlePath, articlesIndexPath, brandAlt, homePath } from '../i18n/config';
 import type { Article } from '../types';
 
 interface ArticlePageProps {
@@ -14,7 +14,10 @@ interface ArticlePageProps {
 // صفحه‌ی مستقل هر مقاله (هم در مرورگر و هم در صفحه‌ی استاتیک سئو)
 export const ArticlePage: React.FC<ArticlePageProps> = ({ article, onOpenBooking }) => {
   const { t, lang, content, dir } = useI18n();
-  const related = content.articles.filter((a) => a.slug !== article.slug).slice(0, 3);
+  const related = (article.relatedSlugs?.length
+    ? article.relatedSlugs.map((slug) => content.articles.find((item) => item.slug === slug)).filter((item): item is Article => Boolean(item))
+    : content.articles.filter((a) => a.slug !== article.slug)
+  ).slice(0, 3);
   const home = homePath(lang);
 
   return (
@@ -23,7 +26,7 @@ export const ArticlePage: React.FC<ArticlePageProps> = ({ article, onOpenBooking
         <nav aria-label="breadcrumb" className="flex flex-wrap items-center gap-2 text-xs text-slate-500 font-sans mb-6">
           <a href={home} className="hover:text-[#0369A1]">{t('article.home')}</a>
           <span>/</span>
-          <a href={`${home}#articles`} className="hover:text-[#0369A1]">{t('article.allArticles')}</a>
+          <a href={articlesIndexPath(lang)} className="hover:text-[#0369A1]">{t('article.allArticles')}</a>
           <span>/</span>
           <span className="text-slate-700 line-clamp-1">{article.title}</span>
         </nav>
@@ -35,12 +38,12 @@ export const ArticlePage: React.FC<ArticlePageProps> = ({ article, onOpenBooking
 
         <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500 my-5 font-sans border-y border-slate-100 py-3">
           <span className="flex items-center gap-1 font-semibold text-slate-700"><User className="w-4 h-4 text-[#0369A1]" />{article.author}</span>
-          <span className="flex items-center gap-1"><Calendar className="w-4 h-4 text-[#0369A1]" />{article.date}</span>
+          {article.date && <span className="flex items-center gap-1"><Calendar className="w-4 h-4 text-[#0369A1]" />{article.date}</span>}
           <span className="flex items-center gap-1"><Clock className="w-4 h-4 text-[#0369A1]" />{t('articles.readTime', { time: article.readTime })}</span>
         </div>
 
         <div className="relative w-full aspect-video rounded-2xl overflow-hidden mb-8 bg-slate-100">
-          <img src={assetUrl(article.image)} alt={brandAlt(article.imageAlt ?? article.title)} className="w-full h-full object-cover" />
+          <img src={assetUrl(article.image)} alt={brandAlt(article.imageAlt ?? article.title)} className="w-full h-full object-cover" fetchPriority="high" decoding="async" />
         </div>
 
         <p className={`font-sans text-base sm:text-lg text-slate-600 leading-relaxed mb-8 bg-[#F8FAFC] rounded-xl p-5 ${dir === 'rtl' ? 'border-r-4' : 'border-l-4'} border-[#0369A1]`}>
@@ -81,7 +84,7 @@ export const ArticlePage: React.FC<ArticlePageProps> = ({ article, onOpenBooking
           </section>
         )}
 
-        <a href={`${home}#articles`} className="mt-10 inline-flex items-center gap-2 text-sm font-bold text-[#0369A1] font-header hover:underline">
+        <a href={articlesIndexPath(lang)} className="mt-10 inline-flex items-center gap-2 text-sm font-bold text-[#0369A1] font-header hover:underline">
           <ArrowLeft className="w-4 h-4 rtl:rotate-180" />
           {t('article.backToArticles')}
         </a>
