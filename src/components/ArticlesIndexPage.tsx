@@ -55,7 +55,7 @@ export const ArticlesIndexPage: React.FC<ArticlesIndexPageProps> = ({ page }) =>
           <p className="text-sm text-slate-500">{articles.length} {lang === 'fa' ? 'مقاله' : lang === 'ar' ? 'مقالة' : 'articles'}</p>
           <p className="text-xs font-semibold text-slate-500">{labels.page} {currentPage} / {totalPages}</p>
         </div>
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">{visibleArticles.map((article) => <Card key={article.id} article={article} />)}</div>
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">{visibleArticles.map((article) => <div key={article.id} className="h-full"><Card article={article} /></div>)}</div>
         {totalPages > 1 && (
           <nav aria-label={lang === 'fa' ? 'صفحه‌بندی مقالات' : lang === 'ar' ? 'ترقيم صفحات المقالات' : 'Article pagination'} className="mt-12 flex flex-wrap items-center justify-center gap-2">
             <a href={articlesIndexPath(lang, Math.max(1, currentPage - 1))} aria-label={labels.previous} aria-disabled={currentPage === 1} className={`inline-flex h-10 w-10 items-center justify-center rounded-xl border ${currentPage === 1 ? 'pointer-events-none opacity-40' : 'hover:border-[#0369A1]'} border-slate-200 bg-white text-slate-700`}><ChevronRight className="h-4 w-4" /></a>

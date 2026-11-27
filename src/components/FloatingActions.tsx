@@ -1,4 +1,5 @@
 import React from 'react';
+import { trackEvent } from '../lib/analytics';
 import { Phone, Calendar } from 'lucide-react';
 import { useI18n } from '../i18n/LanguageProvider';
 
@@ -21,6 +22,7 @@ export const FloatingActions: React.FC<FloatingActionsProps> = ({ onOpenBooking 
     <div className="fixed bottom-6 start-6 z-40 flex flex-col items-start gap-3" style={{ direction: 'ltr' }}>
       <a
         href={whatsappUrl}
+        onClick={() => trackEvent('whatsapp_click', { location: 'floating' })}
         target="_blank"
         rel="noreferrer"
         className="w-12 h-12 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white flex items-center justify-center shadow-lg shadow-emerald-500/30 transition-all hover:scale-110 active:scale-95"
@@ -31,6 +33,7 @@ export const FloatingActions: React.FC<FloatingActionsProps> = ({ onOpenBooking 
       </a>
       <a
         href={`tel:${content.clinic.phone1}`}
+        onClick={() => trackEvent('phone_click', { location: 'floating' })}
         className="w-12 h-12 rounded-full bg-[#0C4A6E] hover:bg-[#0F172A] text-white flex items-center justify-center shadow-lg shadow-blue-900/30 transition-all hover:scale-110 active:scale-95"
         title={t('float.call')}
         aria-label={t('float.call')}
@@ -38,7 +41,7 @@ export const FloatingActions: React.FC<FloatingActionsProps> = ({ onOpenBooking 
         <Phone className="w-5 h-5" />
       </a>
       <button
-        onClick={() => onOpenBooking()}
+        onClick={() => { trackEvent('booking_open', { location: 'floating' }); onOpenBooking(); }}
         className="h-12 px-4 rounded-full bg-[#0369A1] hover:bg-[#0369A1] text-white font-header text-xs font-bold shadow-lg shadow-sky-500/30 transition-all hover:scale-105 active:scale-95 cursor-pointer flex items-center gap-2"
       >
         <Calendar className="w-4 h-4" />

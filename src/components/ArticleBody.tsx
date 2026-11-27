@@ -55,7 +55,7 @@ export const ArticleBody: React.FC<{ content: string; articleSlug?: string }> = 
     );
     else {
       const Tag = block.type === 'ol' ? 'ol' : 'ul';
-      rendered.push(<Tag key={i} className={`${block.type === 'ol' ? 'list-decimal' : 'list-disc'} ps-5 space-y-1.5`}>{block.items.map((item,j)=><li key={j}><Inline text={item}/></li>)}</Tag>);
+      rendered.push(<Tag key={i} className={`${block.type === 'ol' ? 'list-decimal' : 'list-disc'} ps-5 space-y-1.5`}>{('items' in block ? block.items : []).map((item,j)=><li key={j}><Inline text={item}/></li>)}</Tag>);
     }
   });
 

@@ -678,9 +678,14 @@ const ARTICLE_RELATIONS: Record<string, string[]> = {
   'zafaranieh-dermatology-clinic-services': ['zafaranieh-skin-and-hair-clinic-guide', 'eczema-dry-sensitive-skin', 'adult-acne-causes-treatment'],
 };
 
-export const ARTICLES: Article[] = [
-  ...[...BASE_ARTICLES, ...SEO_ARTICLES, ...ADDITIONAL_SEO_ARTICLES].map((article) => ({
-    ...article,
-    relatedSlugs: article.relatedSlugs ?? ARTICLE_RELATIONS[article.slug] ?? [],
-  })),
-];
+// هر اسلاگ فقط یک بار: نسخه‌ی جدیدتر محتوا را می‌دهد و شناسه‌ی نسخه‌ی پایه برای ترجمه‌ها حفظ می‌شود
+const MERGED_BY_SLUG = new Map<string, Article>();
+for (const article of [...BASE_ARTICLES, ...SEO_ARTICLES, ...ADDITIONAL_SEO_ARTICLES]) {
+  const previous = MERGED_BY_SLUG.get(article.slug);
+  MERGED_BY_SLUG.set(article.slug, previous ? { ...previous, ...article, id: previous.id } : article);
+}
+
+export const ARTICLES: Article[] = [...MERGED_BY_SLUG.values()].map((article) => ({
+  ...article,
+  relatedSlugs: article.relatedSlugs ?? ARTICLE_RELATIONS[article.slug] ?? [],
+}));

@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { trackEvent } from '../lib/analytics';
 import { X, Phone, MessageCircle, Clock } from 'lucide-react';
 import { useI18n } from '../i18n/LanguageProvider';
 import { pageT } from '../i18n/pages';
@@ -34,13 +35,13 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({ isOpen, onCl
         </div>
         <p className="font-sans text-sm text-slate-600 leading-loose">{pageT(lang, 'bkDesc')}</p>
         <div className="space-y-3">
-          <a href={`tel:${c.phone1}`} className="flex items-center justify-center gap-2 rounded-xl bg-[#0C4A6E] hover:bg-[#0369A1] text-white px-5 py-3 text-sm font-semibold font-header" dir="ltr">
+          <a onClick={() => trackEvent('phone_click', { location: 'booking_dialog' })} href={`tel:${c.phone1}`} className="flex items-center justify-center gap-2 rounded-xl bg-[#0C4A6E] hover:bg-[#0369A1] text-white px-5 py-3 text-sm font-semibold font-header" dir="ltr">
             <Phone className="h-4 w-4" /> {c.phone1Display}
           </a>
-          <a href={`tel:${c.mobile1}`} className="flex items-center justify-center gap-2 rounded-xl border border-slate-300 text-[#0F172A] px-5 py-3 text-sm font-semibold font-header" dir="ltr">
+          <a onClick={() => trackEvent('phone_click', { location: 'booking_dialog' })} href={`tel:${c.mobile1}`} className="flex items-center justify-center gap-2 rounded-xl border border-slate-300 text-[#0F172A] px-5 py-3 text-sm font-semibold font-header" dir="ltr">
             <Phone className="h-4 w-4" /> {c.mobile1Display}
           </a>
-          <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 rounded-xl border border-emerald-500 text-emerald-700 px-5 py-3 text-sm font-semibold font-header">
+          <a onClick={() => trackEvent('whatsapp_click', { location: 'booking_dialog' })} href={`https://wa.me/${waNumber}`} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 rounded-xl border border-emerald-500 text-emerald-700 px-5 py-3 text-sm font-semibold font-header">
             <MessageCircle className="h-4 w-4" /> {pageT(lang, 'bkWa')}
           </a>
         </div>

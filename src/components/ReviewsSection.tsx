@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { trackEvent } from '../lib/analytics';
 import { Star, Send, CheckCircle2, AlertCircle, Quote } from 'lucide-react';
 import { useI18n } from '../i18n/LanguageProvider';
 import { pageT } from '../i18n/pages';
@@ -48,6 +49,7 @@ export const ReviewsSection: React.FC = () => {
     const res = await submitReview({ name, rating, comment });
     setBusy(false);
     if (res.success) {
+      trackEvent('review_submit');
       setMsg({ type: 'ok', text: pageT(lang, 'rvSent') });
       setName(''); setComment(''); setRating(5); setConsent(false);
     } else {

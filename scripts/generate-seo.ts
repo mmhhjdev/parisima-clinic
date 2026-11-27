@@ -74,7 +74,7 @@ const blocksToHtml = (blocks: Block[], articleSlug?: string) => {
     else if (b.type === 'table') html.push(`<div class="my-6 overflow-x-auto"><table><thead><tr>${b.headers.map((c) => `<th>${inline(c)}</th>`).join('')}</tr></thead><tbody>${b.rows.map((r) => `<tr>${r.map((c) => `<td>${inline(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`);
     else {
       const tag = b.type === 'ol' ? 'ol' : 'ul';
-      html.push(`<${tag}>${b.items.map((i) => `<li>${inline(i)}</li>`).join('')}</${tag}>`);
+      html.push(`<${tag}>${('items' in b ? b.items : []).map((i) => `<li>${inline(i)}</li>`)}.join('')}</${tag}>`);
     }
   }
   if (imageSet && used.size < 2) {
@@ -266,6 +266,11 @@ function main() {
       jsonLd: [
         {
           '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: CONTENT[lang].faqs.map((f) => ({ '@type': 'Question', name: f.question, acceptedAnswer: { '@type': 'Answer', text: f.answer } })),
+        },
+        {
+          '@context': 'https://schema.org',
           '@type': 'SiteNavigationElement',
           name: [t(lang, 'nav.services'), t(lang, 'nav.articles'), t(lang, 'footer.faq'), t(lang, 'nav.contact')],
           url: [`${absoluteUrl(home)}#services`, absoluteUrl(articlesIndexPath(lang)), `${absoluteUrl(home)}#faq`, `${absoluteUrl(home)}#contact`],
@@ -345,7 +350,7 @@ function main() {
       subPages.push({
         key: `service:${sv.slug}`,
         path: p,
-        title: `${sv.title} | ${c0.shortName}`,
+        title: `${sv.title} | ${c0.shortName} ${pageT(lang, 'svcCity')}`,
         desc: sv.shortDescription,
         image: absoluteUrl(`/${sv.image.replace(/^\//, '')}`),
         crumbs,
@@ -567,9 +572,9 @@ ${relatedHtml}
           headline: a.title,
           description,
           image: [
-            { '@type': 'ImageObject', url: imageUrl, caption: heroAlt, name: a.title, creator: { '@type': 'Organization', name: content.clinic.name }, copyrightHolder: { '@type': 'Organization', name: content.clinic.name } },
+            { '@type': 'ImageObject', url: imageUrl, caption: heroAlt, name: a.title, creditText: content.clinic.name, copyrightNotice: `© ${content.clinic.name}`, license: absoluteUrl('/'), acquireLicensePage: absoluteUrl(contactPath(lang)), creator: { '@type': 'Organization', name: content.clinic.name }, copyrightHolder: { '@type': 'Organization', name: content.clinic.name } },
             ...(ARTICLE_INLINE_IMAGES[a.slug]?.images ?? []).map((img) => ({
-              '@type': 'ImageObject', url: absoluteUrl(img.src), caption: brandAlt(img.alt), name: a.title,
+              '@type': 'ImageObject', url: absoluteUrl(img.src), caption: brandAlt(img.alt), name: a.title, creditText: content.clinic.name, copyrightNotice: `© ${content.clinic.name}`, license: absoluteUrl('/'), acquireLicensePage: absoluteUrl(contactPath(lang)), 
               creator: { '@type': 'Organization', name: content.clinic.name },
               copyrightHolder: { '@type': 'Organization', name: content.clinic.name },
             })),

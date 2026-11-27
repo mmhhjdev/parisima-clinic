@@ -1,4 +1,5 @@
 import React from 'react';
+import { trackEvent } from '../lib/analytics';
 import { MapPin, Phone, MessageSquare, Clock, ExternalLink, Calendar } from 'lucide-react';
 import { useI18n } from '../i18n/LanguageProvider';
 
@@ -40,11 +41,11 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ onOpenBooking })
                 </div>
               </div>
               <div className="space-y-2 pt-2 border-t border-slate-200 text-xs font-bold">
-                <a href={`tel:${clinic.phone1}`} className="flex items-center justify-between p-2.5 rounded-xl bg-white border border-slate-200 hover:border-[#0369A1] transition-all">
+                <a onClick={() => trackEvent('phone_click', { location: 'contact' })} href={`tel:${clinic.phone1}`} className="flex items-center justify-between p-2.5 rounded-xl bg-white border border-slate-200 hover:border-[#0369A1] transition-all">
                   <span className="font-sans text-slate-500 text-[11px]">{t('contact.line1')}</span>
                   <span className="font-sans font-extrabold tracking-wide text-slate-800" dir="ltr">{clinic.phone1Display}</span>
                 </a>
-                <a href={`tel:${clinic.phone2}`} className="flex items-center justify-between p-2.5 rounded-xl bg-white border border-slate-200 hover:border-[#0369A1] transition-all">
+                <a onClick={() => trackEvent('phone_click', { location: 'contact' })} href={`tel:${clinic.phone2}`} className="flex items-center justify-between p-2.5 rounded-xl bg-white border border-slate-200 hover:border-[#0369A1] transition-all">
                   <span className="font-sans text-slate-500 text-[11px]">{t('contact.line2')}</span>
                   <span className="font-sans font-extrabold tracking-wide text-slate-800" dir="ltr">{clinic.phone2Display}</span>
                 </a>
@@ -63,20 +64,20 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ onOpenBooking })
               </div>
               <div className="space-y-2 pt-2 border-t border-slate-200 text-xs font-bold">
                 <div className="p-2.5 rounded-xl bg-white border border-slate-200 flex items-center justify-between gap-2">
-                  <a href={`tel:${clinic.mobile1}`} className="flex items-center gap-2 hover:text-[#0369A1]">
+                  <a onClick={() => trackEvent('phone_click', { location: 'contact' })} href={`tel:${clinic.mobile1}`} className="flex items-center gap-2 hover:text-[#0369A1]">
                     <span className="font-sans text-[11px] text-slate-500">{t('contact.mob1')}</span>
                     <span className="font-sans font-extrabold tracking-wide text-slate-800" dir="ltr">{clinic.mobile1Display}</span>
                   </a>
-                  <a href={whatsappUrl1} target="_blank" rel="noopener noreferrer" className="px-2.5 py-1 bg-[#25D366] hover:bg-[#20ba5a] text-white text-[11px] font-bold rounded-lg transition-colors">
+                  <a onClick={() => trackEvent('whatsapp_click', { location: 'contact' })} href={whatsappUrl1} target="_blank" rel="noopener noreferrer" className="px-2.5 py-1 bg-[#25D366] hover:bg-[#20ba5a] text-white text-[11px] font-bold rounded-lg transition-colors">
                     {t('contact.wa')}
                   </a>
                 </div>
                 <div className="p-2.5 rounded-xl bg-white border border-slate-200 flex items-center justify-between gap-2">
-                  <a href={`tel:${clinic.mobile2}`} className="flex items-center gap-2 hover:text-[#0369A1]">
+                  <a onClick={() => trackEvent('phone_click', { location: 'contact' })} href={`tel:${clinic.mobile2}`} className="flex items-center gap-2 hover:text-[#0369A1]">
                     <span className="font-sans text-[11px] text-slate-500">{t('contact.mob2')}</span>
                     <span className="font-sans font-extrabold tracking-wide text-slate-800" dir="ltr">{clinic.mobile2Display}</span>
                   </a>
-                  <a href={`tel:${clinic.mobile2}`} className="px-2.5 py-1 bg-[#0C4A6E] hover:bg-[#0F172A] text-white text-[11px] font-bold rounded-lg transition-colors flex items-center gap-1">
+                  <a onClick={() => trackEvent('phone_click', { location: 'contact' })} href={`tel:${clinic.mobile2}`} className="px-2.5 py-1 bg-[#0C4A6E] hover:bg-[#0F172A] text-white text-[11px] font-bold rounded-lg transition-colors flex items-center gap-1">
                     <Phone className="w-3 h-3" />
                     <span>{t('contact.call')}</span>
                   </a>

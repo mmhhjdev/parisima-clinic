@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { trackEvent } from '../lib/analytics';
 import { MessageCircleQuestion, Stethoscope, User, Send, CheckCircle2, AlertCircle, ChevronDown } from 'lucide-react';
 import { useI18n } from '../i18n/LanguageProvider';
 import { pageT } from '../i18n/pages';
@@ -51,7 +52,7 @@ export const QnASection: React.FC = () => {
     setBusy(true); setMsg(null);
     const res = await submitQuestion({ firstName: firstNameOnly(qFirst), service: qService || pageT(lang, 'qaGeneral'), question: qText });
     setBusy(false);
-    if (res.success) { setMsg({ type: 'ok', text: pageT(lang, 'qaSent') }); setQText(''); setQFirst(''); setQConsent(false); setShowAsk(false); }
+    if (res.success) { trackEvent('question_submit'); setMsg({ type: 'ok', text: pageT(lang, 'qaSent') }); setQText(''); setQFirst(''); setQConsent(false); setShowAsk(false); }
     else setMsg({ type: 'err', text: `${pageT(lang, 'qaError')}${res.error ? ` [${res.error}]` : ''}` });
   };
 
@@ -64,7 +65,7 @@ export const QnASection: React.FC = () => {
     setBusy(true); setMsg(null);
     const res = await submitUserAnswer({ questionId, firstName: firstNameOnly(aFirst), body: aText });
     setBusy(false);
-    if (res.success) { setMsg({ type: 'ok', text: pageT(lang, 'qaSent') }); setAText(''); setAFirst(''); setOpenId(null); }
+    if (res.success) { trackEvent('answer_submit'); setMsg({ type: 'ok', text: pageT(lang, 'qaSent') }); setAText(''); setAFirst(''); setOpenId(null); }
     else setMsg({ type: 'err', text: `${pageT(lang, 'qaError')}${res.error ? ` [${res.error}]` : ''}` });
   };
 

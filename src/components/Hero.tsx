@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { trackEvent } from '../lib/analytics';
 import { Calendar, Phone, MapPin, ShieldCheck, Award, MessageSquare } from 'lucide-react';
 import { useI18n } from '../i18n/LanguageProvider';
 import { assetUrl } from '../lib/assets';
@@ -61,7 +62,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenBooking }) => {
 
           <div className={`pt-2 flex flex-col sm:flex-row items-stretch sm:items-center justify-start gap-3 sm:gap-4 font-header ${reveal('delay-300')}`}>
             <button
-              onClick={() => onOpenBooking()}
+              onClick={() => { trackEvent('booking_open', { location: 'hero' }); onOpenBooking(); }}
               className="group flex w-full sm:w-auto items-center justify-center gap-2.5 rounded-xl bg-white px-6 py-3 text-xs sm:text-sm font-semibold text-[#0C4A6E] shadow-lg shadow-sky-950/30 transition-all hover:bg-sky-100 active:scale-95 cursor-pointer"
             >
               <Calendar className="h-4 w-4 text-[#0369A1] group-hover:scale-110 transition-transform" />
@@ -70,6 +71,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenBooking }) => {
 
             <a
               href={`tel:${clinic.phone1}`}
+              onClick={() => trackEvent('phone_click', { location: 'hero' })}
               className="flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl border border-white/40 bg-white/10 px-5 py-3 text-xs sm:text-sm font-medium text-white backdrop-blur-sm transition-all hover:bg-white/20"
             >
               <Phone className="h-4 w-4 text-sky-200" />

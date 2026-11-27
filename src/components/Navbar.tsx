@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { trackEvent } from '../lib/analytics';
 import { Phone, Calendar, Menu, X, Flame, MapPin, BookOpen } from 'lucide-react';
 import Logo from './Logo';
 import { useI18n } from '../i18n/LanguageProvider';
@@ -68,12 +69,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking, onOpenAdmin }) =>
               <span>{t('top.address')}</span>
             </div>
             <div className="flex items-center gap-3 font-mono font-bold text-slate-300" dir="ltr">
-              <a href={`tel:${clinic.phone1}`} className="flex items-center gap-1 hover:text-white transition-colors">
+              <a onClick={() => trackEvent('phone_click', { location: 'navbar' })} href={`tel:${clinic.phone1}`} className="flex items-center gap-1 hover:text-white transition-colors">
                 <Phone className="w-3.5 h-3.5 text-[#0369A1]" />
                 {clinic.phone1Display}
               </a>
               <span>&bull;</span>
-              <a href={`tel:${clinic.phone2}`} className="hover:text-white transition-colors">{clinic.phone2Display}</a>
+              <a onClick={() => trackEvent('phone_click', { location: 'navbar_2' })} href={`tel:${clinic.phone2}`} className="hover:text-white transition-colors">{clinic.phone2Display}</a>
             </div>
           </div>
           {langSwitch}

@@ -1,4 +1,5 @@
 import React from 'react';
+import { trackEvent } from '../lib/analytics';
 import { MessageCircle } from 'lucide-react';
 
 export const WhatsAppFloat: React.FC = () => {
@@ -9,6 +10,7 @@ export const WhatsAppFloat: React.FC = () => {
   return (
     <a
       href={whatsappUrl}
+      onClick={() => trackEvent('whatsapp_click', { location: 'whatsapp_float' })}
       target="_blank"
       rel="noopener noreferrer"
       aria-label="ارتباط در واتساپ"

@@ -3,6 +3,7 @@ import { Lang } from './config';
 // متن‌های ثابت صفحات داخلی (خدمات، درباره ما، تماس) در سه زبان
 export const PAGE_STRINGS: Record<Lang, Record<string, string>> = {
   fa: {
+    svcCity: 'زعفرانیه تهران',
     servicesTitle: 'خدمات تخصصی پوست، مو و زیبایی در زعفرانیه',
     servicesDesc: 'مجموعه خدمات کلینیک زیبایی و درماتولوژی پری سیما در زعفرانیه تهران: کاشت مو، مزوتراپی، بوتاکس، فیلر، هایفو و درمان‌های تخصصی پوست.',
     aboutTitle: 'درباره کلینیک و پزشکان متخصص',
@@ -68,6 +69,7 @@ export const PAGE_STRINGS: Record<Lang, Record<string, string>> = {
     rvInvalid: 'لطفاً نام، امتیاز و متن نظر (حداقل ۱۰ کاراکتر) را کامل کنید.',
   },
   en: {
+    svcCity: 'Zafaraniyeh, Tehran',
     servicesTitle: 'Specialized Skin, Hair & Aesthetic Services in Zafaraniyeh',
     servicesDesc: 'Services of Pari Sima Cosmetic & Dermatology Clinic in Zafaraniyeh, Tehran: hair transplant, mesotherapy, Botox, fillers, HIFU and specialized skin treatments.',
     aboutTitle: 'About the Clinic and Our Specialist Doctors',
@@ -133,6 +135,7 @@ export const PAGE_STRINGS: Record<Lang, Record<string, string>> = {
     rvInvalid: 'Please complete your name, rating and review text (at least 10 characters).',
   },
   ar: {
+    svcCity: 'زعفرانية طهران',
     servicesTitle: 'خدمات متخصصة للبشرة والشعر والتجميل في زعفرانية',
     servicesDesc: 'خدمات عيادة بري سيما للتجميل والأمراض الجلدية في زعفرانية طهران: زراعة الشعر، الميزوثيرابي، البوتوكس، الفيلر، الهايفو وعلاجات الجلد المتخصصة.',
     aboutTitle: 'عن العيادة وأطبائنا المتخصصين',
